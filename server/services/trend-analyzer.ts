@@ -2,7 +2,9 @@ import googleTrends from 'google-trends-api';
 import Snoowrap from 'snoowrap';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = process.env.OPENAI_API_KEY 
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 export interface TrendAnalysisResult {
   topic: string;
@@ -165,7 +167,7 @@ async function generateAISummary(
   status: string
 ): Promise<string> {
   try {
-    if (!process.env.OPENAI_API_KEY) {
+    if (!openai) {
       return `Analysis of "${topic}" shows a ${status.toLowerCase()} trend pattern. Based on search volume data and social discussions, this topic has generated significant interest across multiple platforms over the past week.`;
     }
 
