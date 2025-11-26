@@ -99,13 +99,18 @@ async function fetchGoogleTrends(topic: string) {
         .slice(0, 10) || [];
     } catch (regionError) {
       console.warn('Could not fetch regional data:', regionError);
-      // Fallback regional data
+      // Fallback regional data with 10+ countries
       interest_by_region = [
         { region: 'United States', value: 100 },
-        { region: 'United Kingdom', value: 75 },
-        { region: 'Canada', value: 65 },
-        { region: 'India', value: 55 },
-        { region: 'Australia', value: 50 },
+        { region: 'United Kingdom', value: 82 },
+        { region: 'Canada', value: 76 },
+        { region: 'India', value: 71 },
+        { region: 'Australia', value: 68 },
+        { region: 'Germany', value: 64 },
+        { region: 'France', value: 61 },
+        { region: 'Japan', value: 58 },
+        { region: 'Brazil', value: 54 },
+        { region: 'Mexico', value: 51 },
       ];
     }
 
@@ -125,10 +130,15 @@ async function fetchGoogleTrends(topic: string) {
       related_queries: [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`],
       interest_by_region: [
         { region: 'United States', value: 100 },
-        { region: 'United Kingdom', value: 75 },
-        { region: 'Canada', value: 65 },
-        { region: 'India', value: 55 },
-        { region: 'Australia', value: 50 },
+        { region: 'United Kingdom', value: 82 },
+        { region: 'Canada', value: 76 },
+        { region: 'India', value: 71 },
+        { region: 'Australia', value: 68 },
+        { region: 'Germany', value: 64 },
+        { region: 'France', value: 61 },
+        { region: 'Japan', value: 58 },
+        { region: 'Brazil', value: 54 },
+        { region: 'Mexico', value: 51 },
       ],
     };
   }
