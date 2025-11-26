@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { SearchInput } from "@/components/search-input";
 import { TrendDashboard } from "@/components/trend-dashboard";
-import { analyzeTrend, TrendData } from "@/lib/mock-api";
+import { analyzeTrend, TrendData } from "@/lib/api";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,9 @@ export default function Home() {
       setData(result);
     } catch (error) {
       console.error("Failed to analyze trend", error);
+      toast.error("Failed to analyze trend", {
+        description: error instanceof Error ? error.message : "Please try again later"
+      });
     } finally {
       setIsLoading(false);
     }

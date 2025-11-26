@@ -1,4 +1,4 @@
-import { TrendData } from "@/lib/mock-api";
+import { TrendData } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -53,6 +53,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
       initial="hidden"
       animate="show"
       className="w-full max-w-6xl mx-auto space-y-6 pb-20"
+      data-testid="trend-dashboard"
     >
       {/* Header Section */}
       <motion.div variants={item} className="grid md:grid-cols-3 gap-6">
@@ -60,8 +61,8 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
-                <CardTitle className="text-3xl font-display mb-2">{data.topic}</CardTitle>
-                <div className={`inline-flex items-center px-3 py-1 rounded-full border ${getStatusColor(data.status)}`}>
+                <CardTitle className="text-3xl font-display mb-2" data-testid="text-topic">{data.topic}</CardTitle>
+                <div className={`inline-flex items-center px-3 py-1 rounded-full border ${getStatusColor(data.status)}`} data-testid="badge-status">
                   {getStatusIcon(data.status)}
                   <span className="font-mono font-bold uppercase tracking-wider">{data.status}</span>
                 </div>
@@ -73,7 +74,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-lg leading-relaxed text-muted-foreground">
+            <p className="text-lg leading-relaxed text-muted-foreground" data-testid="text-summary">
               <span className="text-primary font-bold mr-2">AI SUMMARY &gt;</span>
               {data.summary}
             </p>
@@ -89,7 +90,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {data.related_topics.map((topic, i) => (
-                <Badge key={i} variant="secondary" className="hover:bg-primary/20 cursor-pointer transition-colors">
+                <Badge key={i} variant="secondary" className="hover:bg-primary/20 cursor-pointer transition-colors" data-testid={`badge-related-${i}`}>
                   {topic}
                 </Badge>
               ))}
@@ -102,13 +103,13 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
       <motion.div variants={item}>
         <Tabs defaultValue="google" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-muted/30 p-1">
-            <TabsTrigger value="google" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <TabsTrigger value="google" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary" data-testid="tab-google">
               <Globe className="w-4 h-4 mr-2" /> Google Trends
             </TabsTrigger>
-            <TabsTrigger value="reddit" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-500">
+            <TabsTrigger value="reddit" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-500" data-testid="tab-reddit">
               <MessageSquare className="w-4 h-4 mr-2" /> Reddit
             </TabsTrigger>
-            <TabsTrigger value="twitter" className="data-[state=active]:bg-sky-500/20 data-[state=active]:text-sky-500">
+            <TabsTrigger value="twitter" className="data-[state=active]:bg-sky-500/20 data-[state=active]:text-sky-500" data-testid="tab-twitter">
               <Twitter className="w-4 h-4 mr-2" /> Twitter / X
             </TabsTrigger>
           </TabsList>
@@ -157,7 +158,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           <TabsContent value="reddit" className="mt-4">
             <div className="grid gap-4">
               {data.sources.reddit.top_posts.map((post, i) => (
-                <Card key={i} className="bg-card/40 backdrop-blur-sm border-white/5 hover:border-orange-500/30 transition-colors">
+                <Card key={i} className="bg-card/40 backdrop-blur-sm border-white/5 hover:border-orange-500/30 transition-colors" data-testid={`card-reddit-post-${i}`}>
                   <CardContent className="p-4">
                     <div className="flex justify-between gap-4">
                       <div>
@@ -168,7 +169,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
                         </div>
                       </div>
                       <Button variant="ghost" size="icon" asChild>
-                        <a href={post.url} target="_blank" rel="noopener noreferrer">
+                        <a href={post.url} target="_blank" rel="noopener noreferrer" data-testid={`link-reddit-${i}`}>
                           <ExternalLink className="w-4 h-4" />
                         </a>
                       </Button>
@@ -183,7 +184,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
             <div className="grid md:grid-cols-2 gap-4">
               {data.sources.twitter ? (
                 data.sources.twitter.recent_tweets.map((tweet, i) => (
-                  <Card key={i} className="bg-card/40 backdrop-blur-sm border-white/5 hover:border-sky-500/30 transition-colors">
+                  <Card key={i} className="bg-card/40 backdrop-blur-sm border-white/5 hover:border-sky-500/30 transition-colors" data-testid={`card-twitter-${i}`}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <span className="font-bold text-sky-500">{tweet.author}</span>
@@ -197,7 +198,7 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
                   </Card>
                 ))
               ) : (
-                <div className="col-span-2 p-8 text-center border border-dashed rounded-lg border-muted">
+                <div className="col-span-2 p-8 text-center border border-dashed rounded-lg border-muted" data-testid="twitter-unavailable">
                   <p className="text-muted-foreground">Twitter API key not configured.</p>
                 </div>
               )}
