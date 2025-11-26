@@ -1,0 +1,78 @@
+Update my Crazedo AI Trend Analyzer frontend.
+Keep the exact current dark theme, neon accents, layout, and spacing.
+Do NOT redesign anything.
+Only add the following upgrades under the “Google Trends – Interest Over Time (7 Days)” section.
+
+1. Add “What This Graph Shows” explanation (short text):
+
+“This chart shows daily search interest for the last 7 days.”
+
+“100 = peak popularity, 50 = medium, 0 = low.”
+
+2. Add auto-generated “Trend Interpretation” box using the 7-day data.
+Example text: “Momentum increased earlier in the week…”
+
+3. Add “Trend Strength Score (0–100)”
+Formula: average interest + week-over-week change (capped at 100).
+Display as: “Trend Strength Score: XX/100.”
+
+4. Add markers for key days calculated from the trend data:
+
+Peak Day
+
+Lowest Day
+
+Today’s Value
+
+7-Day Change %
+
+5. Add “Week-over-Week Comparison” using a basic comparison to the previous 7-day average (use mock data if needed).
+
+6. Add a “Why Interest Spiked” box (AI-style short reasoning) using patterns from the numbers and related queries.
+
+7. Add a CTA box:
+“See Full Trend Analysis →”
+Link to /blogs/weekly-google-trends or placeholder.
+
+8. Add a “Trend Prediction (Next 3 Days)” module with simple rules:
+
+If last 3 days increasing → “Likely to keep rising”
+
+If last 3 days decreasing → “Likely to decline further”
+
+Else → “Unstable / neutral short-term forecast”
+
+9. Add a “Trend Type” tag generated from related queries or topic name. Options:
+
+Sports, News, Finance, Influencer, Music, Gaming, Viral, Celebrity, Tech.
+
+10. Add a “Popularity Index (1–10)” based on average interest.
+
+11. Add “Trending Regions” section (top 5 from the trend API or mock data).
+Display as simple text list, no map needed.
+
+12. Add a “Trend Lifecycle Phase” using momentum:
+
+Exploding, Rising, Cooling, Declining, Stabilizing.
+
+13. Add a “Momentum Meter” visual bar (simple horizontal bar):
+Example: ████████░░ 78%
+
+14. Add a “Snapshot Summary” box containing:
+
+Trend level (Exploding/Rising/etc.)
+
+7-day change %
+
+Peak day
+
+Top region
+
+Popularity index
+
+3-day prediction
+
+Make all new elements compact, clean, and consistent with the existing dark-themed dashboard.
+NO new pages.
+NO theme changes.
+Only extend this one module.
