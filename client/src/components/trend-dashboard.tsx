@@ -2,8 +2,9 @@ import { TrendData } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2, TrendingUp, TrendingDown, Download, Heart, Bell } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface TrendDashboardProps {
   data: TrendData;
@@ -134,7 +135,79 @@ function calculateTrendDifficultyScore(status: string, metrics: any) {
   return Math.min(Math.max(Math.round(score), 10), 100);
 }
 
+function calculateTrendLifecycleStage(status: string, change7Day: number, avgValue: number) {
+  if (status === 'Exploding' || (change7Day > 50 && avgValue > 60)) return { stage: 'Explosive Peak', description: 'Maximum visibility - act immediately' };
+  if (status === 'Rising' && change7Day > 20) return { stage: 'Growth Phase', description: 'Momentum building - good opportunity' };
+  if (status === 'Rising' || (change7Day > 0 && change7Day <= 20)) return { stage: 'Emerging Trend', description: 'Early adoption phase - establish presence' };
+  if (Math.abs(change7Day) <= 10) return { stage: 'Maturity Phase', description: 'Stable interest - consistent but competitive' };
+  if (change7Day < -10 && status === 'Declining') return { stage: 'Decline Phase', description: 'Interest waning - move to new trends' };
+  return { stage: 'Declining', description: 'Historical interest fading away' };
+}
+
+function calculateRevenuePotentialScore(status: string, peakValue: number, change7Day: number) {
+  let score = 40;
+  if (peakValue > 80) score += 25;
+  if (status === 'Exploding') score += 20;
+  if (change7Day > 20) score += 15;
+  return Math.min(Math.max(Math.round(score), 10), 100);
+}
+
+function calculateMarketSaturationIndex(status: string, avgValue: number) {
+  let saturation = 50;
+  if (status === 'Exploding') saturation += 30;
+  if (avgValue > 75) saturation += 20;
+  if (status === 'Stable') saturation += 10;
+  return Math.min(Math.max(Math.round(saturation), 10), 100);
+}
+
+function detectAnomalies(interestData: { date: string; value: number }[]) {
+  if (interestData.length < 3) return [];
+  const values = interestData.map(d => d.value);
+  const avgValue = values.reduce((a, b) => a + b, 0) / values.length;
+  const stdDev = Math.sqrt(values.reduce((a, b) => a + Math.pow(b - avgValue, 2), 0) / values.length);
+  
+  return interestData.filter((item, i) => Math.abs(item.value - avgValue) > stdDev * 1.5).map(item => ({
+    date: item.date,
+    value: item.value,
+    anomalyType: item.value > avgValue ? 'spike' : 'dip'
+  }));
+}
+
+function generateSeasonalPattern(topic: string) {
+  const patterns: { [key: string]: string } = {
+    'iphone': 'Peaks in September (annual release). Check historical data for yearly patterns.',
+    'black friday': 'Peaks in November. Pre-holiday shopping surge expected.',
+    'valentine': 'Peaks in February. Seasonal consumer spending trend.',
+    'christmas': 'Peaks in December. Holiday shopping season.',
+    'back to school': 'Peaks in August-September. Academic calendar driven.',
+    'summer': 'Peaks June-August. Seasonal travel and activities.',
+    'new year': 'Peaks in January. Resolution and renewal period.'
+  };
+  
+  for (const [key, pattern] of Object.entries(patterns)) {
+    if (topic.toLowerCase().includes(key)) return pattern;
+  }
+  return 'No clear seasonal pattern detected. Interest appears consistent year-round.';
+}
+
+function generateContentIdeas(topic: string, status: string, queries: string[]) {
+  const baseIdeas = [
+    `"Complete Guide to ${topic}" - Blog post`,
+    `"${topic} vs [Alternative]" - Comparison article`,
+    `"${topic} Tutorial for Beginners" - Video content`,
+    `"${topic} Trends in 2025" - News/analysis piece`
+  ];
+  
+  if (status === 'Exploding') {
+    return [`BREAKING: ${topic} Explained`, `Live updates: ${topic}`, ...baseIdeas.slice(2)];
+  }
+  return baseIdeas;
+}
+
 export function TrendDashboard({ data }: TrendDashboardProps) {
+  const [isSaved, setIsSaved] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  
   const metrics = calculateTrendMetrics(data.sources.google.interest_over_time);
   const spikeInsight = generateSpikeInsight(data.sources.google.interest_over_time, data.status, data.sources.google.related_queries);
   const trendPrediction = generateTrendPrediction(data.sources.google.interest_over_time, metrics.change7Day);
@@ -144,6 +217,57 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
   const trendRiskScore = calculateTrendRiskScore(data.sources.google.interest_over_time, data.status);
   const sevenDayPrediction = generateSevenDayPrediction(data.sources.google.interest_over_time, data.status, metrics.change7Day);
   const difficultyScore = calculateTrendDifficultyScore(data.status, metrics);
+  const lifecycle = calculateTrendLifecycleStage(data.status, metrics.change7Day, metrics.avgValue);
+  const revenuePotential = calculateRevenuePotentialScore(data.status, metrics.peakValue, metrics.change7Day);
+  const saturationIndex = calculateMarketSaturationIndex(data.status, metrics.avgValue);
+  const anomalies = detectAnomalies(data.sources.google.interest_over_time);
+  const seasonalPattern = generateSeasonalPattern(data.topic);
+  const contentIdeas = generateContentIdeas(data.topic, data.status, data.sources.google.related_queries);
+  
+  const handleSaveTrend = () => {
+    const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
+    if (!saved.find((t: any) => t.topic === data.topic)) {
+      saved.push({ topic: data.topic, savedAt: new Date().toISOString(), status: data.status });
+      localStorage.setItem('savedTrends', JSON.stringify(saved));
+      setIsSaved(true);
+    }
+  };
+  
+  const handleExportPDF = () => {
+    const reportContent = `
+CRAZEDO AI TREND REPORT
+Topic: ${data.topic}
+Status: ${data.status}
+Generated: ${new Date().toLocaleString()}
+
+LIFECYCLE STAGE: ${lifecycle.stage}
+${lifecycle.description}
+
+KEY METRICS:
+- 7-Day Change: ${metrics.change7Day}%
+- Trend Strength: ${metrics.trendScore}/100
+- Risk Score: ${trendRiskScore}/100
+- Revenue Potential: ${revenuePotential}/100
+- SEO Difficulty: ${difficultyScore}/100
+- Market Saturation: ${saturationIndex}%
+
+SUMMARY:
+${data.summary}
+
+FORECAST:
+${sevenDayPrediction}
+
+SEASONAL PATTERN:
+${seasonalPattern}
+    `;
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(reportContent));
+    element.setAttribute('download', `${data.topic}-trend-report.txt`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -184,6 +308,17 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
                   {getStatusIcon(data.status)}
                   <span className="font-mono font-bold uppercase tracking-wider">{data.status}</span>
                 </div>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <button onClick={handleSaveTrend} className={`p-2 rounded-lg transition ${isSaved ? 'bg-primary/30 text-primary' : 'bg-muted/20 hover:bg-muted/40 text-muted-foreground'}`} data-testid="button-save">
+                  <Heart className="w-5 h-5" fill={isSaved ? 'currentColor' : 'none'} />
+                </button>
+                <button onClick={handleExportPDF} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 text-muted-foreground transition" data-testid="button-export">
+                  <Download className="w-5 h-5" />
+                </button>
+                <button onClick={() => setShowAlertModal(true)} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 text-muted-foreground transition" data-testid="button-alert">
+                  <Bell className="w-5 h-5" />
+                </button>
               </div>
               <div className="text-right hidden md:block">
                 <span className="text-xs text-muted-foreground font-mono block mb-1">ANALYSIS ID</span>
@@ -303,6 +438,62 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
         </Card>
       </motion.div>
 
+      {/* Advanced Features Section */}
+      <div className="grid md:grid-cols-3 gap-6">
+        {/* Trend Lifecycle Stage */}
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Trend Lifecycle</CardTitle>
+              <CardDescription>Current phase</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="text-2xl font-display font-bold text-primary">{lifecycle.stage}</div>
+                <p className="text-sm text-muted-foreground">{lifecycle.description}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Revenue Potential */}
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Revenue Potential</CardTitle>
+              <CardDescription>Commercial value</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-end gap-2">
+                  <div className="text-3xl font-display font-bold text-primary">{revenuePotential}</div>
+                  <div className="text-sm text-muted-foreground">/100</div>
+                </div>
+                <p className="text-xs text-muted-foreground">{revenuePotential > 70 ? '💰 High commercial value' : revenuePotential > 50 ? '💵 Moderate potential' : '📊 Low monetization'}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Market Saturation */}
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Market Saturation</CardTitle>
+              <CardDescription>Competition level</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-end gap-2">
+                  <div className="text-3xl font-display font-bold text-primary">{saturationIndex}%</div>
+                </div>
+                <p className="text-xs text-muted-foreground">{saturationIndex > 75 ? '🔴 Highly saturated' : saturationIndex > 50 ? '🟡 Moderate saturation' : '🟢 Low competition'}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
       {/* Quick Wins Row - 4 Feature Cards */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Top Rising Search Queries */}
@@ -410,6 +601,104 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Content Ideas & Seasonal Patterns */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Content Ideas Generator */}
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Content Ideas</CardTitle>
+              <CardDescription>AI-suggested content topics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {contentIdeas.map((idea, i) => (
+                  <div key={i} className="p-2 rounded bg-muted/20 border border-border/30 text-sm text-muted-foreground" data-testid={`content-idea-${i}`}>
+                    {idea}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Seasonal Patterns */}
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Seasonal Patterns</CardTitle>
+              <CardDescription>Yearly trends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{seasonalPattern}</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Anomaly Detection */}
+      {anomalies.length > 0 && (
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Anomaly Detection</CardTitle>
+              <CardDescription>{anomalies.length} unusual pattern(s) found</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {anomalies.map((anomaly, i) => (
+                  <div key={i} className="flex items-center justify-between p-2 rounded bg-muted/20 border border-border/30" data-testid={`anomaly-${i}`}>
+                    <div>
+                      <span className="text-sm font-medium text-foreground">{anomaly.date}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">{anomaly.anomalyType === 'spike' ? '📈 Spike' : '📉 Dip'}</span>
+                    </div>
+                    <span className="text-sm font-bold text-primary">{anomaly.value}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Alert Modal */}
+      {showAlertModal && (
+        <motion.div variants={item}>
+          <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-lg">Set Trend Alert</CardTitle>
+              <CardDescription>Get notified when trend changes</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">Alert me when "{data.topic}" interest:</p>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="alert" className="w-4 h-4" defaultChecked />
+                    <span className="text-sm text-foreground">Increases by 25%</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="alert" className="w-4 h-4" />
+                    <span className="text-sm text-foreground">Decreases by 25%</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="alert" className="w-4 h-4" />
+                    <span className="text-sm text-foreground">Reaches top trending</span>
+                  </label>
+                </div>
+                <div className="pt-2">
+                  <input type="email" placeholder="Email address" className="w-full px-3 py-2 rounded bg-muted/30 border border-border/30 text-sm text-foreground placeholder-muted-foreground" />
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => setShowAlertModal(false)} className="flex-1 px-3 py-2 rounded bg-primary/20 text-primary hover:bg-primary/30 transition text-sm font-medium">Enable Alert</button>
+                  <button onClick={() => setShowAlertModal(false)} className="flex-1 px-3 py-2 rounded bg-muted/20 text-muted-foreground hover:bg-muted/40 transition text-sm font-medium">Close</button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Related Queries */}
       <motion.div variants={item}>

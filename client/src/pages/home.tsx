@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchInput } from "@/components/search-input";
 import { TrendDashboard } from "@/components/trend-dashboard";
 import { analyzeTrend, TrendData } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { X } from "lucide-react";
+
+interface SavedTrend {
+  topic: string;
+  savedAt: string;
+  status: string;
+}
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<TrendData | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
+  
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
+    setSavedTrends(saved);
+  }, []);
 
   const handleSearch = async (term: string) => {
     setIsLoading(true);
@@ -24,6 +38,16 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleQuickSearch = async (topic: string) => {
+    await handleSearch(topic);
+  };
+
+  const handleRemoveSaved = (topic: string) => {
+    const updated = savedTrends.filter(t => t.topic !== topic);
+    setSavedTrends(updated);
+    localStorage.setItem('savedTrends', JSON.stringify(updated));
   };
 
   return (
@@ -65,8 +89,46 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="max-w-3xl mx-auto mt-20"
+              className="max-w-4xl mx-auto mt-20 space-y-8"
             >
+              {/* Trending Now Section */}
+              {savedTrends.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+                    <CardHeader>
+                      <CardTitle>Your Saved Trends</CardTitle>
+                      <CardDescription>Quick access to your tracked topics</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {savedTrends.map((trend, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handleQuickSearch(trend.topic)}
+                            className="relative p-3 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/50 hover:bg-muted/40 transition group"
+                            data-testid={`saved-trend-${i}`}
+                          >
+                            <div className="text-sm font-medium text-foreground text-left">{trend.topic}</div>
+                            <div className="text-xs text-muted-foreground text-left">{trend.status}</div>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleRemoveSaved(trend.topic); }}
+                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition"
+                              data-testid={`remove-saved-${i}`}
+                            >
+                              <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                            </button>
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+
               <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
                 <h3 className="font-display text-2xl mb-4 text-primary">Powered by Google Trends</h3>
                 <div className="grid md:grid-cols-2 gap-4 text-left">
