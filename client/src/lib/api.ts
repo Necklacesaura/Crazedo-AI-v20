@@ -1,3 +1,4 @@
+// Type definitions for API responses
 export type TrendStatus = 'Exploding' | 'Rising' | 'Stable' | 'Declining';
 
 export interface TrendData {
@@ -9,18 +10,16 @@ export interface TrendData {
       interest_over_time: { date: string; value: number }[];
       related_queries: string[];
     };
-    reddit: {
-      top_posts: { title: string; subreddit: string; score: number; url: string }[];
-      sentiment: string;
-    };
-    twitter: {
-      recent_tweets: { text: string; author: string; likes: number }[];
-      hashtags: string[];
-    } | null;
+    // REMOVED: reddit and twitter fields
+    // This version only supports Google Trends data
   };
   related_topics: string[];
 }
 
+/**
+ * Analyzes a topic by calling the backend API
+ * Returns Google Trends data, trend status, and AI summary
+ */
 export const analyzeTrend = async (topic: string): Promise<TrendData> => {
   const response = await fetch('/api/analyze', {
     method: 'POST',

@@ -4,10 +4,14 @@ import { storage } from "./storage";
 import { analyzeTrend } from "./services/trend-analyzer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // POST /api/analyze - Main trend analysis endpoint
+  // Accepts: { "topic": "search term" }
+  // Returns: Google Trends data + trend status + AI summary (if configured)
   app.post('/api/analyze', async (req, res) => {
     try {
       const { topic } = req.body;
 
+      // Input validation
       if (!topic || typeof topic !== 'string' || topic.trim().length === 0) {
         return res.status(400).json({ error: 'Topic is required and must be a non-empty string' });
       }
@@ -20,6 +24,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Analyzing trend for: ${trimmedTopic}`);
       
+      // Fetch and analyze trend data
       const result = await analyzeTrend(trimmedTopic);
       
       res.json(result);
@@ -32,13 +37,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GET /api/health - Health check endpoint
+  // Returns: API status and which integrations are configured
   app.get('/api/health', (req, res) => {
     const health = {
       status: 'ok',
       timestamp: new Date().toISOString(),
       integrations: {
         openai: !!process.env.OPENAI_API_KEY,
-        reddit: !!(process.env.REDDIT_CLIENT_ID && process.env.REDDIT_CLIENT_SECRET),
+        // REMOVED: reddit integration check (no longer supported in v2.0)
       },
     };
     res.json(health);

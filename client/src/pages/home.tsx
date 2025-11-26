@@ -44,7 +44,7 @@ export default function Home() {
               CRAZEDO AI
             </h1>
             <p className="text-muted-foreground font-mono text-sm md:text-base tracking-widest uppercase">
-              Trend Intelligence System v1.0
+              Google Trends Intelligence System v2.0
             </p>
           </motion.div>
           
@@ -65,18 +65,29 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="grid md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto"
+              className="max-w-3xl mx-auto mt-20"
             >
-              {[
-                { title: "Google Trends", desc: "Search volume velocity & related queries" },
-                { title: "Reddit Sentiment", desc: "Community discussions & hot topics" },
-                { title: "X / Twitter", desc: "Real-time viral conversations & hashtags" }
-              ].map((feature, i) => (
-                <div key={i} className="p-6 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors text-center">
-                  <h3 className="font-display text-lg mb-2 text-primary">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.desc}</p>
+              <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
+                <h3 className="font-display text-2xl mb-4 text-primary">Powered by Google Trends</h3>
+                <div className="grid md:grid-cols-2 gap-4 text-left">
+                  <div className="p-4 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-2 text-foreground">📊 Real-Time Data</h4>
+                    <p className="text-muted-foreground text-sm">7-day search interest tracking with trend momentum analysis</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-2 text-foreground">🤖 AI Insights</h4>
+                    <p className="text-muted-foreground text-sm">Optional AI-powered summaries explaining trend patterns</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-2 text-foreground">🔥 Trend Status</h4>
+                    <p className="text-muted-foreground text-sm">Automatic classification: Exploding, Rising, Stable, or Declining</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-2 text-foreground">🔗 Related Topics</h4>
+                    <p className="text-muted-foreground text-sm">Discover what else people are searching for</p>
+                  </div>
                 </div>
-              ))}
+              </div>
             </motion.div>
           )}
         </div>

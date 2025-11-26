@@ -1,11 +1,12 @@
 import googleTrends from 'google-trends-api';
-import Snoowrap from 'snoowrap';
 import OpenAI from 'openai';
 
+// Initialize OpenAI client only if API key is provided
 const openai = process.env.OPENAI_API_KEY 
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
+// Interface defining the structure of trend analysis results
 export interface TrendAnalysisResult {
   topic: string;
   status: 'Exploding' | 'Rising' | 'Stable' | 'Declining';
@@ -15,28 +16,26 @@ export interface TrendAnalysisResult {
       interest_over_time: { date: string; value: number }[];
       related_queries: string[];
     };
-    reddit: {
-      top_posts: { title: string; subreddit: string; score: number; url: string }[];
-      sentiment: string;
-    };
-    twitter: {
-      recent_tweets: { text: string; author: string; likes: number }[];
-      hashtags: string[];
-    } | null;
+    // REMOVED: Reddit and Twitter/X functionality
+    // Future platforms can be added here as needed
   };
   related_topics: string[];
 }
 
+/**
+ * Main function to analyze trend for a given topic
+ * Fetches Google Trends data and generates AI summary
+ */
 export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> {
   try {
-    const [googleData, redditData] = await Promise.all([
-      fetchGoogleTrends(topic),
-      fetchRedditData(topic),
-    ]);
+    // Fetch Google Trends data
+    const googleData = await fetchGoogleTrends(topic);
 
+    // Determine trend status based on interest over time
     const trendStatus = determineTrendStatus(googleData.interest_over_time);
     
-    const aiSummary = await generateAISummary(topic, googleData, redditData, trendStatus);
+    // Generate AI summary (or generic summary if no OpenAI key)
+    const aiSummary = await generateAISummary(topic, googleData, trendStatus);
 
     return {
       topic,
@@ -44,8 +43,7 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
       summary: aiSummary,
       sources: {
         google: googleData,
-        reddit: redditData,
-        twitter: null,
+        // REMOVED: reddit and twitter fields
       },
       related_topics: googleData.related_queries.slice(0, 4),
     };
@@ -56,23 +54,31 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
   }
 }
 
+/**
+ * Fetches real-time Google Trends data for the given topic
+ * Returns interest over time (last 7 days) and related search queries
+ */
 async function fetchGoogleTrends(topic: string) {
   try {
+    // Fetch interest over time from Google Trends API
     const interestOverTimeRaw = await googleTrends.interestOverTime({
       keyword: topic,
-      startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
     });
 
     const data = JSON.parse(interestOverTimeRaw);
     
+    // Transform data into our format
     const interest_over_time = data.default.timelineData.map((item: any) => ({
       date: new Date(parseInt(item.time) * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
       value: item.value[0] || 0,
     }));
 
+    // Fetch related queries from Google Trends
     const relatedQueriesRaw = await googleTrends.relatedQueries({ keyword: topic });
     const relatedData = JSON.parse(relatedQueriesRaw);
     
+    // Extract top 4 related queries or use fallback
     const related_queries = relatedData.default.rankedList?.[0]?.rankedKeyword
       ?.slice(0, 4)
       .map((item: any) => item.query) || [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`];
@@ -83,6 +89,7 @@ async function fetchGoogleTrends(topic: string) {
     };
   } catch (error: unknown) {
     console.error('Google Trends error:', error);
+    // Fallback data if Google Trends API fails or rate limits
     return {
       interest_over_time: Array.from({ length: 7 }, (_, i) => ({
         date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
@@ -93,61 +100,23 @@ async function fetchGoogleTrends(topic: string) {
   }
 }
 
-async function fetchRedditData(topic: string) {
-  try {
-    if (!process.env.REDDIT_CLIENT_ID || !process.env.REDDIT_CLIENT_SECRET) {
-      console.warn('Reddit API credentials not configured, using fallback data');
-      return getFallbackRedditData(topic);
-    }
+// REMOVED: fetchRedditData() function
+// REMOVED: getFallbackRedditData() function
+// If you want to re-add Reddit functionality in the future:
+// - Install 'snoowrap' package
+// - Add REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET env vars
+// - Implement fetchRedditData() function similar to fetchGoogleTrends()
+// - Add reddit field back to TrendAnalysisResult interface
 
-    const reddit = new Snoowrap({
-      userAgent: process.env.REDDIT_USER_AGENT || 'Crazedo Trend Analyzer v1.0',
-      clientId: process.env.REDDIT_CLIENT_ID,
-      clientSecret: process.env.REDDIT_CLIENT_SECRET,
-      username: process.env.REDDIT_USERNAME || '',
-      password: process.env.REDDIT_PASSWORD || '',
-    });
-
-    const searchResults = await reddit.search({
-      query: topic,
-      sort: 'hot',
-      time: 'week',
-      limit: 3,
-    });
-
-    const top_posts = searchResults.slice(0, 3).map((post: any) => ({
-      title: post.title,
-      subreddit: `r/${post.subreddit.display_name}`,
-      score: post.score,
-      url: `https://reddit.com${post.permalink}`,
-    }));
-
-    return {
-      top_posts: top_posts.length > 0 ? top_posts : getFallbackRedditData(topic).top_posts,
-      sentiment: 'Positive',
-    };
-  } catch (error: unknown) {
-    console.error('Reddit API error:', error);
-    return getFallbackRedditData(topic);
-  }
-}
-
-function getFallbackRedditData(topic: string) {
-  return {
-    top_posts: [
-      { title: `Anyone else noticed ${topic} trending lately?`, subreddit: 'r/technology', score: 4520, url: '#' },
-      { title: `The truth about ${topic} - Discussion Thread`, subreddit: 'r/outoftheloop', score: 1240, url: '#' },
-      { title: `My experience with ${topic}`, subreddit: 'r/discussion', score: 890, url: '#' },
-    ],
-    sentiment: 'Positive',
-  };
-}
-
+/**
+ * Determines trend status based on interest over time data
+ * Compares recent 3 days average vs earlier 3 days average
+ */
 function determineTrendStatus(interestData: { date: string; value: number }[]): 'Exploding' | 'Rising' | 'Stable' | 'Declining' {
   if (interestData.length < 2) return 'Stable';
 
-  const recent = interestData.slice(-3);
-  const earlier = interestData.slice(0, 3);
+  const recent = interestData.slice(-3); // Last 3 days
+  const earlier = interestData.slice(0, 3); // First 3 days
 
   const recentAvg = recent.reduce((sum, d) => sum + d.value, 0) / recent.length;
   const earlierAvg = earlier.reduce((sum, d) => sum + d.value, 0) / earlier.length;
@@ -160,25 +129,29 @@ function determineTrendStatus(interestData: { date: string; value: number }[]): 
   return 'Stable';
 }
 
+/**
+ * Generates AI summary using OpenAI GPT-4
+ * Falls back to generic summary if OpenAI API key is not configured
+ */
 async function generateAISummary(
   topic: string,
   googleData: any,
-  redditData: any,
   status: string
 ): Promise<string> {
   try {
+    // If no OpenAI key, return generic summary
     if (!openai) {
-      return `Analysis of "${topic}" shows a ${status.toLowerCase()} trend pattern. Based on search volume data and social discussions, this topic has generated significant interest across multiple platforms over the past week.`;
+      return `Analysis of "${topic}" shows a ${status.toLowerCase()} trend pattern based on Google Trends data. Search interest has ${status === 'Exploding' || status === 'Rising' ? 'increased' : status === 'Declining' ? 'decreased' : 'remained stable'} over the past week, indicating ${status === 'Exploding' ? 'explosive' : status === 'Rising' ? 'growing' : status === 'Declining' ? 'declining' : 'steady'} public interest in this topic.`;
     }
 
-    const prompt = `You are a trend analysis expert. Analyze the following data for the topic "${topic}" and provide a concise 2-3 sentence summary explaining why it is trending.
+    // Generate AI-powered summary using OpenAI
+    const prompt = `You are a trend analysis expert. Analyze the following Google Trends data for the topic "${topic}" and provide a concise 2-3 sentence summary explaining the trend pattern.
 
 Trend Status: ${status}
 Google Trends Interest (last 7 days): ${googleData.interest_over_time.map((d: any) => `${d.date}: ${d.value}`).join(', ')}
-Reddit Top Posts: ${redditData.top_posts.map((p: any) => `"${p.title}" (${p.score} upvotes)`).join('; ')}
 Related Queries: ${googleData.related_queries.join(', ')}
 
-Provide a brief, insightful summary that explains the trend pattern and what's driving the interest.`;
+Provide a brief, insightful summary that explains why this trend pattern is occurring and what's driving the search interest.`;
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -190,6 +163,7 @@ Provide a brief, insightful summary that explains the trend pattern and what's d
     return response.choices[0].message.content?.trim() || 'Unable to generate summary.';
   } catch (error: unknown) {
     console.error('OpenAI API error:', error);
-    return `Analysis of "${topic}" indicates a ${status.toLowerCase()} trend based on recent search volume and social media engagement. The topic has seen notable discussion across platforms over the past week.`;
+    // Fallback to generic summary if OpenAI fails
+    return `Analysis of "${topic}" indicates a ${status.toLowerCase()} trend based on Google Trends search volume. The topic has shown ${status === 'Exploding' || status === 'Rising' ? 'increased' : status === 'Declining' ? 'decreased' : 'stable'} search interest over the past week.`;
   }
 }

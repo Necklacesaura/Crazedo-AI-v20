@@ -1,11 +1,9 @@
 import { TrendData } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { ArrowUpRight, Flame, Minus, ArrowDownRight, Twitter, Globe, MessageSquare, Share2, ExternalLink } from "lucide-react";
+import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 
 interface TrendDashboardProps {
   data: TrendData;
@@ -99,112 +97,75 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
         </Card>
       </motion.div>
 
-      {/* Data Tabs */}
+      {/* Google Trends Chart */}
       <motion.div variants={item}>
-        <Tabs defaultValue="google" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/30 p-1">
-            <TabsTrigger value="google" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary" data-testid="tab-google">
-              <Globe className="w-4 h-4 mr-2" /> Google Trends
-            </TabsTrigger>
-            <TabsTrigger value="reddit" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-500" data-testid="tab-reddit">
-              <MessageSquare className="w-4 h-4 mr-2" /> Reddit
-            </TabsTrigger>
-            <TabsTrigger value="twitter" className="data-[state=active]:bg-sky-500/20 data-[state=active]:text-sky-500" data-testid="tab-twitter">
-              <Twitter className="w-4 h-4 mr-2" /> Twitter / X
-            </TabsTrigger>
-          </TabsList>
+        <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+          <CardHeader>
+            <CardTitle>Google Trends - Interest Over Time (7 Days)</CardTitle>
+            <CardDescription>Real-time search volume data showing trend momentum</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data.sources.google.interest_over_time}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--card))', 
+                    borderColor: 'hsl(var(--border))', 
+                    borderRadius: '8px',
+                    padding: '12px'
+                  }}
+                  itemStyle={{ color: 'hsl(var(--primary))' }}
+                  labelStyle={{ color: 'hsl(var(--foreground))' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={3}
+                  dot={{ fill: 'hsl(var(--primary))', r: 5 }}
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-          <TabsContent value="google" className="mt-4">
-            <Card className="bg-card/40 backdrop-blur-sm border-white/5">
-              <CardHeader>
-                <CardTitle>Interest Over Time (7 Days)</CardTitle>
-                <CardDescription>Search volume data from Google Trends</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={data.sources.google.interest_over_time}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                    <XAxis 
-                      dataKey="date" 
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis 
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
-                      itemStyle={{ color: 'hsl(var(--primary))' }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="hsl(var(--primary))" 
-                      strokeWidth={3}
-                      dot={{ fill: 'hsl(var(--primary))', r: 4 }}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="reddit" className="mt-4">
-            <div className="grid gap-4">
-              {data.sources.reddit.top_posts.map((post, i) => (
-                <Card key={i} className="bg-card/40 backdrop-blur-sm border-white/5 hover:border-orange-500/30 transition-colors" data-testid={`card-reddit-post-${i}`}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between gap-4">
-                      <div>
-                        <p className="text-sm text-orange-500 font-medium mb-1">{post.subreddit}</p>
-                        <h4 className="font-semibold text-lg mb-2">{post.title}</h4>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">Score: <span className="text-foreground">{post.score.toLocaleString()}</span></span>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="icon" asChild>
-                        <a href={post.url} target="_blank" rel="noopener noreferrer" data-testid={`link-reddit-${i}`}>
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+      {/* Related Queries */}
+      <motion.div variants={item}>
+        <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+          <CardHeader>
+            <CardTitle>Related Search Queries</CardTitle>
+            <CardDescription>What people are also searching for</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {data.sources.google.related_queries.map((query, i) => (
+                <div 
+                  key={i} 
+                  className="p-3 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/50 transition-colors"
+                  data-testid={`query-${i}`}
+                >
+                  <span className="text-foreground font-medium">{query}</span>
+                </div>
               ))}
             </div>
-          </TabsContent>
-
-          <TabsContent value="twitter" className="mt-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              {data.sources.twitter ? (
-                data.sources.twitter.recent_tweets.map((tweet, i) => (
-                  <Card key={i} className="bg-card/40 backdrop-blur-sm border-white/5 hover:border-sky-500/30 transition-colors" data-testid={`card-twitter-${i}`}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="font-bold text-sky-500">{tweet.author}</span>
-                        <Twitter className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                      <p className="mb-3 text-sm leading-relaxed">{tweet.text}</p>
-                      <div className="text-xs text-muted-foreground">
-                        {tweet.likes} Likes
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <div className="col-span-2 p-8 text-center border border-dashed rounded-lg border-muted" data-testid="twitter-unavailable">
-                  <p className="text-muted-foreground">Twitter API key not configured.</p>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+          </CardContent>
+        </Card>
       </motion.div>
     </motion.div>
   );
