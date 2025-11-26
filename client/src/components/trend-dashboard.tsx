@@ -87,10 +87,20 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
+              {/* UPDATED: Made topics clickable - each badge now links to Google search for that topic */}
               {data.related_topics.map((topic, i) => (
-                <Badge key={i} variant="secondary" className="hover:bg-primary/20 cursor-pointer transition-colors" data-testid={`badge-related-${i}`}>
-                  {topic}
-                </Badge>
+                <a
+                  key={i}
+                  href={`https://www.google.com/search?q=${encodeURIComponent(topic)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block"
+                  data-testid={`badge-related-${i}`}
+                >
+                  <Badge variant="secondary" className="hover:bg-primary/50 cursor-pointer transition-all duration-200 hover:shadow-lg hover:shadow-primary/50 hover:scale-105">
+                    {topic}
+                  </Badge>
+                </a>
               ))}
             </div>
           </CardContent>
