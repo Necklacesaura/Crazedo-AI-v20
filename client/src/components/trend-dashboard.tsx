@@ -107,16 +107,16 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           <CardContent className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.sources.google.interest_over_time}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(162 90% 45% / 0.2)" opacity={0.5} />
                 <XAxis 
                   dataKey="date" 
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke="hsl(162 90% 45%)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis 
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke="hsl(162 90% 45%)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
