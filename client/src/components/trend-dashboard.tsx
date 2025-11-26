@@ -27,7 +27,7 @@ const item = {
 
 // UPDATED: Helper functions for trend analysis calculations
 function calculateTrendMetrics(interestData: { date: string; value: number }[]) {
-  if (interestData.length === 0) return { peakDay: '', peakValue: 0, lowestDay: '', lowestValue: 0, change7Day: 0, trendScore: 0, interpretation: '' };
+  if (interestData.length === 0) return { peakDay: '', peakValue: 0, lowestDay: '', lowestValue: 0, change7Day: 0, trendScore: 0, interpretation: '', todayValue: 0, avgValue: 0 };
   
   const values = interestData.map(d => d.value);
   const peakIndex = values.indexOf(Math.max(...values));
