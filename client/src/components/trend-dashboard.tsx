@@ -164,14 +164,18 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* UPDATED: Made all queries clickable - each opens Google search in a new tab */}
               {data.sources.google.related_queries.map((query, i) => (
-                <div 
-                  key={i} 
-                  className="p-3 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/50 transition-colors"
+                <a
+                  key={i}
+                  href={`https://www.google.com/search?q=${encodeURIComponent(query)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-3 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/50 hover:bg-muted/50 transition-all duration-200 hover:shadow-lg hover:shadow-primary/30 cursor-pointer"
                   data-testid={`query-${i}`}
                 >
                   <span className="text-foreground font-medium">{query}</span>
-                </div>
+                </a>
               ))}
             </div>
           </CardContent>
