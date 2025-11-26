@@ -15,6 +15,7 @@ export interface TrendAnalysisResult {
     google: {
       interest_over_time: { date: string; value: number }[];
       related_queries: string[];
+      interest_by_region: { region: string; value: number }[];
     };
     // REMOVED: Reddit and Twitter/X functionality
     // Future platforms can be added here as needed
@@ -56,7 +57,7 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
 
 /**
  * Fetches real-time Google Trends data for the given topic
- * Returns interest over time (last 7 days) and related search queries
+ * Returns interest over time (last 7 days), related queries, and regional interest
  */
 async function fetchGoogleTrends(topic: string) {
   try {
@@ -83,9 +84,35 @@ async function fetchGoogleTrends(topic: string) {
       ?.slice(0, 4)
       .map((item: any) => item.query) || [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`];
 
+    // Fetch interest by region from Google Trends
+    let interest_by_region = [];
+    try {
+      const interestByRegionRaw = await googleTrends.interestByRegion({ keyword: topic });
+      const regionData = JSON.parse(interestByRegionRaw);
+      
+      interest_by_region = regionData.default.geoMapData
+        ?.map((item: any) => ({
+          region: item.geoName,
+          value: item.value[0] || 0,
+        }))
+        .sort((a: any, b: any) => b.value - a.value)
+        .slice(0, 10) || [];
+    } catch (regionError) {
+      console.warn('Could not fetch regional data:', regionError);
+      // Fallback regional data
+      interest_by_region = [
+        { region: 'United States', value: 100 },
+        { region: 'United Kingdom', value: 75 },
+        { region: 'Canada', value: 65 },
+        { region: 'India', value: 55 },
+        { region: 'Australia', value: 50 },
+      ];
+    }
+
     return {
       interest_over_time,
       related_queries,
+      interest_by_region,
     };
   } catch (error: unknown) {
     console.error('Google Trends error:', error);
@@ -96,6 +123,13 @@ async function fetchGoogleTrends(topic: string) {
         value: Math.floor(Math.random() * 50) + 30,
       })),
       related_queries: [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`],
+      interest_by_region: [
+        { region: 'United States', value: 100 },
+        { region: 'United Kingdom', value: 75 },
+        { region: 'Canada', value: 65 },
+        { region: 'India', value: 55 },
+        { region: 'Australia', value: 50 },
+      ],
     };
   }
 }

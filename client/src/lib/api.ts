@@ -9,6 +9,7 @@ export interface TrendData {
     google: {
       interest_over_time: { date: string; value: number }[];
       related_queries: string[];
+      interest_by_region: { region: string; value: number }[];
     };
     // REMOVED: reddit and twitter fields
     // This version only supports Google Trends data

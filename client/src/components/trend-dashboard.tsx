@@ -261,6 +261,34 @@ export function TrendDashboard({ data }: TrendDashboardProps) {
         </Card>
       </motion.div>
 
+      {/* Global Search Heatmap */}
+      <motion.div variants={item}>
+        <Card className="bg-card/40 backdrop-blur-sm border-white/5">
+          <CardHeader>
+            <CardTitle>Global Search Heatmap</CardTitle>
+            <CardDescription>Top countries searching for this topic</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {data.sources.google.interest_by_region.map((region, i) => (
+                <div key={i} className="space-y-1" data-testid={`region-${i}`}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-foreground">{region.region}</span>
+                    <span className="text-sm text-muted-foreground">{region.value}/100</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-muted/30 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-primary to-cyan-400 rounded-full transition-all duration-300"
+                      style={{ width: `${region.value}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Related Queries */}
       <motion.div variants={item}>
         <Card className="bg-card/40 backdrop-blur-sm border-white/5">
