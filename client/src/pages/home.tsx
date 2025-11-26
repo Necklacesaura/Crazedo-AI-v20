@@ -130,71 +130,87 @@ export default function Home() {
               )}
 
               <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
-                <h3 className="font-display text-2xl mb-4 text-primary">Powered by Crazedo Trends</h3>
-                <div className="grid md:grid-cols-3 gap-3 text-left text-sm">
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">📊 Real-Time Data</h4>
-                    <p className="text-muted-foreground text-xs">7-day interest tracking</p>
+                <h3 className="font-display text-2xl mb-6 text-primary">Powered by Crazedo Trends</h3>
+                <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 text-left text-sm">
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 hover:border-blue-400/60 hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">📊</div>
+                    <h4 className="font-semibold mb-1 text-blue-100">Real-Time Data</h4>
+                    <p className="text-blue-200/60 text-xs">7-day interest tracking</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🤖 AI Insights</h4>
-                    <p className="text-muted-foreground text-xs">AI-powered summaries</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:border-purple-400/60 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🤖</div>
+                    <h4 className="font-semibold mb-1 text-purple-100">AI Insights</h4>
+                    <p className="text-purple-200/60 text-xs">AI-powered summaries</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🔥 Trend Status</h4>
-                    <p className="text-muted-foreground text-xs">Exploding/Rising/Declining</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 hover:border-red-400/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🔥</div>
+                    <h4 className="font-semibold mb-1 text-red-100">Trend Status</h4>
+                    <p className="text-red-200/60 text-xs">Exploding/Rising/Declining</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🔗 Related Topics</h4>
-                    <p className="text-muted-foreground text-xs">Discover connections</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 hover:border-green-400/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🔗</div>
+                    <h4 className="font-semibold mb-1 text-green-100">Related Topics</h4>
+                    <p className="text-green-200/60 text-xs">Discover connections</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">📈 Lifecycle Stages</h4>
-                    <p className="text-muted-foreground text-xs">Track trend maturity</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/30 hover:border-indigo-400/60 hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">📈</div>
+                    <h4 className="font-semibold mb-1 text-indigo-100">Lifecycle Stages</h4>
+                    <p className="text-indigo-200/60 text-xs">Track trend maturity</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">💰 Revenue Potential</h4>
-                    <p className="text-muted-foreground text-xs">Monetization scoring</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-yellow-500/10 to-amber-500/10 border border-yellow-500/30 hover:border-yellow-400/60 hover:shadow-[0_0_20px_rgba(234,179,8,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">💰</div>
+                    <h4 className="font-semibold mb-1 text-yellow-100">Revenue Potential</h4>
+                    <p className="text-yellow-200/60 text-xs">Monetization scoring</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🎯 Market Saturation</h4>
-                    <p className="text-muted-foreground text-xs">Competition analysis</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/10 border border-cyan-500/30 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🎯</div>
+                    <h4 className="font-semibold mb-1 text-cyan-100">Market Saturation</h4>
+                    <p className="text-cyan-200/60 text-xs">Competition analysis</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">📝 Content Ideas</h4>
-                    <p className="text-muted-foreground text-xs">AI-suggested topics</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-fuchsia-500/10 to-purple-500/10 border border-fuchsia-500/30 hover:border-fuchsia-400/60 hover:shadow-[0_0_20px_rgba(217,70,239,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">📝</div>
+                    <h4 className="font-semibold mb-1 text-fuchsia-100">Content Ideas</h4>
+                    <p className="text-fuchsia-200/60 text-xs">AI-suggested topics</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🔍 Seasonal Patterns</h4>
-                    <p className="text-muted-foreground text-xs">Yearly trend cycles</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-sky-500/10 to-blue-500/10 border border-sky-500/30 hover:border-sky-400/60 hover:shadow-[0_0_20px_rgba(14,165,233,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🔍</div>
+                    <h4 className="font-semibold mb-1 text-sky-100">Seasonal Patterns</h4>
+                    <p className="text-sky-200/60 text-xs">Yearly trend cycles</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">⚠️ Anomaly Detection</h4>
-                    <p className="text-muted-foreground text-xs">Unusual spikes/dips</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/30 hover:border-orange-400/60 hover:shadow-[0_0_20px_rgba(249,115,22,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">⚠️</div>
+                    <h4 className="font-semibold mb-1 text-orange-100">Anomaly Detection</h4>
+                    <p className="text-orange-200/60 text-xs">Unusual spikes/dips</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">📊 Risk Scoring</h4>
-                    <p className="text-muted-foreground text-xs">Volatility analysis</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-rose-500/10 to-pink-500/10 border border-rose-500/30 hover:border-rose-400/60 hover:shadow-[0_0_20px_rgba(244,63,94,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">📊</div>
+                    <h4 className="font-semibold mb-1 text-rose-100">Risk Scoring</h4>
+                    <p className="text-rose-200/60 text-xs">Volatility analysis</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🔮 7-Day Forecast</h4>
-                    <p className="text-muted-foreground text-xs">Trend predictions</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/30 hover:border-violet-400/60 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🔮</div>
+                    <h4 className="font-semibold mb-1 text-violet-100">7-Day Forecast</h4>
+                    <p className="text-violet-200/60 text-xs">Trend predictions</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🚀 Rising Queries</h4>
-                    <p className="text-muted-foreground text-xs">+250% breakouts</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-lime-500/10 to-green-500/10 border border-lime-500/30 hover:border-lime-400/60 hover:shadow-[0_0_20px_rgba(132,204,22,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🚀</div>
+                    <h4 className="font-semibold mb-1 text-lime-100">Rising Queries</h4>
+                    <p className="text-lime-200/60 text-xs">+250% breakouts</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">📥 Export Reports</h4>
-                    <p className="text-muted-foreground text-xs">PDF/TXT download</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-500/30 hover:border-teal-400/60 hover:shadow-[0_0_20px_rgba(20,184,166,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">📥</div>
+                    <h4 className="font-semibold mb-1 text-teal-100">Export Reports</h4>
+                    <p className="text-teal-200/60 text-xs">PDF/TXT download</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">❤️ Save Trends</h4>
-                    <p className="text-muted-foreground text-xs">Track favorites</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 border border-pink-500/30 hover:border-pink-400/60 hover:shadow-[0_0_20px_rgba(236,72,153,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">❤️</div>
+                    <h4 className="font-semibold mb-1 text-pink-100">Save Trends</h4>
+                    <p className="text-pink-200/60 text-xs">Track favorites</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-1 text-foreground">🔔 Trend Alerts</h4>
-                    <p className="text-muted-foreground text-xs">Smart notifications</p>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/30 hover:border-amber-400/60 hover:shadow-[0_0_20px_rgba(217,119,6,0.2)] transition-all group cursor-default">
+                    <div className="text-2xl mb-2 group-hover:scale-110 transition">🔔</div>
+                    <h4 className="font-semibold mb-1 text-amber-100">Trend Alerts</h4>
+                    <p className="text-amber-200/60 text-xs">Smart notifications</p>
                   </div>
                 </div>
               </div>
