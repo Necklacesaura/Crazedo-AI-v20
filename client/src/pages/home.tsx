@@ -130,7 +130,7 @@ export default function Home() {
               )}
 
               <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
-                <h3 className="font-display text-2xl mb-4 text-primary">Powered by Google Trends</h3>
+                <h3 className="font-display text-2xl mb-4 text-primary">Powered by Crazedo Trends</h3>
                 <div className="grid md:grid-cols-3 gap-3 text-left text-sm">
                   <div className="p-3 rounded-lg bg-muted/20">
                     <h4 className="font-semibold mb-1 text-foreground">📊 Real-Time Data</h4>
