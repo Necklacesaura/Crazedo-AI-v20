@@ -131,22 +131,70 @@ export default function Home() {
 
               <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
                 <h3 className="font-display text-2xl mb-4 text-primary">Powered by Google Trends</h3>
-                <div className="grid md:grid-cols-2 gap-4 text-left">
-                  <div className="p-4 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-2 text-foreground">📊 Real-Time Data</h4>
-                    <p className="text-muted-foreground text-sm">7-day search interest tracking with trend momentum analysis</p>
+                <div className="grid md:grid-cols-3 gap-3 text-left text-sm">
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">📊 Real-Time Data</h4>
+                    <p className="text-muted-foreground text-xs">7-day interest tracking</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-2 text-foreground">🤖 AI Insights</h4>
-                    <p className="text-muted-foreground text-sm">Optional AI-powered summaries explaining trend patterns</p>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🤖 AI Insights</h4>
+                    <p className="text-muted-foreground text-xs">AI-powered summaries</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-2 text-foreground">🔥 Trend Status</h4>
-                    <p className="text-muted-foreground text-sm">Automatic classification: Exploding, Rising, Stable, or Declining</p>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🔥 Trend Status</h4>
+                    <p className="text-muted-foreground text-xs">Exploding/Rising/Declining</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-muted/20">
-                    <h4 className="font-semibold mb-2 text-foreground">🔗 Related Topics</h4>
-                    <p className="text-muted-foreground text-sm">Discover what else people are searching for</p>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🔗 Related Topics</h4>
+                    <p className="text-muted-foreground text-xs">Discover connections</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">📈 Lifecycle Stages</h4>
+                    <p className="text-muted-foreground text-xs">Track trend maturity</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">💰 Revenue Potential</h4>
+                    <p className="text-muted-foreground text-xs">Monetization scoring</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🎯 Market Saturation</h4>
+                    <p className="text-muted-foreground text-xs">Competition analysis</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">📝 Content Ideas</h4>
+                    <p className="text-muted-foreground text-xs">AI-suggested topics</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🔍 Seasonal Patterns</h4>
+                    <p className="text-muted-foreground text-xs">Yearly trend cycles</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">⚠️ Anomaly Detection</h4>
+                    <p className="text-muted-foreground text-xs">Unusual spikes/dips</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">📊 Risk Scoring</h4>
+                    <p className="text-muted-foreground text-xs">Volatility analysis</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🔮 7-Day Forecast</h4>
+                    <p className="text-muted-foreground text-xs">Trend predictions</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🚀 Rising Queries</h4>
+                    <p className="text-muted-foreground text-xs">+250% breakouts</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">📥 Export Reports</h4>
+                    <p className="text-muted-foreground text-xs">PDF/TXT download</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">❤️ Save Trends</h4>
+                    <p className="text-muted-foreground text-xs">Track favorites</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/20">
+                    <h4 className="font-semibold mb-1 text-foreground">🔔 Trend Alerts</h4>
+                    <p className="text-muted-foreground text-xs">Smart notifications</p>
                   </div>
                 </div>
               </div>
