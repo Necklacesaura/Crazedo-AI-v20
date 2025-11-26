@@ -68,7 +68,7 @@ export default function Home() {
               CRAZEDO AI
             </h1>
             <p className="text-muted-foreground font-mono text-sm md:text-base tracking-widest uppercase">
-              Google Trends Intelligence System v2.0
+              Crazedo Trends Intelligence System v2.0
             </p>
           </motion.div>
           
