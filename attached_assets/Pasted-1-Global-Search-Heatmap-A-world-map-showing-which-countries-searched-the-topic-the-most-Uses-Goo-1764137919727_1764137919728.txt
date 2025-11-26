@@ -1,0 +1,129 @@
+1. Global Search Heatmap
+
+A world map showing which countries searched the topic the most.
+(Uses Google Trends “Interest by Region.”)
+
+Label examples:
+Top Countries
+Highest Interest Country
+Emerging Regions
+
+2. Top Rising Search Queries (Breakout List)
+
+A dynamic list showing fast-rising queries from the last 24 hours.
+
+Example rows:
+Keyword – Rising +250%
+Keyword – Breakout (exploding)
+
+This makes pages feel “Google Trends expert.”
+
+3. Sentiment Indicator (AI)
+
+A quick AI-generated sentiment score (0–100):
+
+Positive mentions
+Negative mentions
+Neutral buzz
+
+Example:
+Sentiment Score: 72/100
+Public tone is mostly positive.
+
+4. News Pulse (AI Summary of latest news)
+
+AI summarizes the last 3–5 news headlines related to the topic.
+
+Example:
+“Recent news mentions indicate increased coverage due to a new release/event.”
+
+This adds freshness for SEO.
+
+5. TikTok Viral Score
+
+AI evaluates TikTok search volume / hashtags.
+
+Example:
+TikTok Viral Score: 83/100
+Trending heavily on TikTok the past 48 hours.
+
+6. Google Search Forecast (AI)
+
+AI predicts next 7 days interest with a mini graph or simple text.
+
+Example:
+Forecast: +18% expected increase next week.
+
+7. Related People / Entities (AI Graph)
+
+A visual relation:
+Amazon → Jeff Bezos → Prime → Black Friday → AWS
+
+These “knowledge graph style” sections keep users engaged.
+
+8. Trend Risk Score (unique feature)
+
+Shows how unstable the topic is.
+
+0 = very stable
+100 = might crash tomorrow
+
+Example:
+Trend Risk Score: 22/100 (Very stable)
+
+Great for investors, creators, marketers.
+
+9. Social Media Buzz (AI)
+
+AI checks social trend strength:
+
+Instagram Buzz
+X Buzz
+YouTube Buzz
+TikTok Buzz
+
+Example:
+YouTube searches up 40%.
+
+10. Trend Category Classification
+
+Auto-tag the topic:
+
+Category:
+Technology → E-commerce → Amazon → Shopping Trends
+
+Helps internal linking & SEO.
+
+11. Audience Insights
+
+AI generates:
+
+Who is searching?
+Age group (estimated)
+Geography
+Search intent type: Transactional / Informational / News
+
+12. Search Intent Breakdown
+
+Example:
+
+43% — Transactional
+32% — Informational
+25% — News/Event
+
+This is rare and adds SEO value.
+
+13. Trend Difficulty Score
+
+How hard it is to rank for the keyword (0–100).
+
+Example:
+Difficulty: 78/100 (Very competitive)
+
+14. SEO Opportunity Score
+
+AI tells whether the keyword is worth targeting.
+
+Example:
+Opportunity: 91/100
+(High interest + low content saturation)
