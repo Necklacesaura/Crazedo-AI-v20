@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { analyzeTrend, getTrendingTopics } from "./services/trend-analyzer";
+import { analyzeTrend, getTrendingTopics, getTopTrendsWithVolume } from "./services/trend-analyzer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // POST /api/analyze - Main trend analysis endpoint
@@ -47,6 +47,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error fetching trending topics:', error);
       res.status(500).json({ 
         error: 'Failed to fetch trending topics',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/top-trends-weekly - Get top 10 trends with estimated weekly search volumes
+  // Returns: Top 10 trending searches with estimated weekly searches, interest scores, status, and related topics
+  // NOTE: Search volume estimates are calculated projections, not official Google data
+  app.get('/api/top-trends-weekly', async (req, res) => {
+    try {
+      const topTrends = await getTopTrendsWithVolume();
+      res.json({ 
+        trends: topTrends,
+        timestamp: new Date().toISOString(),
+        note: 'Estimated weekly searches are calculated projections based on Google Trends interest scores. These are not official Google search volume numbers.'
+      });
+    } catch (error) {
+      console.error('Error fetching top trends with volume:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch top trends',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }
