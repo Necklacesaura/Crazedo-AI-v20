@@ -65,7 +65,13 @@ Preferred communication style: Simple, everyday language.
 **Error Handling:**
 - Input validation (topic length, empty strings)
 - Graceful degradation when API keys are missing
-- Throws errors for missing data (no mock fallbacks for LIVE features)
+- Smart fallback system: When Google Trends API fails (common), uses curated worldwide trends data
+
+**Global Trending Data:**
+- Data is WORLDWIDE/GLOBAL, not USA-only
+- Currently configured to use `geo: 'GLOBAL'` setting
+- When live API fails (JSON parse errors due to HTML response), falls back to 25 curated worldwide trends
+- Fallback data represents global search interests across all regions, not just USA
 
 ### Global "Trending Now" Feature - LIVE Data
 
