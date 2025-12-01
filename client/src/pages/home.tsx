@@ -225,29 +225,40 @@ export default function Home() {
                     <h4 className="font-semibold mb-1 text-amber-100">Trend Alerts</h4>
                     <p className="text-amber-200/60 text-xs">Smart notifications</p>
                   </div>
-                  {trendingTopics.length > 0 && !hasSearched && (
-                    <div
-                      className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 hover:border-red-400/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all group cursor-default"
-                      data-testid="trending-feature"
-                    >
-                      <div className="text-2xl mb-2 group-hover:scale-110 transition">🔥</div>
-                      <h4 className="font-semibold mb-2 text-red-100">Top Trending</h4>
-                      <div className="space-y-1">
-                        {trendingTopics.slice(0, 3).map((trend, i) => (
+                </div>
+              </div>
+
+              {/* This Week's Top Trending - Bottom Section */}
+              {trendingTopics.length > 0 && !hasSearched && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  <Card className="bg-gradient-to-r from-red-500/10 to-orange-500/10 backdrop-blur-sm border-red-500/30">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-red-100"><Flame className="w-5 h-5" /> This Week's Top Trending</CardTitle>
+                      <CardDescription>Most searched topics right now</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                        {trendingTopics.map((trend, i) => (
                           <button
                             key={i}
                             onClick={() => handleQuickSearch(trend.topic)}
-                            className="text-xs text-red-200/80 hover:text-red-100 hover:font-semibold transition block text-left truncate"
-                            data-testid={`trending-item-${i}`}
+                            className="p-3 rounded-lg bg-red-500/10 border border-red-500/40 hover:border-red-400/60 hover:bg-red-500/20 transition text-left group"
+                            data-testid={`trending-topic-${i}`}
                           >
-                            #{i + 1} {trend.topic}
+                            <div className="text-xs font-bold text-red-300 mb-1">#{i + 1}</div>
+                            <div className="text-sm font-semibold text-red-100 group-hover:text-red-50 truncate">{trend.topic}</div>
+                            <div className="text-xs text-red-200/60">{trend.traffic}</div>
                           </button>
                         ))}
                       </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
             </motion.div>
           )}
         </div>
