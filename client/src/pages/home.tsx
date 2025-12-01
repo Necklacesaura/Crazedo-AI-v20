@@ -5,7 +5,7 @@ import { analyzeTrend, TrendData } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { X } from "lucide-react";
+import { X, Flame } from "lucide-react";
 
 interface SavedTrend {
   topic: string;
@@ -13,15 +13,27 @@ interface SavedTrend {
   status: string;
 }
 
+interface TrendingTopic {
+  topic: string;
+  traffic: string;
+}
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<TrendData | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
+  const [trendingTopics, setTrendingTopics] = useState<TrendingTopic[]>([]);
   
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
     setSavedTrends(saved);
+    
+    // Fetch trending topics
+    fetch('/api/trending')
+      .then(res => res.json())
+      .then(data => setTrendingTopics(data.trending || []))
+      .catch(err => console.error('Failed to fetch trending:', err));
   }, []);
 
   const handleSearch = async (term: string) => {
@@ -91,7 +103,39 @@ export default function Home() {
               transition={{ delay: 0.5 }}
               className="max-w-4xl mx-auto mt-20 space-y-8"
             >
-              {/* Trending Now Section */}
+              {/* This Week's Top Trending */}
+              {trendingTopics.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Card className="bg-gradient-to-r from-red-500/10 to-orange-500/10 backdrop-blur-sm border-red-500/30">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-red-100"><Flame className="w-5 h-5" /> This Week's Top Trending</CardTitle>
+                      <CardDescription>Most searched topics right now</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                        {trendingTopics.map((trend, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handleQuickSearch(trend.topic)}
+                            className="p-3 rounded-lg bg-red-500/10 border border-red-500/40 hover:border-red-400/60 hover:bg-red-500/20 transition text-left group"
+                            data-testid={`trending-topic-${i}`}
+                          >
+                            <div className="text-xs font-bold text-red-300 mb-1">#{i + 1}</div>
+                            <div className="text-sm font-semibold text-red-100 group-hover:text-red-50 truncate">{trend.topic}</div>
+                            <div className="text-xs text-red-200/60">{trend.traffic}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+
+              {/* Saved Trends Section */}
               {savedTrends.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

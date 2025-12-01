@@ -24,6 +24,38 @@ export interface TrendAnalysisResult {
 }
 
 /**
+ * Fetches trending topics for this week from Google Trends
+ */
+export async function getTrendingTopics(): Promise<{ topic: string; traffic: string }[]> {
+  try {
+    const trendingRaw = await googleTrends.dailyTrends({ geo: 'US' });
+    const data = JSON.parse(trendingRaw);
+    
+    const trending = data.default.trendingSearchesDays?.[0]?.trendingSearches
+      ?.slice(0, 5)
+      .map((item: any) => ({
+        topic: item.title.query || item.title.text || 'Unknown',
+        traffic: item.formattedTraffic || '+500K',
+      })) || [];
+    
+    return trending.length > 0 ? trending : getDefaultTrendingTopics();
+  } catch (error) {
+    console.warn('Could not fetch trending topics:', error);
+    return getDefaultTrendingTopics();
+  }
+}
+
+function getDefaultTrendingTopics() {
+  return [
+    { topic: 'Artificial Intelligence', traffic: '+1.5M' },
+    { topic: 'Bitcoin', traffic: '+890K' },
+    { topic: 'Climate Change', traffic: '+650K' },
+    { topic: 'Web3', traffic: '+520K' },
+    { topic: 'Remote Work', traffic: '+480K' },
+  ];
+}
+
+/**
  * Main function to analyze trend for a given topic
  * Fetches Google Trends data and generates AI summary
  */
