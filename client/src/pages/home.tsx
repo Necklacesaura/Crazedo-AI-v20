@@ -151,26 +151,6 @@ export default function Home() {
                 </motion.div>
               )}
 
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                onClick={() => navigate("/weekly-trends")}
-                className="w-full p-6 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all group cursor-pointer text-left"
-                data-testid="button-weekly-trends"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-semibold mb-1 text-emerald-100 group-hover:text-emerald-50 flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      View Weekly Trends Report
-                    </h4>
-                    <p className="text-emerald-200/60 text-xs">Top 10 trending searches with estimated weekly volumes</p>
-                  </div>
-                  <div className="text-2xl group-hover:scale-110 transition">📊</div>
-                </div>
-              </motion.button>
-
               <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
                 <h3 className="font-display text-2xl mb-6 text-primary">Powered by Crazedo Trends</h3>
                 <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 text-left text-sm">
@@ -256,6 +236,26 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                onClick={() => navigate("/weekly-trends")}
+                className="w-full p-6 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all group cursor-pointer text-left"
+                data-testid="button-weekly-trends"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold mb-1 text-emerald-100 group-hover:text-emerald-50 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      View Weekly Trends Report
+                    </h4>
+                    <p className="text-emerald-200/60 text-xs">Top 100 trending searches with estimated weekly volumes</p>
+                  </div>
+                  <div className="text-2xl group-hover:scale-110 transition">📊</div>
+                </div>
+              </motion.button>
 
               {/* This Week's Top Trending - Bottom Section */}
               {trendingTopics.length > 0 && !hasSearched && (
