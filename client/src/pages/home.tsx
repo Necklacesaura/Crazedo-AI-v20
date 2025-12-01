@@ -226,15 +226,25 @@ export default function Home() {
                     <p className="text-amber-200/60 text-xs">Smart notifications</p>
                   </div>
                   {trendingTopics.length > 0 && !hasSearched && (
-                    <button
-                      onClick={() => trendingTopics.length > 0 && handleQuickSearch(trendingTopics[0].topic)}
-                      className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 hover:border-red-400/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all group cursor-pointer text-left"
+                    <div
+                      className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 hover:border-red-400/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all group cursor-default"
                       data-testid="trending-feature"
                     >
                       <div className="text-2xl mb-2 group-hover:scale-110 transition">🔥</div>
-                      <h4 className="font-semibold mb-1 text-red-100">Top Trending</h4>
-                      <p className="text-red-200/60 text-xs">This week's hottest searches</p>
-                    </button>
+                      <h4 className="font-semibold mb-2 text-red-100">Top Trending</h4>
+                      <div className="space-y-1">
+                        {trendingTopics.slice(0, 3).map((trend, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handleQuickSearch(trend.topic)}
+                            className="text-xs text-red-200/80 hover:text-red-100 hover:font-semibold transition block text-left truncate"
+                            data-testid={`trending-item-${i}`}
+                          >
+                            #{i + 1} {trend.topic}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
