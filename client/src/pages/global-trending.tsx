@@ -119,7 +119,7 @@ export default function GlobalTrendingPage() {
               />
               <span className="text-xs font-mono text-emerald-400 uppercase">LIVE</span>
             </div>
-            <p className="text-cyan-300/70 font-light max-w-md">Real-time worldwide search trends powered by Google data</p>
+            <p className="text-cyan-300/70 font-light max-w-md">Real-time worldwide search trends Powered by Crazedo data</p>
           </motion.div>
 
           <div className="flex gap-2">
