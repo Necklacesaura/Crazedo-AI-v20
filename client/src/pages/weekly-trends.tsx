@@ -1,15 +1,31 @@
 import { useState, useEffect } from "react";
-import { getTopTrendsWithVolume, WeeklyTrend } from "@/lib/api";
+import { useLocation } from "wouter";
+import { getTopTrendsWithVolume, WeeklyTrend, analyzeTrend } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUpRight, ArrowDownRight, Minus, Flame, RefreshCw } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Minus, Flame, RefreshCw, ArrowRight } from "lucide-react";
 
 export default function WeeklyTrends() {
+  const [, navigate] = useLocation();
   const [trends, setTrends] = useState<WeeklyTrend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [analyzingTrend, setAnalyzingTrend] = useState<string | null>(null);
+
+  const handleTrendClick = async (trendName: string) => {
+    setAnalyzingTrend(trendName);
+    try {
+      await analyzeTrend(trendName);
+      // Store the trend in sessionStorage so home page can auto-search
+      sessionStorage.setItem('autoSearchTrend', trendName);
+      navigate('/');
+    } catch (error) {
+      toast.error(`Failed to analyze ${trendName}`);
+      setAnalyzingTrend(null);
+    }
+  };
 
   const fetchTrends = async () => {
     setIsLoading(true);
@@ -154,7 +170,13 @@ export default function WeeklyTrends() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * i }}
             >
-              <Card className="bg-card/40 backdrop-blur-sm border-primary/20 h-full hover:border-primary/40 transition" data-testid={`trend-card-${i}`}>
+              <button
+                onClick={() => handleTrendClick(trend.trend)}
+                disabled={analyzingTrend === trend.trend}
+                className="w-full h-full text-left"
+                data-testid={`trend-card-button-${i}`}
+              >
+                <Card className="bg-card/40 backdrop-blur-sm border-primary/20 h-full hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20 transition cursor-pointer group" data-testid={`trend-card-${i}`}>
                 <CardHeader>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
@@ -225,8 +247,15 @@ export default function WeeklyTrends() {
                       </div>
                     </div>
                   )}
+
+                  {/* Click to Analyze */}
+                  <div className="flex items-center gap-2 text-primary text-xs font-mono opacity-0 group-hover:opacity-100 transition mt-2">
+                    <span>Click to analyze</span>
+                    <ArrowRight className={`w-3 h-3 ${analyzingTrend === trend.trend ? 'animate-spin' : ''}`} />
+                  </div>
                 </CardContent>
               </Card>
+              </button>
             </motion.div>
           ))}
         </motion.div>

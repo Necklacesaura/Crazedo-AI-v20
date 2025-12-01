@@ -36,6 +36,13 @@ export default function Home() {
       .then(res => res.json())
       .then(data => setTrendingTopics(data.trending || []))
       .catch(err => console.error('Failed to fetch trending:', err));
+
+    // Check if there's an auto-search trend from weekly trends page
+    const autoSearchTrend = sessionStorage.getItem('autoSearchTrend');
+    if (autoSearchTrend) {
+      sessionStorage.removeItem('autoSearchTrend');
+      handleSearch(autoSearchTrend);
+    }
   }, []);
 
   const handleSearch = async (term: string) => {
