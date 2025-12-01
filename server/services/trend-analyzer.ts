@@ -559,6 +559,16 @@ function getDefaultGlobalTrends() {
     { rank: 13, query: 'Gaming News', interest_score: 50, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Technology', sparkline: [48, 49, 50, 50, 50, 50, 50], timestamp: new Date().toISOString() },
     { rank: 14, query: 'Travel Deals', interest_score: 48, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Lifestyle', sparkline: [46, 47, 48, 48, 48, 48, 48], timestamp: new Date().toISOString() },
     { rank: 15, query: 'Weather Forecast', interest_score: 45, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'News', sparkline: [43, 44, 45, 45, 45, 45, 45], timestamp: new Date().toISOString() },
+    { rank: 16, query: 'World Cup 2026', interest_score: 85, volume_estimate: '5M–10M', status: 'Rising' as const, category: 'Sports', sparkline: [72, 75, 78, 80, 82, 84, 85], timestamp: new Date().toISOString() },
+    { rank: 17, query: 'Netflix New Releases', interest_score: 80, volume_estimate: '5M–10M', status: 'Rising' as const, category: 'Entertainment', sparkline: [68, 71, 74, 76, 78, 79, 80], timestamp: new Date().toISOString() },
+    { rank: 18, query: 'Apple Event 2025', interest_score: 77, volume_estimate: '5M–10M', status: 'Rising' as const, category: 'Technology', sparkline: [65, 68, 71, 74, 76, 77, 77], timestamp: new Date().toISOString() },
+    { rank: 19, query: 'Elon Musk News', interest_score: 70, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Business', sparkline: [65, 67, 68, 69, 70, 70, 70], timestamp: new Date().toISOString() },
+    { rank: 20, query: 'Olympic Games', interest_score: 68, volume_estimate: '1M–5M', status: 'Rising' as const, category: 'Sports', sparkline: [55, 58, 62, 65, 67, 68, 68], timestamp: new Date().toISOString() },
+    { rank: 21, query: 'ChatGPT Updates', interest_score: 63, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Technology', sparkline: [60, 61, 62, 63, 63, 63, 63], timestamp: new Date().toISOString() },
+    { rank: 22, query: 'Beyonce Concert', interest_score: 60, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Entertainment', sparkline: [58, 59, 60, 60, 60, 60, 60], timestamp: new Date().toISOString() },
+    { rank: 23, query: 'Stock Tips', interest_score: 56, volume_estimate: '500K–1M', status: 'Declining' as const, category: 'Business', sparkline: [62, 60, 58, 56, 56, 56, 56], timestamp: new Date().toISOString() },
+    { rank: 24, query: 'Recipe Ideas', interest_score: 52, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Lifestyle', sparkline: [50, 51, 52, 52, 52, 52, 52], timestamp: new Date().toISOString() },
+    { rank: 25, query: 'Skincare Routine', interest_score: 48, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Lifestyle', sparkline: [46, 47, 48, 48, 48, 48, 48], timestamp: new Date().toISOString() },
   ];
 }
 
