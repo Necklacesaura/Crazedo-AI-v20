@@ -6,12 +6,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import WeeklyTrends from "@/pages/weekly-trends";
+import GlobalTrending from "@/pages/global-trending";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/weekly-trends" component={WeeklyTrends} />
+      <Route path="/global-trending" component={GlobalTrending} />
       <Route component={NotFound} />
     </Switch>
   );
