@@ -438,39 +438,6 @@ ${seasonalPattern}
         </Card>
       </motion.div>
 
-      {/* #1 Google Search Trend This Week */}
-      <motion.div variants={item}>
-        <Card className="bg-gradient-to-br from-cyan-500/15 to-blue-500/15 backdrop-blur-sm border-cyan-500/50">
-          <CardHeader>
-            <CardTitle className="text-2xl text-cyan-100">🔝 #1 Google Search Trend This Week</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="text-4xl font-display font-bold text-cyan-400">{data.topic}</div>
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div className="bg-black/20 rounded-lg p-3">
-                  <div className="text-cyan-200 text-xs mb-1">PEAK SEARCH VOLUME</div>
-                  <div className="text-2xl font-bold text-cyan-100">{metrics.peakValue}</div>
-                </div>
-                <div className="bg-black/20 rounded-lg p-3">
-                  <div className="text-cyan-200 text-xs mb-1">CURRENT VOLUME</div>
-                  <div className="text-2xl font-bold text-cyan-100">{metrics.todayValue}</div>
-                </div>
-                <div className="bg-black/20 rounded-lg p-3">
-                  <div className="text-cyan-200 text-xs mb-1">7-DAY TREND</div>
-                  <div className={`text-2xl font-bold ${metrics.change7Day > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {metrics.change7Day > 0 ? '+' : ''}{metrics.change7Day}%
-                  </div>
-                </div>
-              </div>
-              <div className="pt-2 border-t border-cyan-500/30">
-                <p className="text-cyan-200 text-sm"><strong>Status:</strong> {data.status} • <strong>Top Query:</strong> {data.sources.google.related_queries[0] || 'N/A'}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
       {/* Advanced Features Section */}
       <div className="grid md:grid-cols-3 gap-6">
         {/* Trend Lifecycle Stage */}
