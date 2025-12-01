@@ -273,16 +273,19 @@ export default function Home() {
                   <Card className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-sm border-cyan-500/30">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-cyan-100"><Globe className="w-5 h-5" /> 🌍 Global Most Searched On Google – This Week</CardTitle>
-                      <CardDescription>Top trending searches worldwide</CardDescription>
+                      <CardDescription>Real-time worldwide trending searches with interest metrics</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full text-xs md:text-sm">
                           <thead>
                             <tr className="border-b border-cyan-500/30">
                               <th className="text-left py-2 px-2 text-cyan-300 font-semibold">#</th>
-                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Query</th>
+                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Trend</th>
+                              <th className="text-center py-2 px-2 text-cyan-300 font-semibold">Interest</th>
                               <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Volume</th>
+                              <th className="text-center py-2 px-2 text-cyan-300 font-semibold">Status</th>
+                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Sparkline</th>
                               <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Category</th>
                             </tr>
                           </thead>
@@ -293,15 +296,38 @@ export default function Home() {
                                 <td className="py-3 px-2">
                                   <button
                                     onClick={() => handleQuickSearch(trend.query)}
-                                    className="text-cyan-100 hover:text-cyan-50 hover:underline transition text-left"
+                                    className="text-cyan-100 hover:text-cyan-50 hover:underline transition text-left font-medium truncate max-w-[150px]"
                                     data-testid={`global-trend-${i}`}
                                   >
                                     {trend.query}
                                   </button>
                                 </td>
-                                <td className="py-3 px-2 text-cyan-200/70 font-medium">{trend.volume}</td>
+                                <td className="py-3 px-2 text-center text-cyan-300 font-semibold">{trend.interest_score}</td>
+                                <td className="py-3 px-2 text-cyan-200/70 font-medium text-xs">{trend.volume_estimate}</td>
+                                <td className="py-3 px-2 text-center">
+                                  <span className={`inline-block px-2 py-1 rounded text-xs font-bold ${
+                                    trend.status === 'Exploding' ? 'bg-red-500/30 text-red-200' :
+                                    trend.status === 'Rising' ? 'bg-orange-500/30 text-orange-200' :
+                                    trend.status === 'Stable' ? 'bg-blue-500/30 text-blue-200' :
+                                    'bg-gray-500/30 text-gray-200'
+                                  }`}>
+                                    {trend.status.charAt(0)}
+                                  </span>
+                                </td>
                                 <td className="py-3 px-2">
-                                  <span className="inline-block px-3 py-1 bg-cyan-500/20 border border-cyan-500/40 rounded-full text-xs text-cyan-200">
+                                  <div className="flex gap-0.5 h-5">
+                                    {trend.sparkline.slice(-7).map((val, j) => (
+                                      <div
+                                        key={j}
+                                        className="flex-1 bg-gradient-to-t from-cyan-500 to-cyan-300 rounded-sm opacity-70 hover:opacity-100 transition"
+                                        style={{ height: `${(val / 100) * 100}%`, minHeight: '2px' }}
+                                        title={`Day ${j + 1}: ${val}`}
+                                      />
+                                    ))}
+                                  </div>
+                                </td>
+                                <td className="py-3 px-2">
+                                  <span className="inline-block px-2 py-1 bg-cyan-500/20 border border-cyan-500/40 rounded-full text-xs text-cyan-200 whitespace-nowrap">
                                     {trend.category}
                                   </span>
                                 </td>
@@ -309,6 +335,9 @@ export default function Home() {
                             ))}
                           </tbody>
                         </table>
+                      </div>
+                      <div className="mt-3 text-xs text-cyan-300/60">
+                        ✓ Live data • Last updated: {globalTrends[0]?.timestamp ? new Date(globalTrends[0].timestamp).toLocaleTimeString() : 'N/A'}
                       </div>
                     </CardContent>
                   </Card>
