@@ -89,39 +89,6 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* This Week's Top Trending - Featured Section */}
-        {trendingTopics.length > 0 && !hasSearched && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="w-full max-w-4xl mx-auto mb-16"
-          >
-            <Card className="bg-gradient-to-r from-cyan-500/15 via-blue-500/15 to-cyan-500/15 backdrop-blur-sm border-cyan-500/40">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-cyan-100"><Flame className="w-5 h-5" /> This Week's Top Trending</CardTitle>
-                <CardDescription>Most searched topics right now</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                  {trendingTopics.map((trend, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleQuickSearch(trend.topic)}
-                      className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/40 hover:border-cyan-400/60 hover:bg-cyan-500/20 transition text-left group"
-                      data-testid={`trending-topic-${i}`}
-                    >
-                      <div className="text-xs font-bold text-cyan-300 mb-1">#{i + 1}</div>
-                      <div className="text-sm font-semibold text-cyan-100 group-hover:text-cyan-50 truncate">{trend.topic}</div>
-                      <div className="text-xs text-cyan-200/60">{trend.traffic}</div>
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
         {/* Results Area */}
         <div className="flex-1 w-full">
           {data && !isLoading && (
@@ -258,6 +225,17 @@ export default function Home() {
                     <h4 className="font-semibold mb-1 text-amber-100">Trend Alerts</h4>
                     <p className="text-amber-200/60 text-xs">Smart notifications</p>
                   </div>
+                  {trendingTopics.length > 0 && !hasSearched && (
+                    <button
+                      onClick={() => trendingTopics.length > 0 && handleQuickSearch(trendingTopics[0].topic)}
+                      className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 hover:border-red-400/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all group cursor-pointer text-left"
+                      data-testid="trending-feature"
+                    >
+                      <div className="text-2xl mb-2 group-hover:scale-110 transition">🔥</div>
+                      <h4 className="font-semibold mb-1 text-red-100">Top Trending</h4>
+                      <p className="text-red-200/60 text-xs">This week's hottest searches</p>
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
