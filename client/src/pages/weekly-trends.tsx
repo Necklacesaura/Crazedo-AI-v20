@@ -113,7 +113,7 @@ export default function WeeklyTrends() {
               Most Searched Topics on Google This Week
             </h1>
             <p className="text-muted-foreground font-mono text-sm">
-              Top 100 searches with estimated weekly volumes
+              Top 110 searches with estimated weekly volumes
             </p>
           </motion.div>
 
