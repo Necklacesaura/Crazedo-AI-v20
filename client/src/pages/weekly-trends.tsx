@@ -110,11 +110,8 @@ export default function WeeklyTrends() {
             className="space-y-2"
           >
             <h1 className="text-3xl md:text-4xl font-display font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white">
-              Most Searched Topics on Google This Week
+              Top Searches with Estimated Weekly Volumes
             </h1>
-            <p className="text-muted-foreground font-mono text-sm">
-              Top 110 searches with estimated weekly volumes
-            </p>
           </motion.div>
 
           <motion.button
