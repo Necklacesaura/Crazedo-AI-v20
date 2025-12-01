@@ -478,9 +478,9 @@ export async function getGlobalTrendingNow(): Promise<Array<{
       return '100K–500K';
     };
 
-    // Process top 25 trends - batch for efficiency
+    // Process top 50 trends - batch for efficiency
     const globalTrends = await Promise.all(
-      trendingSearches.slice(0, 25).map(async (item: any, index: number) => {
+      trendingSearches.slice(0, 50).map(async (item: any, index: number) => {
         const query = item.title.query || item.title.text || `Trend ${index + 1}`;
         let interestScore = 75 + Math.floor(Math.random() * 25);
         let sparkline: number[] = [65, 70, 75, 78, 72, 80, 85];
@@ -564,6 +564,31 @@ function getDefaultGlobalTrends() {
     { rank: 23, query: 'Stock Tips', interest_score: 56, volume_estimate: '500K–1M', status: 'Declining' as const, category: 'Business', sparkline: [62, 60, 58, 56, 56, 56, 56], timestamp: new Date().toISOString() },
     { rank: 24, query: 'Recipe Ideas', interest_score: 52, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Lifestyle', sparkline: [50, 51, 52, 52, 52, 52, 52], timestamp: new Date().toISOString() },
     { rank: 25, query: 'Skincare Routine', interest_score: 48, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Lifestyle', sparkline: [46, 47, 48, 48, 48, 48, 48], timestamp: new Date().toISOString() },
+    { rank: 26, query: 'Amazon Deals', interest_score: 75, volume_estimate: '5M–10M', status: 'Rising' as const, category: 'Shopping', sparkline: [62, 65, 68, 71, 73, 75, 75], timestamp: new Date().toISOString() },
+    { rank: 27, query: 'Donald Trump', interest_score: 72, volume_estimate: '1M–5M', status: 'Rising' as const, category: 'News', sparkline: [58, 62, 65, 68, 70, 72, 72], timestamp: new Date().toISOString() },
+    { rank: 28, query: 'Spotify Wrapped', interest_score: 68, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Entertainment', sparkline: [65, 66, 67, 68, 68, 68, 68], timestamp: new Date().toISOString() },
+    { rank: 29, query: 'GPT-4 Features', interest_score: 65, volume_estimate: '1M–5M', status: 'Rising' as const, category: 'Technology', sparkline: [55, 58, 61, 63, 64, 65, 65], timestamp: new Date().toISOString() },
+    { rank: 30, query: 'Tesla Stock', interest_score: 62, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Business', sparkline: [60, 61, 62, 62, 62, 62, 62], timestamp: new Date().toISOString() },
+    { rank: 31, query: 'WWE Wrestling', interest_score: 60, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Sports', sparkline: [58, 59, 60, 60, 60, 60, 60], timestamp: new Date().toISOString() },
+    { rank: 32, query: 'Instagram Trends', interest_score: 58, volume_estimate: '1M–5M', status: 'Stable' as const, category: 'Lifestyle', sparkline: [56, 57, 58, 58, 58, 58, 58], timestamp: new Date().toISOString() },
+    { rank: 33, query: 'Cybersecurity News', interest_score: 55, volume_estimate: '500K–1M', status: 'Rising' as const, category: 'Technology', sparkline: [48, 50, 52, 54, 55, 55, 55], timestamp: new Date().toISOString() },
+    { rank: 34, query: 'Metaverse Updates', interest_score: 52, volume_estimate: '500K–1M', status: 'Declining' as const, category: 'Technology', sparkline: [60, 58, 55, 52, 52, 52, 52], timestamp: new Date().toISOString() },
+    { rank: 35, query: 'Climate Change', interest_score: 50, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'News', sparkline: [48, 49, 50, 50, 50, 50, 50], timestamp: new Date().toISOString() },
+    { rank: 36, query: 'Fitness Challenges', interest_score: 48, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Health', sparkline: [46, 47, 48, 48, 48, 48, 48], timestamp: new Date().toISOString() },
+    { rank: 37, query: 'Indie Games', interest_score: 46, volume_estimate: '500K–1M', status: 'Rising' as const, category: 'Technology', sparkline: [40, 42, 44, 46, 46, 46, 46], timestamp: new Date().toISOString() },
+    { rank: 38, query: 'Remote Work Tips', interest_score: 44, volume_estimate: '500K–1M', status: 'Stable' as const, category: 'Business', sparkline: [42, 43, 44, 44, 44, 44, 44], timestamp: new Date().toISOString() },
+    { rank: 39, query: 'Vacation Ideas', interest_score: 42, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Lifestyle', sparkline: [40, 41, 42, 42, 42, 42, 42], timestamp: new Date().toISOString() },
+    { rank: 40, query: 'Home Security', interest_score: 40, volume_estimate: '100K–500K', status: 'Rising' as const, category: 'Lifestyle', sparkline: [35, 37, 39, 40, 40, 40, 40], timestamp: new Date().toISOString() },
+    { rank: 41, query: 'Vegan Recipes', interest_score: 38, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Lifestyle', sparkline: [36, 37, 38, 38, 38, 38, 38], timestamp: new Date().toISOString() },
+    { rank: 42, query: 'Machine Learning', interest_score: 36, volume_estimate: '100K–500K', status: 'Rising' as const, category: 'Technology', sparkline: [30, 32, 34, 36, 36, 36, 36], timestamp: new Date().toISOString() },
+    { rank: 43, query: 'Meditation Apps', interest_score: 34, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Health', sparkline: [32, 33, 34, 34, 34, 34, 34], timestamp: new Date().toISOString() },
+    { rank: 44, query: 'Podcast Reviews', interest_score: 32, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Entertainment', sparkline: [30, 31, 32, 32, 32, 32, 32], timestamp: new Date().toISOString() },
+    { rank: 45, query: 'Solar Energy', interest_score: 30, volume_estimate: '100K–500K', status: 'Rising' as const, category: 'Technology', sparkline: [24, 26, 28, 30, 30, 30, 30], timestamp: new Date().toISOString() },
+    { rank: 46, query: 'Anime Releases', interest_score: 28, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Entertainment', sparkline: [26, 27, 28, 28, 28, 28, 28], timestamp: new Date().toISOString() },
+    { rank: 47, query: 'Coding Tutorials', interest_score: 26, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Technology', sparkline: [24, 25, 26, 26, 26, 26, 26], timestamp: new Date().toISOString() },
+    { rank: 48, query: 'Tea Culture', interest_score: 24, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Lifestyle', sparkline: [22, 23, 24, 24, 24, 24, 24], timestamp: new Date().toISOString() },
+    { rank: 49, query: 'Space Exploration', interest_score: 22, volume_estimate: '100K–500K', status: 'Rising' as const, category: 'News', sparkline: [18, 20, 22, 22, 22, 22, 22], timestamp: new Date().toISOString() },
+    { rank: 50, query: 'Blockchain Tech', interest_score: 20, volume_estimate: '100K–500K', status: 'Stable' as const, category: 'Technology', sparkline: [18, 19, 20, 20, 20, 20, 20], timestamp: new Date().toISOString() },
   ];
 }
 
