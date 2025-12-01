@@ -56,7 +56,8 @@ function getDefaultTrendingTopics() {
 }
 
 /**
- * Fetches top 50 trending topics with estimated weekly search volumes
+ * Fetches top 100 most searched topics on Google with estimated weekly search volumes
+ * Includes diverse topics: tech, entertainment, news, sports, lifestyle, business, health, etc.
  * 
  * HOW VOLUME ESTIMATION WORKS:
  * - Google Trends provides interest scores on a 0-100 scale (not actual search volumes)
@@ -80,9 +81,9 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
     
     const trendingSearches = data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
     
-    // Process top 50 trending topics
+    // Process top 100 trending topics
     const topTrends = await Promise.all(
-      trendingSearches.slice(0, 50).map(async (item: any, index: number) => {
+      trendingSearches.slice(0, 100).map(async (item: any, index: number) => {
         const trendName = item.title.query || item.title.text || 'Unknown';
         
         try {
@@ -164,53 +165,94 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
 function getDefaultTopTrends() {
   return [
     { trend: 'Artificial Intelligence', estimated_weekly_searches: 1100000, interest_score: 92, status: 'Exploding' as const, related_topics: ['ChatGPT', 'Machine Learning', 'AI Tools'] },
+    { trend: 'Taylor Swift', estimated_weekly_searches: 950000, interest_score: 79, status: 'Exploding' as const, related_topics: ['Eras Tour', 'Taylor Swift News', 'Music'] },
     { trend: 'Bitcoin', estimated_weekly_searches: 890000, interest_score: 74, status: 'Rising' as const, related_topics: ['Cryptocurrency', 'Crypto News', 'BTC Price'] },
+    { trend: 'Donald Trump', estimated_weekly_searches: 850000, interest_score: 71, status: 'Stable' as const, related_topics: ['Elections', 'News', 'Politics'] },
     { trend: 'Climate Change', estimated_weekly_searches: 650000, interest_score: 54, status: 'Stable' as const, related_topics: ['Global Warming', 'Renewable Energy', 'COP28'] },
+    { trend: 'ChatGPT', estimated_weekly_searches: 620000, interest_score: 52, status: 'Rising' as const, related_topics: ['OpenAI', 'AI Chat', 'How to Use'] },
+    { trend: 'NBA', estimated_weekly_searches: 580000, interest_score: 48, status: 'Stable' as const, related_topics: ['Basketball', 'LeBron James', 'Lakers'] },
     { trend: 'Web3', estimated_weekly_searches: 520000, interest_score: 43, status: 'Stable' as const, related_topics: ['Blockchain', 'NFT', 'Decentralized'] },
+    { trend: 'World Cup 2026', estimated_weekly_searches: 510000, interest_score: 43, status: 'Rising' as const, related_topics: ['Soccer', 'Football', 'Sports'] },
     { trend: 'Remote Work', estimated_weekly_searches: 480000, interest_score: 40, status: 'Stable' as const, related_topics: ['Work from Home', 'Hybrid Work', 'Telecommute'] },
+    { trend: 'Instagram', estimated_weekly_searches: 460000, interest_score: 38, status: 'Stable' as const, related_topics: ['Social Media', 'Meta', 'Updates'] },
     { trend: 'Quantum Computing', estimated_weekly_searches: 420000, interest_score: 35, status: 'Rising' as const, related_topics: ['Quantum Technology', 'Computing', 'Physics'] },
+    { trend: 'Inflation', estimated_weekly_searches: 410000, interest_score: 34, status: 'Stable' as const, related_topics: ['Economy', 'Prices', 'Finance'] },
     { trend: 'Space Exploration', estimated_weekly_searches: 380000, interest_score: 32, status: 'Exploding' as const, related_topics: ['SpaceX', 'NASA', 'Moon'] },
+    { trend: 'Tom Cruise', estimated_weekly_searches: 360000, interest_score: 30, status: 'Rising' as const, related_topics: ['Movies', 'Top Gun', 'Hollywood'] },
     { trend: 'Cybersecurity', estimated_weekly_searches: 350000, interest_score: 29, status: 'Rising' as const, related_topics: ['Data Protection', 'Hacking', 'Security'] },
+    { trend: 'Netflix', estimated_weekly_searches: 340000, interest_score: 28, status: 'Stable' as const, related_topics: ['Streaming', 'Shows', 'Movies'] },
     { trend: 'Renewable Energy', estimated_weekly_searches: 320000, interest_score: 27, status: 'Stable' as const, related_topics: ['Solar', 'Wind Power', 'Green Energy'] },
+    { trend: 'Olympics 2024', estimated_weekly_searches: 310000, interest_score: 26, status: 'Stable' as const, related_topics: ['Paris', 'Sports', 'Games'] },
     { trend: 'Virtual Reality', estimated_weekly_searches: 280000, interest_score: 23, status: 'Stable' as const, related_topics: ['VR Headsets', 'Metaverse', 'AR Technology'] },
+    { trend: 'Fitness Trends', estimated_weekly_searches: 270000, interest_score: 23, status: 'Rising' as const, related_topics: ['Gym', 'Health', 'Exercise'] },
     { trend: 'Machine Learning', estimated_weekly_searches: 265000, interest_score: 22, status: 'Rising' as const, related_topics: ['Deep Learning', 'Neural Networks', 'AI'] },
+    { trend: 'Beyonce', estimated_weekly_searches: 260000, interest_score: 22, status: 'Exploding' as const, related_topics: ['Renaisance Tour', 'Music', 'Celebrity'] },
     { trend: 'Cryptocurrency', estimated_weekly_searches: 250000, interest_score: 21, status: 'Stable' as const, related_topics: ['Ethereum', 'DeFi', 'Blockchain'] },
-    { trend: 'Artificial Intelligence Jobs', estimated_weekly_searches: 240000, interest_score: 20, status: 'Rising' as const, related_topics: ['AI Career', 'Tech Jobs', 'AI Training'] },
+    { trend: 'Gaming News', estimated_weekly_searches: 245000, interest_score: 20, status: 'Rising' as const, related_topics: ['PS5', 'Xbox', 'Games'] },
+    { trend: 'Fashion Week', estimated_weekly_searches: 240000, interest_score: 20, status: 'Stable' as const, related_topics: ['Style', 'Designers', 'Clothing'] },
+    { trend: 'AI Jobs', estimated_weekly_searches: 235000, interest_score: 20, status: 'Rising' as const, related_topics: ['Tech Jobs', 'Career', 'AI Training'] },
+    { trend: 'COVID-19', estimated_weekly_searches: 230000, interest_score: 19, status: 'Stable' as const, related_topics: ['Pandemic', 'Health', 'Vaccines'] },
     { trend: 'Metaverse', estimated_weekly_searches: 225000, interest_score: 19, status: 'Stable' as const, related_topics: ['Virtual Worlds', 'NFT', 'Web3'] },
+    { trend: 'Stock Market', estimated_weekly_searches: 220000, interest_score: 18, status: 'Stable' as const, related_topics: ['Trading', 'Finance', 'Investing'] },
     { trend: 'Electric Vehicles', estimated_weekly_searches: 210000, interest_score: 18, status: 'Rising' as const, related_topics: ['Tesla', 'EV Charging', 'Sustainability'] },
+    { trend: 'Celebrity News', estimated_weekly_searches: 205000, interest_score: 17, status: 'Stable' as const, related_topics: ['Gossip', 'Entertainment', 'Hollywood'] },
     { trend: 'Gene Therapy', estimated_weekly_searches: 195000, interest_score: 17, status: 'Rising' as const, related_topics: ['Genetic Engineering', 'Medicine', 'Biotech'] },
+    { trend: 'Elon Musk', estimated_weekly_searches: 190000, interest_score: 16, status: 'Rising' as const, related_topics: ['SpaceX', 'Tesla', 'Twitter'] },
+    { trend: 'Recipe Ideas', estimated_weekly_searches: 185000, interest_score: 15, status: 'Stable' as const, related_topics: ['Cooking', 'Food', 'Recipes'] },
     { trend: 'NFT Art', estimated_weekly_searches: 180000, interest_score: 15, status: 'Declining' as const, related_topics: ['Digital Art', 'Blockchain', 'Crypto'] },
     { trend: '5G Technology', estimated_weekly_searches: 175000, interest_score: 15, status: 'Stable' as const, related_topics: ['Mobile Networks', 'Telecommunications', 'Speed'] },
+    { trend: 'Football Transfer News', estimated_weekly_searches: 172000, interest_score: 14, status: 'Rising' as const, related_topics: ['Soccer', 'Sports', 'Players'] },
     { trend: 'Data Science', estimated_weekly_searches: 170000, interest_score: 14, status: 'Rising' as const, related_topics: ['Analytics', 'Big Data', 'Python'] },
+    { trend: 'Home Renovation', estimated_weekly_searches: 168000, interest_score: 14, status: 'Stable' as const, related_topics: ['Interior Design', 'DIY', 'Decor'] },
     { trend: 'Sustainable Fashion', estimated_weekly_searches: 160000, interest_score: 13, status: 'Rising' as const, related_topics: ['Eco-Friendly', 'Clothing', 'Sustainability'] },
+    { trend: 'Mental Health', estimated_weekly_searches: 158000, interest_score: 13, status: 'Stable' as const, related_topics: ['Wellness', 'Therapy', 'Self-Care'] },
     { trend: 'Augmented Reality', estimated_weekly_searches: 155000, interest_score: 13, status: 'Rising' as const, related_topics: ['AR Apps', 'Technology', 'Mobile'] },
     { trend: 'Cloud Computing', estimated_weekly_searches: 150000, interest_score: 13, status: 'Stable' as const, related_topics: ['AWS', 'Azure', 'Server'] },
-    { trend: 'Mental Health Awareness', estimated_weekly_searches: 145000, interest_score: 12, status: 'Stable' as const, related_topics: ['Wellness', 'Therapy', 'Self-Care'] },
+    { trend: 'Meditation Apps', estimated_weekly_searches: 148000, interest_score: 12, status: 'Rising' as const, related_topics: ['Mindfulness', 'Health', 'Wellness'] },
     { trend: 'Biotechnology', estimated_weekly_searches: 140000, interest_score: 12, status: 'Rising' as const, related_topics: ['Medical Science', 'Innovation', 'Health'] },
+    { trend: 'Holiday Gifts', estimated_weekly_searches: 138000, interest_score: 12, status: 'Seasonal' as const, related_topics: ['Shopping', 'Gifts', 'Christmas'] },
     { trend: 'Internet of Things', estimated_weekly_searches: 135000, interest_score: 11, status: 'Stable' as const, related_topics: ['IoT Devices', 'Smart Home', 'Technology'] },
     { trend: 'Blockchain Technology', estimated_weekly_searches: 130000, interest_score: 11, status: 'Stable' as const, related_topics: ['Cryptocurrency', 'Distributed Ledger', 'Decentralized'] },
-    { trend: 'Artificial General Intelligence', estimated_weekly_searches: 125000, interest_score: 11, status: 'Exploding' as const, related_topics: ['AGI', 'AI Future', 'Super Intelligence'] },
+    { trend: 'AGI', estimated_weekly_searches: 125000, interest_score: 11, status: 'Exploding' as const, related_topics: ['AI Future', 'Super Intelligence', 'OpenAI'] },
+    { trend: 'Travel Deals', estimated_weekly_searches: 122000, interest_score: 10, status: 'Stable' as const, related_topics: ['Flights', 'Hotels', 'Vacation'] },
     { trend: 'Telemedicine', estimated_weekly_searches: 120000, interest_score: 10, status: 'Stable' as const, related_topics: ['Healthcare', 'Telehealth', 'Online Doctor'] },
     { trend: 'Edge Computing', estimated_weekly_searches: 115000, interest_score: 10, status: 'Rising' as const, related_topics: ['Computing', 'Processing', 'Latency'] },
+    { trend: 'Weight Loss Tips', estimated_weekly_searches: 112000, interest_score: 9, status: 'Stable' as const, related_topics: ['Fitness', 'Diet', 'Health'] },
     { trend: 'Green Technology', estimated_weekly_searches: 110000, interest_score: 9, status: 'Stable' as const, related_topics: ['Eco-Friendly', 'Sustainability', 'Environment'] },
     { trend: 'Robotics', estimated_weekly_searches: 105000, interest_score: 9, status: 'Rising' as const, related_topics: ['Automation', 'Manufacturing', 'AI'] },
+    { trend: 'Pet Care', estimated_weekly_searches: 102000, interest_score: 9, status: 'Stable' as const, related_topics: ['Dogs', 'Cats', 'Animals'] },
     { trend: 'Web3 Development', estimated_weekly_searches: 100000, interest_score: 8, status: 'Stable' as const, related_topics: ['Smart Contracts', 'Solidity', 'DApps'] },
     { trend: 'Cybersecurity Threats', estimated_weekly_searches: 98000, interest_score: 8, status: 'Rising' as const, related_topics: ['Hacking', 'Data Breach', 'Security'] },
-    { trend: 'Artificial General Intelligence Research', estimated_weekly_searches: 95000, interest_score: 8, status: 'Rising' as const, related_topics: ['AI Research', 'OpenAI', 'DeepMind'] },
-    { trend: 'Biohacking', estimated_weekly_searches: 92000, interest_score: 8, status: 'Rising' as const, related_topics: ['DIY Biology', 'Wearables', 'Health Tech'] },
+    { trend: 'AI Research', estimated_weekly_searches: 95000, interest_score: 8, status: 'Rising' as const, related_topics: ['OpenAI', 'DeepMind', 'Google'] },
+    { trend: 'DIY Projects', estimated_weekly_searches: 92000, interest_score: 8, status: 'Stable' as const, related_topics: ['Crafts', 'Home', 'Creative'] },
+    { trend: 'Biohacking', estimated_weekly_searches: 92000, interest_score: 8, status: 'Rising' as const, related_topics: ['Wearables', 'Health Tech', 'Optimization'] },
     { trend: 'Drone Technology', estimated_weekly_searches: 89000, interest_score: 7, status: 'Stable' as const, related_topics: ['UAV', 'Aerial', 'Delivery'] },
+    { trend: 'Online Learning', estimated_weekly_searches: 87000, interest_score: 7, status: 'Stable' as const, related_topics: ['Courses', 'Udemy', 'Education'] },
     { trend: 'Smart Cities', estimated_weekly_searches: 86000, interest_score: 7, status: 'Rising' as const, related_topics: ['Urban Planning', 'IoT', 'Sustainability'] },
+    { trend: 'Dating Apps', estimated_weekly_searches: 84000, interest_score: 7, status: 'Stable' as const, related_topics: ['Tinder', 'Relationships', 'Social'] },
     { trend: 'Fintechs', estimated_weekly_searches: 83000, interest_score: 7, status: 'Rising' as const, related_topics: ['Digital Banking', 'Payments', 'Finance'] },
-    { trend: 'Ethical AI', estimated_weekly_searches: 80000, interest_score: 7, status: 'Rising' as const, related_topics: ['AI Ethics', 'Responsible AI', 'Fairness'] },
-    { trend: 'Nanotechnology', estimated_weekly_searches: 77000, interest_score: 6, status: 'Stable' as const, related_topics: ['Nanotech', 'Materials', 'Innovation'] },
-    { trend: 'Quantum Key Distribution', estimated_weekly_searches: 74000, interest_score: 6, status: 'Rising' as const, related_topics: ['Quantum Cryptography', 'Security', 'Encryption'] },
+    { trend: 'Skincare Routine', estimated_weekly_searches: 82000, interest_score: 7, status: 'Stable' as const, related_topics: ['Beauty', 'Cosmetics', 'Wellness'] },
+    { trend: 'Ethical AI', estimated_weekly_searches: 80000, interest_score: 7, status: 'Rising' as const, related_topics: ['Responsible AI', 'Fairness', 'Ethics'] },
+    { trend: 'Podcasts', estimated_weekly_searches: 78000, interest_score: 6, status: 'Stable' as const, related_topics: ['Audio', 'Shows', 'Entertainment'] },
+    { trend: 'Nanotechnology', estimated_weekly_searches: 77000, interest_score: 6, status: 'Stable' as const, related_topics: ['Materials', 'Innovation', 'Science'] },
+    { trend: 'Yoga Practice', estimated_weekly_searches: 76000, interest_score: 6, status: 'Stable' as const, related_topics: ['Fitness', 'Health', 'Wellness'] },
+    { trend: 'Quantum Key Distribution', estimated_weekly_searches: 74000, interest_score: 6, status: 'Rising' as const, related_topics: ['Cryptography', 'Security', 'Encryption'] },
+    { trend: 'Career Change', estimated_weekly_searches: 73000, interest_score: 6, status: 'Stable' as const, related_topics: ['Job Search', 'Resume', 'Transition'] },
     { trend: 'Synthetic Biology', estimated_weekly_searches: 71000, interest_score: 6, status: 'Rising' as const, related_topics: ['Genetic Engineering', 'Biotech', 'Science'] },
+    { trend: 'Piano Learning', estimated_weekly_searches: 70000, interest_score: 6, status: 'Stable' as const, related_topics: ['Music', 'Instruments', 'Learning'] },
     { trend: 'Neuromorphic Computing', estimated_weekly_searches: 68000, interest_score: 6, status: 'Rising' as const, related_topics: ['Brain-Inspired', 'Computing', 'AI'] },
+    { trend: 'Digital Marketing', estimated_weekly_searches: 67000, interest_score: 6, status: 'Stable' as const, related_topics: ['SEO', 'Social Media', 'Business'] },
+    { trend: 'Coffee Trends', estimated_weekly_searches: 66000, interest_score: 5, status: 'Stable' as const, related_topics: ['Beverages', 'Recipes', 'Lifestyle'] },
     { trend: 'Self-Driving Cars', estimated_weekly_searches: 65000, interest_score: 5, status: 'Stable' as const, related_topics: ['Autonomous Vehicles', 'Tesla', 'Technology'] },
-    { trend: 'Vertical Farming', estimated_weekly_searches: 62000, interest_score: 5, status: 'Rising' as const, related_topics: ['Sustainable Agriculture', 'Urban Farming', 'Food Tech'] },
+    { trend: 'Language Learning', estimated_weekly_searches: 64000, interest_score: 5, status: 'Rising' as const, related_topics: ['Spanish', 'French', 'Education'] },
+    { trend: 'Vertical Farming', estimated_weekly_searches: 62000, interest_score: 5, status: 'Rising' as const, related_topics: ['Agriculture', 'Urban Farming', 'Food Tech'] },
+    { trend: 'Board Games', estimated_weekly_searches: 61000, interest_score: 5, status: 'Stable' as const, related_topics: ['Gaming', 'Entertainment', 'Fun'] },
     { trend: 'Haptic Technology', estimated_weekly_searches: 59000, interest_score: 5, status: 'Rising' as const, related_topics: ['Touch Feedback', 'VR', 'Gaming'] },
+    { trend: 'Photography Tips', estimated_weekly_searches: 58000, interest_score: 5, status: 'Stable' as const, related_topics: ['Cameras', 'Art', 'Creative'] },
     { trend: 'Autonomous Systems', estimated_weekly_searches: 56000, interest_score: 5, status: 'Stable' as const, related_topics: ['Robotics', 'AI', 'Automation'] },
+    { trend: 'Gardening Ideas', estimated_weekly_searches: 55000, interest_score: 4, status: 'Seasonal' as const, related_topics: ['Plants', 'Outdoors', 'Nature'] },
     { trend: 'Zero-Knowledge Proofs', estimated_weekly_searches: 53000, interest_score: 4, status: 'Rising' as const, related_topics: ['Cryptography', 'Privacy', 'Blockchain'] },
+    { trend: 'Graphic Design', estimated_weekly_searches: 52000, interest_score: 4, status: 'Stable' as const, related_topics: ['Design', 'Creative', 'Art'] },
     { trend: 'Graphene Technology', estimated_weekly_searches: 50000, interest_score: 4, status: 'Stable' as const, related_topics: ['Materials Science', 'Carbon', 'Innovation'] },
   ];
 }
