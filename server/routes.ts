@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { analyzeTrend, getTrendingTopics, getTopTrendsWithVolume } from "./services/trend-analyzer";
+import { analyzeTrend, getTrendingTopics, getTopTrendsWithVolume, getGlobalTrendingNow } from "./services/trend-analyzer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // POST /api/analyze - Main trend analysis endpoint
@@ -68,6 +68,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error fetching top trends with volume:', error);
       res.status(500).json({ 
         error: 'Failed to fetch top trends',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/global-trending - Get global "Trending Now" searches from Google Trends worldwide
+  // Returns: Top 25+ global trends with rank, query, volume, category, and timestamp
+  app.get('/api/global-trending', async (req, res) => {
+    try {
+      const globalTrends = await getGlobalTrendingNow();
+      res.json({ 
+        trends: globalTrends,
+        timestamp: new Date().toISOString(),
+        note: 'Volume estimates are projections based on trend rank. Not official Google search volume.'
+      });
+    } catch (error) {
+      console.error('Error fetching global trending:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch global trending',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

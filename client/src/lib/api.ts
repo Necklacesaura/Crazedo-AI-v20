@@ -62,3 +62,28 @@ export const getTopTrendsWithVolume = async (): Promise<WeeklyTrend[]> => {
   const data = await response.json();
   return data.trends;
 };
+
+// Type definitions for global trending
+export interface GlobalTrend {
+  rank: number;
+  query: string;
+  volume: string;
+  category: string;
+  timestamp: string;
+}
+
+/**
+ * Fetches global "Trending Now" searches from Google Trends worldwide
+ * Returns top 25+ trends with rank, query, volume, category
+ */
+export const getGlobalTrendingNow = async (): Promise<GlobalTrend[]> => {
+  const response = await fetch('/api/global-trending');
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to fetch global trending');
+  }
+
+  const data = await response.json();
+  return data.trends;
+};

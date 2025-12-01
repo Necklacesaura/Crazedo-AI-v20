@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { SearchInput } from "@/components/search-input";
 import { TrendDashboard } from "@/components/trend-dashboard";
-import { analyzeTrend, TrendData } from "@/lib/api";
+import { analyzeTrend, TrendData, getGlobalTrendingNow, GlobalTrend } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { X, Flame, TrendingUp } from "lucide-react";
+import { X, Flame, TrendingUp, Globe } from "lucide-react";
 
 interface SavedTrend {
   topic: string;
@@ -26,6 +26,7 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
   const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
   const [trendingTopics, setTrendingTopics] = useState<TrendingTopic[]>([]);
+  const [globalTrends, setGlobalTrends] = useState<GlobalTrend[]>([]);
   
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
@@ -36,6 +37,11 @@ export default function Home() {
       .then(res => res.json())
       .then(data => setTrendingTopics(data.trending || []))
       .catch(err => console.error('Failed to fetch trending:', err));
+
+    // Fetch global trending now
+    getGlobalTrendingNow()
+      .then(trends => setGlobalTrends(trends))
+      .catch(err => console.error('Failed to fetch global trending:', err));
 
     // Check if there's an auto-search trend from weekly trends page
     const autoSearchTrend = sessionStorage.getItem('autoSearchTrend');
@@ -256,6 +262,58 @@ export default function Home() {
                   <div className="text-2xl group-hover:scale-110 transition">📊</div>
                 </div>
               </motion.button>
+
+              {/* Global "Trending Now" Section */}
+              {globalTrends.length > 0 && !hasSearched && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.9 }}
+                >
+                  <Card className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-sm border-cyan-500/30">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-cyan-100"><Globe className="w-5 h-5" /> 🌍 Global Most Searched On Google – This Week</CardTitle>
+                      <CardDescription>Top trending searches worldwide</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-cyan-500/30">
+                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">#</th>
+                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Query</th>
+                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Volume</th>
+                              <th className="text-left py-2 px-2 text-cyan-300 font-semibold">Category</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {globalTrends.slice(0, 25).map((trend, i) => (
+                              <tr key={i} className="border-b border-cyan-500/10 hover:bg-cyan-500/5 transition">
+                                <td className="py-3 px-2 text-cyan-400 font-bold">{trend.rank}</td>
+                                <td className="py-3 px-2">
+                                  <button
+                                    onClick={() => handleQuickSearch(trend.query)}
+                                    className="text-cyan-100 hover:text-cyan-50 hover:underline transition text-left"
+                                    data-testid={`global-trend-${i}`}
+                                  >
+                                    {trend.query}
+                                  </button>
+                                </td>
+                                <td className="py-3 px-2 text-cyan-200/70 font-medium">{trend.volume}</td>
+                                <td className="py-3 px-2">
+                                  <span className="inline-block px-3 py-1 bg-cyan-500/20 border border-cyan-500/40 rounded-full text-xs text-cyan-200">
+                                    {trend.category}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
 
               {/* This Week's Top Trending - Bottom Section */}
               {trendingTopics.length > 0 && !hasSearched && (
