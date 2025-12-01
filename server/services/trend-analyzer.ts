@@ -435,14 +435,9 @@ export async function getGlobalTrendingNow(): Promise<Array<{
   timestamp: string;
 }>> {
   try {
-    // Fetch trending searches from Google Trends (try US first, fallback to GLOBAL)
+    // Fetch trending searches from Google Trends (WORLDWIDE/GLOBAL data)
     let trendingRaw: string;
-    try {
-      trendingRaw = await googleTrends.dailyTrends({ geo: 'US' });
-    } catch {
-      console.warn('US trends failed, trying GLOBAL...');
-      trendingRaw = await googleTrends.dailyTrends({ geo: 'GLOBAL' });
-    }
+    trendingRaw = await googleTrends.dailyTrends({ geo: 'GLOBAL' });
 
     const data = JSON.parse(trendingRaw);
     let trendingSearches = data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
