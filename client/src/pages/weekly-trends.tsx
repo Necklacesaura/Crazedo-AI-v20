@@ -113,7 +113,7 @@ export default function WeeklyTrends() {
               Weekly Trends Report
             </h1>
             <p className="text-muted-foreground font-mono text-sm">
-              Top 10 most searched topics with estimated search volumes
+              Top 50 most searched topics with estimated search volumes
             </p>
           </motion.div>
 

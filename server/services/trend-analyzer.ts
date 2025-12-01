@@ -56,7 +56,7 @@ function getDefaultTrendingTopics() {
 }
 
 /**
- * Fetches top 10 trending topics with estimated weekly search volumes
+ * Fetches top 50 trending topics with estimated weekly search volumes
  * 
  * HOW VOLUME ESTIMATION WORKS:
  * - Google Trends provides interest scores on a 0-100 scale (not actual search volumes)
@@ -80,9 +80,9 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
     
     const trendingSearches = data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
     
-    // Process top 10 trending topics
+    // Process top 50 trending topics
     const topTrends = await Promise.all(
-      trendingSearches.slice(0, 10).map(async (item: any, index: number) => {
+      trendingSearches.slice(0, 50).map(async (item: any, index: number) => {
         const trendName = item.title.query || item.title.text || 'Unknown';
         
         try {
@@ -173,6 +173,45 @@ function getDefaultTopTrends() {
     { trend: 'Cybersecurity', estimated_weekly_searches: 350000, interest_score: 29, status: 'Rising' as const, related_topics: ['Data Protection', 'Hacking', 'Security'] },
     { trend: 'Renewable Energy', estimated_weekly_searches: 320000, interest_score: 27, status: 'Stable' as const, related_topics: ['Solar', 'Wind Power', 'Green Energy'] },
     { trend: 'Virtual Reality', estimated_weekly_searches: 280000, interest_score: 23, status: 'Stable' as const, related_topics: ['VR Headsets', 'Metaverse', 'AR Technology'] },
+    { trend: 'Machine Learning', estimated_weekly_searches: 265000, interest_score: 22, status: 'Rising' as const, related_topics: ['Deep Learning', 'Neural Networks', 'AI'] },
+    { trend: 'Cryptocurrency', estimated_weekly_searches: 250000, interest_score: 21, status: 'Stable' as const, related_topics: ['Ethereum', 'DeFi', 'Blockchain'] },
+    { trend: 'Artificial Intelligence Jobs', estimated_weekly_searches: 240000, interest_score: 20, status: 'Rising' as const, related_topics: ['AI Career', 'Tech Jobs', 'AI Training'] },
+    { trend: 'Metaverse', estimated_weekly_searches: 225000, interest_score: 19, status: 'Stable' as const, related_topics: ['Virtual Worlds', 'NFT', 'Web3'] },
+    { trend: 'Electric Vehicles', estimated_weekly_searches: 210000, interest_score: 18, status: 'Rising' as const, related_topics: ['Tesla', 'EV Charging', 'Sustainability'] },
+    { trend: 'Gene Therapy', estimated_weekly_searches: 195000, interest_score: 17, status: 'Rising' as const, related_topics: ['Genetic Engineering', 'Medicine', 'Biotech'] },
+    { trend: 'NFT Art', estimated_weekly_searches: 180000, interest_score: 15, status: 'Declining' as const, related_topics: ['Digital Art', 'Blockchain', 'Crypto'] },
+    { trend: '5G Technology', estimated_weekly_searches: 175000, interest_score: 15, status: 'Stable' as const, related_topics: ['Mobile Networks', 'Telecommunications', 'Speed'] },
+    { trend: 'Data Science', estimated_weekly_searches: 170000, interest_score: 14, status: 'Rising' as const, related_topics: ['Analytics', 'Big Data', 'Python'] },
+    { trend: 'Sustainable Fashion', estimated_weekly_searches: 160000, interest_score: 13, status: 'Rising' as const, related_topics: ['Eco-Friendly', 'Clothing', 'Sustainability'] },
+    { trend: 'Augmented Reality', estimated_weekly_searches: 155000, interest_score: 13, status: 'Rising' as const, related_topics: ['AR Apps', 'Technology', 'Mobile'] },
+    { trend: 'Cloud Computing', estimated_weekly_searches: 150000, interest_score: 13, status: 'Stable' as const, related_topics: ['AWS', 'Azure', 'Server'] },
+    { trend: 'Mental Health Awareness', estimated_weekly_searches: 145000, interest_score: 12, status: 'Stable' as const, related_topics: ['Wellness', 'Therapy', 'Self-Care'] },
+    { trend: 'Biotechnology', estimated_weekly_searches: 140000, interest_score: 12, status: 'Rising' as const, related_topics: ['Medical Science', 'Innovation', 'Health'] },
+    { trend: 'Internet of Things', estimated_weekly_searches: 135000, interest_score: 11, status: 'Stable' as const, related_topics: ['IoT Devices', 'Smart Home', 'Technology'] },
+    { trend: 'Blockchain Technology', estimated_weekly_searches: 130000, interest_score: 11, status: 'Stable' as const, related_topics: ['Cryptocurrency', 'Distributed Ledger', 'Decentralized'] },
+    { trend: 'Artificial General Intelligence', estimated_weekly_searches: 125000, interest_score: 11, status: 'Exploding' as const, related_topics: ['AGI', 'AI Future', 'Super Intelligence'] },
+    { trend: 'Telemedicine', estimated_weekly_searches: 120000, interest_score: 10, status: 'Stable' as const, related_topics: ['Healthcare', 'Telehealth', 'Online Doctor'] },
+    { trend: 'Edge Computing', estimated_weekly_searches: 115000, interest_score: 10, status: 'Rising' as const, related_topics: ['Computing', 'Processing', 'Latency'] },
+    { trend: 'Green Technology', estimated_weekly_searches: 110000, interest_score: 9, status: 'Stable' as const, related_topics: ['Eco-Friendly', 'Sustainability', 'Environment'] },
+    { trend: 'Robotics', estimated_weekly_searches: 105000, interest_score: 9, status: 'Rising' as const, related_topics: ['Automation', 'Manufacturing', 'AI'] },
+    { trend: 'Web3 Development', estimated_weekly_searches: 100000, interest_score: 8, status: 'Stable' as const, related_topics: ['Smart Contracts', 'Solidity', 'DApps'] },
+    { trend: 'Cybersecurity Threats', estimated_weekly_searches: 98000, interest_score: 8, status: 'Rising' as const, related_topics: ['Hacking', 'Data Breach', 'Security'] },
+    { trend: 'Artificial General Intelligence Research', estimated_weekly_searches: 95000, interest_score: 8, status: 'Rising' as const, related_topics: ['AI Research', 'OpenAI', 'DeepMind'] },
+    { trend: 'Biohacking', estimated_weekly_searches: 92000, interest_score: 8, status: 'Rising' as const, related_topics: ['DIY Biology', 'Wearables', 'Health Tech'] },
+    { trend: 'Drone Technology', estimated_weekly_searches: 89000, interest_score: 7, status: 'Stable' as const, related_topics: ['UAV', 'Aerial', 'Delivery'] },
+    { trend: 'Smart Cities', estimated_weekly_searches: 86000, interest_score: 7, status: 'Rising' as const, related_topics: ['Urban Planning', 'IoT', 'Sustainability'] },
+    { trend: 'Fintechs', estimated_weekly_searches: 83000, interest_score: 7, status: 'Rising' as const, related_topics: ['Digital Banking', 'Payments', 'Finance'] },
+    { trend: 'Ethical AI', estimated_weekly_searches: 80000, interest_score: 7, status: 'Rising' as const, related_topics: ['AI Ethics', 'Responsible AI', 'Fairness'] },
+    { trend: 'Nanotechnology', estimated_weekly_searches: 77000, interest_score: 6, status: 'Stable' as const, related_topics: ['Nanotech', 'Materials', 'Innovation'] },
+    { trend: 'Quantum Key Distribution', estimated_weekly_searches: 74000, interest_score: 6, status: 'Rising' as const, related_topics: ['Quantum Cryptography', 'Security', 'Encryption'] },
+    { trend: 'Synthetic Biology', estimated_weekly_searches: 71000, interest_score: 6, status: 'Rising' as const, related_topics: ['Genetic Engineering', 'Biotech', 'Science'] },
+    { trend: 'Neuromorphic Computing', estimated_weekly_searches: 68000, interest_score: 6, status: 'Rising' as const, related_topics: ['Brain-Inspired', 'Computing', 'AI'] },
+    { trend: 'Self-Driving Cars', estimated_weekly_searches: 65000, interest_score: 5, status: 'Stable' as const, related_topics: ['Autonomous Vehicles', 'Tesla', 'Technology'] },
+    { trend: 'Vertical Farming', estimated_weekly_searches: 62000, interest_score: 5, status: 'Rising' as const, related_topics: ['Sustainable Agriculture', 'Urban Farming', 'Food Tech'] },
+    { trend: 'Haptic Technology', estimated_weekly_searches: 59000, interest_score: 5, status: 'Rising' as const, related_topics: ['Touch Feedback', 'VR', 'Gaming'] },
+    { trend: 'Autonomous Systems', estimated_weekly_searches: 56000, interest_score: 5, status: 'Stable' as const, related_topics: ['Robotics', 'AI', 'Automation'] },
+    { trend: 'Zero-Knowledge Proofs', estimated_weekly_searches: 53000, interest_score: 4, status: 'Rising' as const, related_topics: ['Cryptography', 'Privacy', 'Blockchain'] },
+    { trend: 'Graphene Technology', estimated_weekly_searches: 50000, interest_score: 4, status: 'Stable' as const, related_topics: ['Materials Science', 'Carbon', 'Innovation'] },
   ];
 }
 

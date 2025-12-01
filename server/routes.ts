@@ -52,8 +52,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GET /api/top-trends-weekly - Get top 10 trends with estimated weekly search volumes
-  // Returns: Top 10 trending searches with estimated weekly searches, interest scores, status, and related topics
+  // GET /api/top-trends-weekly - Get top 50 trends with estimated weekly search volumes
+  // Returns: Top 50 trending searches with estimated weekly searches, interest scores, status, and related topics
   // NOTE: Search volume estimates are calculated projections, not official Google data
   app.get('/api/top-trends-weekly', async (req, res) => {
     try {
