@@ -38,14 +38,19 @@ export default function Home() {
   const [tickerTrends, setTickerTrends] = useState<WeeklyTrend[]>([]);
   const [isHoveringTicker, setIsHoveringTicker] = useState(false);
   const [isBannerOpen, setIsBannerOpen] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   const fetchTickerData = async () => {
     try {
       const response = await fetch('/api/top-trends-weekly');
+      if (!response.ok) throw new Error('Failed to fetch ticker data');
       const data = await response.json();
       setTickerTrends(data.trends?.slice(0, 5) || []);
+      setError(null);
     } catch (err) {
-      console.error('Failed to fetch ticker data:', err);
+      const errMsg = err instanceof Error ? err.message : 'Failed to fetch ticker data';
+      console.error('Ticker error:', err);
+      toast.error('Error', { description: errMsg });
     }
   };
   
@@ -55,14 +60,31 @@ export default function Home() {
     
     // Fetch trending topics
     fetch('/api/trending')
-      .then(res => res.json())
-      .then(data => setTrendingTopics(data.trending || []))
-      .catch(err => console.error('Failed to fetch trending:', err));
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch trending topics');
+        return res.json();
+      })
+      .then(data => {
+        setTrendingTopics(data.trending || []);
+        setError(null);
+      })
+      .catch(err => {
+        const errMsg = err instanceof Error ? err.message : 'Failed to fetch trending topics';
+        console.error('Trending error:', err);
+        toast.error('Error', { description: errMsg });
+      });
 
     // Fetch global trending now
     getGlobalTrendingNow()
-      .then(trends => setGlobalTrends(trends))
-      .catch(err => console.error('Failed to fetch global trending:', err));
+      .then(trends => {
+        setGlobalTrends(trends);
+        setError(null);
+      })
+      .catch(err => {
+        const errMsg = err instanceof Error ? err.message : 'Failed to fetch global trending';
+        console.error('Global trending error:', err);
+        toast.error('Error', { description: errMsg });
+      });
 
     // Fetch ticker data
     fetchTickerData();
@@ -82,13 +104,17 @@ export default function Home() {
   const handleSearch = async (term: string) => {
     setIsLoading(true);
     setHasSearched(true);
+    setError(null);
     try {
       const result = await analyzeTrend(term);
       setData(result);
+      setError(null);
     } catch (error) {
+      const errMsg = error instanceof Error ? error.message : "Failed to analyze trend. Please try again.";
       console.error("Failed to analyze trend", error);
-      toast.error("Failed to analyze trend", {
-        description: error instanceof Error ? error.message : "Please try again later"
+      setError(errMsg);
+      toast.error("Error analyzing trend", {
+        description: errMsg
       });
     } finally {
       setIsLoading(false);
@@ -136,6 +162,31 @@ export default function Home() {
 
         {/* Results Area */}
         <div className="flex-1 w-full">
+          {/* Error Display */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30"
+              data-testid="error-message"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-red-100 mb-1">Error</h4>
+                  <p className="text-red-200/80 text-sm">{error}</p>
+                </div>
+                <button
+                  onClick={() => setError(null)}
+                  className="text-red-200/50 hover:text-red-200 ml-2"
+                  data-testid="close-error"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {data && !isLoading && (
             <TrendDashboard data={data} />
           )}
