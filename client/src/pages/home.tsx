@@ -165,6 +165,27 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {/* Google Trends Embed */}
+        {!hasSearched && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="relative z-10 w-full mb-12"
+          >
+            <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '20px' }}>
+              <iframe 
+                width="100%" 
+                height="650" 
+                src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
+                frameBorder="0"
+                style={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+              </iframe>
+            </div>
+          </motion.div>
+        )}
+
         {/* Results Area */}
         <div className="flex-1 w-full">
           {data && !isLoading && (
