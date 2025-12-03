@@ -155,13 +155,8 @@ export default function TrendsIntelligence() {
   const uniqueCategories = Array.from(new Set(globalTrends.map(t => t.category)));
 
   return (
-    <div className="min-h-screen w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black text-foreground p-4 md:p-8 overflow-x-hidden">
-      {/* Background Grid */}
-      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
-           style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
