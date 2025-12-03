@@ -282,8 +282,8 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
     // Fetch Google Trends data
     const googleData = await fetchGoogleTrends(topic);
 
-    // Determine trend status based on interest over time
-    const trendStatus = determineTrendStatus(googleData.interest_over_time);
+    // Determine trend status using consistent scraper function
+    const trendStatus = calculateTrendStatus(googleData.interest_over_time);
     
     // Generate AI summary (or generic summary if no OpenAI key)
     const aiSummary = await generateAISummary(topic, googleData, trendStatus);
@@ -402,26 +402,6 @@ async function fetchGoogleTrends(topic: string) {
 // - Implement fetchRedditData() function similar to fetchGoogleTrends()
 // - Add reddit field back to TrendAnalysisResult interface
 
-/**
- * Determines trend status based on interest over time data
- * Compares recent 3 days average vs earlier 3 days average
- */
-function determineTrendStatus(interestData: { date: string; value: number }[]): 'Exploding' | 'Rising' | 'Stable' | 'Declining' {
-  if (interestData.length < 2) return 'Stable';
-
-  const recent = interestData.slice(-3); // Last 3 days
-  const earlier = interestData.slice(0, 3); // First 3 days
-
-  const recentAvg = recent.reduce((sum, d) => sum + d.value, 0) / recent.length;
-  const earlierAvg = earlier.reduce((sum, d) => sum + d.value, 0) / earlier.length;
-
-  const percentChange = ((recentAvg - earlierAvg) / Math.max(earlierAvg, 1)) * 100;
-
-  if (percentChange > 50) return 'Exploding';
-  if (percentChange > 15) return 'Rising';
-  if (percentChange < -15) return 'Declining';
-  return 'Stable';
-}
 
 /**
  * Fetches global "Trending Now" searches from Google Trends with LIVE data
@@ -505,15 +485,7 @@ export async function getGlobalTrendingNow(): Promise<Array<{
           if (timelineData.length > 0) {
             interestScore = Math.max(...timelineData.map((d: any) => d.value[0] || 0));
             sparkline = timelineData.map((d: any) => d.value[0] || 0);
-
-            const recentAvg = timelineData.slice(-3).reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) / Math.max(timelineData.slice(-3).length, 1);
-            const olderAvg = timelineData.slice(0, 3).reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) / Math.max(timelineData.slice(0, 3).length, 1);
-            const percentChange = ((recentAvg - olderAvg) / Math.max(olderAvg, 1)) * 100;
-
-            if (percentChange > 50) status = 'Exploding';
-            else if (percentChange > 15) status = 'Rising';
-            else if (percentChange < -15) status = 'Declining';
-            else status = 'Stable';
+            status = calculateTrendStatus(timelineData);
           }
         } catch (err) {
           // Silently fail and use defaults

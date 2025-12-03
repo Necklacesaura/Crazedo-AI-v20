@@ -84,8 +84,9 @@ export async function fetchInterestByRegion(keyword: string): Promise<any[]> {
 
 /**
  * Calculates trend status based on interest timeline
+ * Works with both raw API format AND transformed format
  * Compares recent vs older data to determine trend direction
- * @param timelineData - Array of timeline data points
+ * @param timelineData - Array of timeline data points (both formats supported)
  * @returns Status: 'Exploding' | 'Rising' | 'Stable' | 'Declining'
  */
 export function calculateTrendStatus(
@@ -93,14 +94,20 @@ export function calculateTrendStatus(
 ): 'Exploding' | 'Rising' | 'Stable' | 'Declining' {
   if (timelineData.length === 0) return 'Stable';
 
+  // Handle both raw API format (d.value[0]) and transformed format (d.value)
+  const getValue = (d: any): number => {
+    if (Array.isArray(d.value)) return d.value[0] || 0;
+    return d.value || 0;
+  };
+
   const recentAvg = timelineData
     .slice(-3)
-    .reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) /
+    .reduce((sum: number, d: any) => sum + getValue(d), 0) /
     Math.max(timelineData.slice(-3).length, 1);
 
   const olderAvg = timelineData
     .slice(0, 3)
-    .reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) /
+    .reduce((sum: number, d: any) => sum + getValue(d), 0) /
     Math.max(timelineData.slice(0, 3).length, 1);
 
   const percentChange = ((recentAvg - olderAvg) / Math.max(olderAvg, 1)) * 100;
