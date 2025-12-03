@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { SearchInput } from "@/components/search-input";
 import { analyzeTrend, TrendData } from "@/lib/api";
 import { toast } from "sonner";
-import { ArrowLeft, Zap, TrendingUp, Download, BarChart3, TrendingDown, Activity } from "lucide-react";
+import { ArrowLeft, Zap, TrendingUp, Download, BarChart3, TrendingDown, Activity, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
@@ -147,6 +147,29 @@ export default function ScraperTool() {
                   className="px-3 py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 text-sm transition disabled:opacity-50"
                 >
                   {term}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Keyword Suggestions */}
+        {!data && (
+          <div className="mb-8 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+            <div className="flex items-center gap-2 mb-3 text-purple-300 text-sm font-semibold">
+              <Sparkles className="w-4 h-4" />
+              Try These Keywords:
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["AI trends", "Crypto news", "Tech stocks", "Startup news", "Web3", "NFT market", "Elon Musk", "Apple news", "Netflix trends", "Gaming trends"].map(keyword => (
+                <button
+                  key={keyword}
+                  onClick={() => handleSearch(keyword)}
+                  disabled={isLoading}
+                  className="px-3 py-1.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-sm transition disabled:opacity-50"
+                  data-testid={`button-keyword-${keyword.toLowerCase().replace(/\s/g, '-')}`}
+                >
+                  {keyword}
                 </button>
               ))}
             </div>
