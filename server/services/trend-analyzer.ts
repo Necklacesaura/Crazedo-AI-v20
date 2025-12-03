@@ -297,7 +297,7 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
         google: googleData,
         // REMOVED: reddit and twitter fields
       },
-      related_topics: googleData.related_queries.slice(0, 4),
+      related_topics: googleData.additional_topics || [],
     };
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -330,10 +330,13 @@ async function fetchGoogleTrends(topic: string) {
     const relatedQueriesRaw = await googleTrends.relatedQueries({ keyword: topic });
     const relatedData = JSON.parse(relatedQueriesRaw);
     
-    // Extract top 4 related queries or use fallback
-    const related_queries = relatedData.default.rankedList?.[0]?.rankedKeyword
-      ?.slice(0, 4)
-      .map((item: any) => item.query) || [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`];
+    // Extract ALL related queries (not just top 4)
+    const allRelatedQueries = relatedData.default.rankedList?.[0]?.rankedKeyword
+      ?.map((item: any) => item.query) || [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`];
+    
+    // Split into two groups: top queries (for Trending Queries section) and rest (for Related Keywords)
+    const related_queries = allRelatedQueries.slice(0, 8);
+    const additionalTopics = allRelatedQueries.slice(8, 14);
 
     // Fetch interest by region from Google Trends
     let interest_by_region = [];
@@ -369,6 +372,7 @@ async function fetchGoogleTrends(topic: string) {
       interest_over_time,
       related_queries,
       interest_by_region,
+      additional_topics: additionalTopics,
     };
   } catch (error: unknown) {
     console.error('Google Trends error:', error);
@@ -391,6 +395,7 @@ async function fetchGoogleTrends(topic: string) {
         { region: 'Brazil', value: 54 },
         { region: 'Mexico', value: 51 },
       ],
+      additional_topics: [`${topic} trends`, `latest ${topic}`, `${topic} analysis`, `${topic} 2025`, `${topic} updates`],
     };
   }
 }
