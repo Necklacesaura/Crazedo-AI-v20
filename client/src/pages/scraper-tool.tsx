@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { SearchInput } from "@/components/search-input";
-import { TrendDashboard } from "@/components/trend-dashboard";
 import { analyzeTrend, TrendData } from "@/lib/api";
 import { toast } from "sonner";
-import { ArrowLeft, Zap, TrendingUp, Download, Copy, Share2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Zap, TrendingUp, Download, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const EXAMPLE_SEARCHES = ["AI", "Bitcoin", "Climate Change", "Taylor Swift", "Stock Market"];
 
@@ -14,7 +14,6 @@ export default function ScraperTool() {
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<TrendData | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
@@ -28,7 +27,6 @@ export default function ScraperTool() {
       return;
     }
     
-    setSearchTerm(term);
     setIsLoading(true);
     try {
       const result = await analyzeTrend(term);
@@ -38,10 +36,6 @@ export default function ScraperTool() {
       const updated = [term, ...searchHistory.filter(t => t !== term)].slice(0, 10);
       setSearchHistory(updated);
       localStorage.setItem('scraperHistory', JSON.stringify(updated));
-      
-      toast.success(`Analyzed "${term}"`, {
-        description: `Status: ${result.status}`
-      });
     } catch (error) {
       console.error("Failed to analyze trend", error);
       toast.error("Failed to analyze trend", {
@@ -52,20 +46,10 @@ export default function ScraperTool() {
     }
   };
 
-  const exportAsJSON = () => {
+  const exportJSON = () => {
     if (!data) return;
-    const exportData = {
-      search_term: data.topic,
-      status: data.status,
-      summary: data.summary,
-      related_topics: data.related_topics,
-      interest_data: data.sources.google.interest_over_time,
-      regional_data: data.sources.google.interest_by_region,
-      related_queries: data.sources.google.related_queries,
-      exported_at: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -74,13 +58,11 @@ export default function ScraperTool() {
     toast.success("Exported as JSON");
   };
 
-  const exportAsCSV = () => {
+  const exportCSV = () => {
     if (!data) return;
-    let csv = `Search Term,${data.topic}\n`;
-    csv += `Status,${data.status}\n`;
-    csv += `Date,Interest Score\n`;
+    let csv = "Date,Interest Score\n";
     data.sources.google.interest_over_time.forEach(item => {
-      csv += `${item.date},${item.value}\n`;
+      csv += `"${item.date}",${item.value}\n`;
     });
     
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -92,35 +74,23 @@ export default function ScraperTool() {
     toast.success("Exported as CSV");
   };
 
-  const copyToClipboard = () => {
-    if (!data) return;
-    const text = `${data.topic}\nStatus: ${data.status}\nSummary: ${data.summary}`;
-    navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate("/")}
-          className="mb-8 flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition font-semibold"
+          className="mb-8 flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition"
           data-testid="button-back"
         >
           <ArrowLeft className="w-5 h-5" />
-          Back to Home
+          Back
         </button>
 
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-emerald-400 to-blue-400 bg-clip-text text-transparent font-orbitron">
-            🔍 Google Trends Scraper
-          </h1>
-          <p className="text-xl text-slate-300 font-space-grotesk">
-            Search any topic to analyze real Google Trends data with interest patterns and AI insights.
-          </p>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2 text-cyan-400">🔍 Google Trends Scraper</h1>
+          <p className="text-slate-400">Extract and analyze real Google Trends data</p>
         </div>
 
-        {/* Search Input */}
         <div className="mb-8">
           <SearchInput
             onSearch={handleSearch}
@@ -128,20 +98,20 @@ export default function ScraperTool() {
           />
         </div>
 
-        {/* Example Searches */}
-        {!data && !searchTerm && (
-          <div className="mb-8 p-6 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-            <h3 className="text-sm font-semibold text-cyan-300 mb-3 flex items-center gap-2">
+        {/* Examples */}
+        {!data && (
+          <div className="mb-8 p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+            <div className="flex items-center gap-2 mb-3 text-cyan-300 text-sm font-semibold">
               <Zap className="w-4 h-4" />
-              Try these examples:
-            </h3>
+              Quick examples:
+            </div>
             <div className="flex flex-wrap gap-2">
-              {EXAMPLE_SEARCHES.map((example) => (
+              {EXAMPLE_SEARCHES.map(example => (
                 <button
                   key={example}
                   onClick={() => handleSearch(example)}
                   disabled={isLoading}
-                  className="px-4 py-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 hover:text-cyan-100 transition disabled:opacity-50 text-sm font-medium"
+                  className="px-3 py-1.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 text-sm transition disabled:opacity-50"
                   data-testid={`button-example-${example.toLowerCase()}`}
                 >
                   {example}
@@ -153,19 +123,18 @@ export default function ScraperTool() {
 
         {/* Search History */}
         {searchHistory.length > 0 && !data && (
-          <div className="mb-8 p-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-            <h3 className="text-sm font-semibold text-emerald-300 mb-3 flex items-center gap-2">
+          <div className="mb-8 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+            <div className="flex items-center gap-2 mb-3 text-emerald-300 text-sm font-semibold">
               <TrendingUp className="w-4 h-4" />
-              Recent searches:
-            </h3>
+              Recent:
+            </div>
             <div className="flex flex-wrap gap-2">
-              {searchHistory.map((term) => (
+              {searchHistory.map(term => (
                 <button
                   key={term}
                   onClick={() => handleSearch(term)}
                   disabled={isLoading}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 hover:text-emerald-100 transition disabled:opacity-50 text-sm"
-                  data-testid={`button-history-${term.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="px-3 py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 text-sm transition disabled:opacity-50"
                 >
                   {term}
                 </button>
@@ -176,87 +145,130 @@ export default function ScraperTool() {
 
         {/* Results */}
         {data && (
-          <>
-            {/* Export Options */}
-            <div className="mb-8 p-6 rounded-lg bg-amber-500/10 border border-amber-500/30">
-              <h3 className="text-sm font-semibold text-amber-300 mb-4 flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Export Data
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  onClick={exportAsJSON}
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
-                  size="sm"
+          <div className="space-y-6">
+            {/* Header with Export */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-1">{data.topic}</h2>
+                <Badge className="bg-cyan-600">{data.status}</Badge>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={exportJSON}
+                  className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm flex items-center gap-2 transition"
                   data-testid="button-export-json"
                 >
-                  <Download className="w-4 h-4 mr-2" />
+                  <Download className="w-4 h-4" />
                   JSON
-                </Button>
-                <Button
-                  onClick={exportAsCSV}
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
-                  size="sm"
+                </button>
+                <button
+                  onClick={exportCSV}
+                  className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm flex items-center gap-2 transition"
                   data-testid="button-export-csv"
                 >
-                  <Download className="w-4 h-4 mr-2" />
+                  <Download className="w-4 h-4" />
                   CSV
-                </Button>
-                <Button
-                  onClick={copyToClipboard}
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
-                  size="sm"
-                  data-testid="button-copy-clipboard"
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  Copy
-                </Button>
+                </button>
               </div>
             </div>
 
-            {/* Key Metrics */}
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/30">
-                <CardContent className="pt-6">
-                  <div className="text-center">
-                    <p className="text-sm text-cyan-300 mb-2">Search Term</p>
-                    <p className="text-2xl font-bold text-cyan-100">{data.topic}</p>
-                  </div>
+            {/* Interest Over Time Chart */}
+            {data.sources.google.interest_over_time.length > 0 && (
+              <Card className="bg-slate-800/50 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-cyan-300">Interest Over Time</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={data.sources.google.interest_over_time}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.5)" />
+                      <XAxis 
+                        dataKey="date" 
+                        stroke="#94a3b8"
+                        tick={{ fontSize: 12 }}
+                      />
+                      <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #0891b2' }}
+                        labelStyle={{ color: '#06b6d4' }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="value" 
+                        stroke="#06b6d4" 
+                        dot={false}
+                        strokeWidth={2}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border-emerald-500/30">
-                <CardContent className="pt-6">
-                  <div className="text-center">
-                    <p className="text-sm text-emerald-300 mb-2">Current Status</p>
-                    <p className="text-2xl font-bold text-emerald-100 uppercase">{data.status}</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30">
-                <CardContent className="pt-6">
-                  <div className="text-center">
-                    <p className="text-sm text-purple-300 mb-2">Related Topics</p>
-                    <p className="text-2xl font-bold text-purple-100">{data.related_topics.length}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            )}
 
-            <TrendDashboard data={data} />
-          </>
+            {/* Related Topics */}
+            {data.related_topics.length > 0 && (
+              <Card className="bg-slate-800/50 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-emerald-300 flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5" />
+                    Related Topics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-2">
+                    {data.related_topics.slice(0, 10).map((topic, i) => (
+                      <div key={i} className="p-3 rounded bg-slate-700/50 flex justify-between items-center">
+                        <span className="text-slate-200">{topic}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Regional Interest */}
+            {data.sources.google.interest_by_region.length > 0 && (
+              <Card className="bg-slate-800/50 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-blue-300">Interest by Region</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {data.sources.google.interest_by_region.slice(0, 12).map((item, i) => (
+                      <div key={i} className="p-3 rounded bg-slate-700/50 text-center">
+                        <div className="text-slate-300 text-sm">{item.region}</div>
+                        <div className="text-cyan-400 font-bold">{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Related Queries */}
+            {data.sources.google.related_queries.length > 0 && (
+              <Card className="bg-slate-800/50 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-purple-300">Related Queries</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-2">
+                    {data.sources.google.related_queries.slice(0, 15).map((query, i) => (
+                      <div key={i} className="p-3 rounded bg-slate-700/50 flex justify-between items-center">
+                        <span className="text-slate-200 text-sm">{query}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         )}
 
         {/* Empty State */}
-        {!data && !isLoading && !searchTerm && (
+        {!data && !isLoading && (
           <div className="mt-12 p-8 rounded-lg bg-slate-800/50 border border-slate-700 text-center">
-            <p className="text-slate-400 text-lg mb-2">🔍 Google Trends Scraper</p>
-            <p className="text-slate-500 text-sm mb-6">Extract and analyze Google Trends data with interest patterns, regional insights, and AI-powered analysis</p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-slate-400">
-              <div>📊 Interest Timeline</div>
-              <div>🏙️ Regional Data</div>
-              <div>🔍 Related Queries</div>
-              <div>📥 Export Data</div>
-            </div>
+            <p className="text-slate-400">Enter a search term to analyze Google Trends data</p>
           </div>
         )}
       </div>
