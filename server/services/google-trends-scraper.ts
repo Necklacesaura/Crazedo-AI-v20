@@ -1,25 +1,24 @@
 /**
- * Google Trends Scraper Module
- * Handles all direct interactions with google-trends-api library
+ * Google Trends Scraper Module (using google-trends package)
+ * Handles all direct interactions with google-trends library
  * Provides clean, reusable functions for scraping trend data
  * 
  * LOCATION: server/services/google-trends-scraper.ts
  * Imported by: server/services/trend-analyzer.ts
  */
 
-import googleTrends from 'google-trends-api';
+import * as googleTrends from 'google-trends';
 
 /**
  * Validates if response is valid JSON (not HTML error page)
  */
-function isValidJSON(response: string): boolean {
+function isValidJSON(response: any): boolean {
   try {
-    // Check if it looks like HTML (common when API is blocked)
-    if (response.trim().startsWith('<')) {
+    if (response === null || response === undefined) return false;
+    if (typeof response === 'string' && response.trim().startsWith('<')) {
       console.warn('⚠️ API returned HTML (blocked/rate limited)');
       return false;
     }
-    JSON.parse(response);
     return true;
   } catch {
     return false;
@@ -33,14 +32,20 @@ function isValidJSON(response: string): boolean {
  */
 export async function fetchDailyTrends(geo: string = 'GLOBAL'): Promise<any[]> {
   try {
-    const trendingRaw = await googleTrends.dailyTrends({ geo });
+    const response = await googleTrends.dailyTrends({ geo });
     
-    if (!isValidJSON(trendingRaw)) {
+    if (!isValidJSON(response)) {
       throw new Error('Invalid response (likely HTML error page)');
     }
     
-    const data = JSON.parse(trendingRaw);
-    return data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
+    // Extract trends from response
+    const trends = response.default?.trendingSearchesDays?.[0]?.trendingSearches || [];
+    if (trends.length === 0) {
+      throw new Error('No trending data returned');
+    }
+    
+    console.log(`✅ Fetched ${trends.length} LIVE trends for geo: ${geo}`);
+    return trends;
   } catch (error) {
     console.warn(`❌ Failed to fetch daily trends for geo: ${geo}`, error);
     throw error;
@@ -61,9 +66,13 @@ export async function fetchInterestOverTime(
     const options: any = { keyword };
     if (startTime) options.startTime = startTime;
     
-    const interestRaw = await googleTrends.interestOverTime(options);
-    const data = JSON.parse(interestRaw);
-    return data.default.timelineData || [];
+    const response = await googleTrends.interestOverTime(options);
+    
+    if (!isValidJSON(response)) {
+      throw new Error('Invalid response');
+    }
+    
+    return response.default?.timelineData || [];
   } catch (error) {
     console.warn(`❌ Failed to fetch interest over time for "${keyword}"`, error);
     throw error;
@@ -77,9 +86,13 @@ export async function fetchInterestOverTime(
  */
 export async function fetchRelatedQueries(keyword: string): Promise<string[]> {
   try {
-    const relatedRaw = await googleTrends.relatedQueries({ keyword });
-    const data = JSON.parse(relatedRaw);
-    return data.default.rankedList?.[0]?.rankedKeyword
+    const response = await googleTrends.relatedQueries({ keyword });
+    
+    if (!isValidJSON(response)) {
+      return [];
+    }
+    
+    return response.default?.rankedList?.[0]?.rankedKeyword
       ?.slice(0, 3)
       .map((item: any) => item.query) || [];
   } catch (error) {
@@ -95,9 +108,13 @@ export async function fetchRelatedQueries(keyword: string): Promise<string[]> {
  */
 export async function fetchInterestByRegion(keyword: string): Promise<any[]> {
   try {
-    const regionRaw = await googleTrends.interestByRegion({ keyword });
-    const data = JSON.parse(regionRaw);
-    return data.default.geoMapData || [];
+    const response = await googleTrends.interestByRegion({ keyword });
+    
+    if (!isValidJSON(response)) {
+      return [];
+    }
+    
+    return response.default?.geoMapData || [];
   } catch (error) {
     console.warn(`❌ Failed to fetch interest by region for "${keyword}"`, error);
     return [];
