@@ -45,10 +45,10 @@ export default function WeeklyTrends() {
   useEffect(() => {
     fetchTrends();
 
-    // Auto-refresh every 24 hours
+    // Auto-refresh every 48 hours (from 24) to reduce API calls
     const interval = setInterval(() => {
       fetchTrends();
-    }, 24 * 60 * 60 * 1000);
+    }, 48 * 60 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);

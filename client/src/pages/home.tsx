@@ -65,7 +65,8 @@ export default function Home() {
 
     // Fetch ticker data
     fetchTickerData();
-    const tickerInterval = setInterval(fetchTickerData, 60000);
+    // Reduce refresh frequency to 5 minutes (from 1 minute) to prevent Google blocking
+    const tickerInterval = setInterval(fetchTickerData, 5 * 60 * 1000);
 
     // Check if there's an auto-search trend from weekly trends page
     const autoSearchTrend = sessionStorage.getItem('autoSearchTrend');

@@ -36,8 +36,8 @@ export default function TrendsIntelligence() {
     };
 
     fetchGlobalTrends();
-    // Refresh every 5 minutes
-    const interval = setInterval(fetchGlobalTrends, 5 * 60 * 1000);
+    // Refresh every 30 minutes (from 5 min) to prevent Google blocking
+    const interval = setInterval(fetchGlobalTrends, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 

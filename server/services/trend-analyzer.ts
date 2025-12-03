@@ -37,6 +37,11 @@ export interface TrendAnalysisResult {
  */
 export async function getTrendingTopics(): Promise<{ topic: string; traffic: string }[]> {
   try {
+    // Cache for 12 hours
+    const cacheKey = 'trending-topics-us';
+    const cached = getCached<any[]>(cacheKey);
+    if (cached) return cached;
+    
     const trendingSearches = await fetchDailyTrends('US');
     
     const trending = trendingSearches
@@ -46,7 +51,11 @@ export async function getTrendingTopics(): Promise<{ topic: string; traffic: str
         traffic: item.formattedTraffic || '+500K',
       }));
     
-    return trending.length > 0 ? trending : getDefaultTrendingTopics();
+    if (trending.length > 0) {
+      setCached(cacheKey, trending, 12 * 60 * 60 * 1000); // 12 hour TTL
+      return trending;
+    }
+    return getDefaultTrendingTopics();
   } catch (error) {
     console.warn('Could not fetch trending topics:', error);
     return getDefaultTrendingTopics();
@@ -84,6 +93,11 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
   related_topics: string[];
 }>> {
   try {
+    // Cache for 24 hours to prevent hammering API
+    const cacheKey = 'top-trends-volume';
+    const cached = getCached<any[]>(cacheKey);
+    if (cached) return cached;
+    
     const trendingRaw = await googleTrends.dailyTrends({ geo: 'US' });
     
     // Handle both string and object responses
@@ -91,80 +105,76 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
     
     const trendingSearches = data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
     
-    // Process top 110 trending topics
-    const topTrends = await Promise.all(
-      trendingSearches.slice(0, 110).map(async (item: any, index: number) => {
-        const trendName = item.title.query || item.title.text || 'Unknown';
-        
-        try {
-          // Fetch interest over time for this trend
-          const interestOverTimeRaw = await googleTrends.interestOverTime({
-            keyword: trendName,
-            startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-          });
-          
-          // Handle both string and object responses
-          const interestData = typeof interestOverTimeRaw === 'string' ? JSON.parse(interestOverTimeRaw) : interestOverTimeRaw;
-          const timelineData = interestData.default?.timelineData || [];
-          
-          // Get the latest/peak interest score
-          // Interest scores from Google Trends are 0-100
-          const interestScore = timelineData.length > 0 
-            ? Math.max(...timelineData.map((d: any) => d.value[0] || 0))
-            : 75;
-          
-          // Determine trend status by comparing recent vs older data
-          const recentAvg = timelineData.slice(-3).reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) / Math.max(timelineData.slice(-3).length, 1);
-          const olderAvg = timelineData.slice(0, 3).reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) / Math.max(timelineData.slice(0, 3).length, 1);
-          const percentChange = ((recentAvg - olderAvg) / Math.max(olderAvg, 1)) * 100;
-          
-          let status: 'Exploding' | 'Rising' | 'Stable' | 'Declining';
-          if (percentChange > 50) status = 'Exploding';
-          else if (percentChange > 15) status = 'Rising';
-          else if (percentChange < -15) status = 'Declining';
-          else status = 'Stable';
-          
-          // Fetch related queries
-          let relatedQueries: string[] = [];
-          try {
-            const relatedQueriesRaw = await googleTrends.relatedQueries({ keyword: trendName });
-            const relatedData = typeof relatedQueriesRaw === 'string' ? JSON.parse(relatedQueriesRaw) : relatedQueriesRaw;
-            relatedQueries = relatedData.default?.rankedList?.[0]?.rankedKeyword
-              ?.slice(0, 3)
-              .map((item: any) => item.query) || [];
-          } catch {
-            relatedQueries = [];
-          }
-          
-          // VOLUME ESTIMATION FORMULA:
-          // Google Trends interest_score is 0-100 scale
-          // We estimate weekly searches using: (interest_score / 100) * 1200000
-          // This assumes a score of 100 = ~1.2M searches per week
-          // The multiplier is calibrated based on typical high-trending topics
-          const BASE_WEEKLY_MULTIPLIER = 1200000;
-          const estimatedWeeklySearches = Math.round((interestScore / 100) * BASE_WEEKLY_MULTIPLIER);
-          
-          return {
-            trend: trendName,
-            estimated_weekly_searches: Math.max(estimatedWeeklySearches, 50000), // Minimum 50K
-            interest_score: interestScore,
-            status,
-            related_topics: relatedQueries,
-          };
-        } catch (error) {
-          console.warn(`Error processing trend "${trendName}":`, error);
-          // Return fallback data for this trend
-          return {
-            trend: trendName,
-            estimated_weekly_searches: 800000 + (Math.random() * 400000), // 800K-1.2M
-            interest_score: 75 + Math.floor(Math.random() * 25),
-            status: 'Stable' as const,
-            related_topics: [],
-          };
-        }
-      })
-    );
+    // Process only top 30 (not 110) to reduce API calls and prevent blocking
+    // Use serial/sequential requests instead of parallel to be gentler on Google
+    const topTrends: any[] = [];
+    const topSearches = trendingSearches.slice(0, 30);
     
+    for (let i = 0; i < topSearches.length; i++) {
+      const item = topSearches[i];
+      await new Promise(r => setTimeout(r, 300)); // Delay between each
+      
+      const index = i;
+      const trendName = item.title.query || item.title.text || 'Unknown';
+      
+      try {
+        // Fetch interest over time for this trend
+        const interestOverTimeRaw = await googleTrends.interestOverTime({
+          keyword: trendName,
+          startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        });
+        
+        // Handle both string and object responses
+        const interestData = typeof interestOverTimeRaw === 'string' ? JSON.parse(interestOverTimeRaw) : interestOverTimeRaw;
+        const timelineData = interestData.default?.timelineData || [];
+        
+        // Get the latest/peak interest score
+        // Interest scores from Google Trends are 0-100
+        const interestScore = timelineData.length > 0 
+          ? Math.max(...timelineData.map((d: any) => d.value[0] || 0))
+          : 75;
+        
+        // Determine trend status by comparing recent vs older data
+        const recentAvg = timelineData.slice(-3).reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) / Math.max(timelineData.slice(-3).length, 1);
+        const olderAvg = timelineData.slice(0, 3).reduce((sum: number, d: any) => sum + (d.value[0] || 0), 0) / Math.max(timelineData.slice(0, 3).length, 1);
+        const percentChange = ((recentAvg - olderAvg) / Math.max(olderAvg, 1)) * 100;
+        
+        let status: 'Exploding' | 'Rising' | 'Stable' | 'Declining';
+        if (percentChange > 50) status = 'Exploding';
+        else if (percentChange > 15) status = 'Rising';
+        else if (percentChange < -15) status = 'Declining';
+        else status = 'Stable';
+          
+        // VOLUME ESTIMATION FORMULA:
+        // Google Trends interest_score is 0-100 scale
+        // We estimate weekly searches using: (interest_score / 100) * 1200000
+        // This assumes a score of 100 = ~1.2M searches per week
+        // The multiplier is calibrated based on typical high-trending topics
+        const BASE_WEEKLY_MULTIPLIER = 1200000;
+        const estimatedWeeklySearches = Math.round((interestScore / 100) * BASE_WEEKLY_MULTIPLIER);
+        
+        topTrends.push({
+          trend: trendName,
+          estimated_weekly_searches: Math.max(estimatedWeeklySearches, 50000), // Minimum 50K
+          interest_score: interestScore,
+          status,
+          related_topics: [],
+        });
+      } catch (error) {
+        console.warn(`Error processing trend "${trendName}":`, error);
+        // Return fallback data for this trend
+        topTrends.push({
+          trend: trendName,
+          estimated_weekly_searches: 800000 + (Math.random() * 400000), // 800K-1.2M
+          interest_score: 75 + Math.floor(Math.random() * 25),
+          status: 'Stable' as const,
+          related_topics: [],
+        });
+      }
+    }
+    
+    // Cache for 24 hours
+    setCached(cacheKey, topTrends, 24 * 60 * 60 * 1000);
     return topTrends;
   } catch (error) {
     console.warn('Could not fetch top trends with volumes:', error);
