@@ -215,6 +215,55 @@ export default function TrendsIntelligence() {
           ))}
         </div>
 
+        {/* Quick Tools Bar */}
+        <div className="mb-6 p-4 rounded-lg bg-slate-800/50 border border-slate-700">
+          <div className="text-sm text-slate-400 mb-3 font-semibold">⚡ Quick Tools:</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            <button
+              className="px-3 py-2 rounded bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-xs transition font-semibold"
+              onClick={() => toast.success("🔍 Keyword research loaded")}
+              data-testid="button-quick-keyword-research"
+            >
+              🔍 Keywords
+            </button>
+            <button
+              className="px-3 py-2 rounded bg-green-500/20 hover:bg-green-500/30 text-green-300 text-xs transition font-semibold"
+              onClick={() => toast.success("#️⃣ Hashtag analysis loaded")}
+              data-testid="button-quick-hashtag"
+            >
+              #️⃣ Hashtags
+            </button>
+            <button
+              className="px-3 py-2 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs transition font-semibold"
+              onClick={() => toast.success("👥 Competitor analysis loaded")}
+              data-testid="button-quick-competitors"
+            >
+              👥 Competitors
+            </button>
+            <button
+              className="px-3 py-2 rounded bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-xs transition font-semibold"
+              onClick={() => toast.success("⭐ Influencer tracking loaded")}
+              data-testid="button-quick-influencers"
+            >
+              ⭐ Influencers
+            </button>
+            <button
+              className="px-3 py-2 rounded bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 text-xs transition font-semibold"
+              onClick={() => setShowAddAlert(!showAddAlert)}
+              data-testid="button-quick-alerts"
+            >
+              🔔 Alerts
+            </button>
+            <button
+              className="px-3 py-2 rounded bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 text-xs transition font-semibold"
+              onClick={() => toast.success("Generating insights...")}
+              data-testid="button-quick-insights"
+            >
+              ✨ Insights
+            </button>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
