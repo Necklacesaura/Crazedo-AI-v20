@@ -1,0 +1,43 @@
+🌍 What is Google Trends Scraper?
+Our Google Trends Scraper crawls specified search queries and Google Trends URLs, and extracts data from Google Trends pages in structured formats such as JSON, CSV, XML, or Excel. With this Google Trends API, you will be able to extract the following Google trends data:
+
+🔍 Search term	🏙 Interest by city
+🌍 Interest by subregion	🗺 Geo code and Geo name
+📊 Average interest over time	📆 Timeline of the interest over time
+🔺 Rising related queries	🔝 Top related queries
+⬆️ Rising related topics	⭐️ Top related topics
+🌐 How do I use Google Trends Scraper?
+Google Trends Scraper is designed to be user-friendly, even for those who have never extracted data from the web before. Here’s how you can use Google Trends Scraper to extract data from Google trends:
+
+Create an Apify account
+Open Google Trends Scraper.
+Enter your search term, location, and time range. Or use a Google Trends URL with applied filters instead.
+Click the “Start” button and wait for the data to be extracted.
+Download your data in JSON, CSV, Excel, XML or HTML.
+If you need guidance on how to run the scraper, you can read our step-by-step guide to scraping Google Trends, it includes use cases, screenshots, and examples. Or watch a short video tutorial ▷ on YouTube.
+
+
+
+📉 What can you do with scraped Google Trends data?
+🔍 Back up your market research by tracking the popularity of search terms and identifying trending topics
+
+📊 Find business insights by comparing the popularity of multiple search terms and see how they relate to each other
+
+📍 Generate content ideas by exploring regional interest and see which areas are searching for specific topics the most
+
+💡 Discover related queries and topics to gain a deeper understanding of user interests
+
+🕒 Improve your SEO game by analyzing search trends over time to identify seasonal patterns or long-term changes in user behavior
+
+⬇️ Input example
+You can scrape Google Trends either by search query or by a Google Trends URL. For a full explanation of input including an example in JSON, head over to the input tab.
+
+You can set up the input programmatically or use the fields in scraper’s interface:
+
+
+⬆️ Output example
+The scraped Google Trends data will be shown as a dataset which you can find in the Output tab. Note that the output is organized as a table for viewing convenience:
+
+
+You can preview all the fields and choose in which format to download Google Trends data you’ve extracted: JSON, Excel, HTML table, CSV, or XML. Here below is the same dataset in JSON:
+
