@@ -1,0 +1,567 @@
+{
+  "inputUrlOrTerm": "web scraping",
+  "searchTerm": "web scraping",
+  "interestOverTime_timelineData": [
+    {
+      "time": "1673136000",
+      "formattedTime": "Jan 8 – 14, 2023",
+      "formattedAxisTime": "Jan 8, 2023",
+      "value": [
+        99
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "99"
+      ]
+    },
+    {
+      "time": "1673740800",
+      "formattedTime": "Jan 15 – 21, 2023",
+      "formattedAxisTime": "Jan 15, 2023",
+      "value": [
+        96
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "96"
+      ]
+    },
+    {
+      "time": "1674345600",
+      "formattedTime": "Jan 22 – 28, 2023",
+      "formattedAxisTime": "Jan 22, 2023",
+      "value": [
+        99
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "99"
+      ]
+    },
+    {
+      "time": "1674950400",
+      "formattedTime": "Jan 29 – Feb 4, 2023",
+      "formattedAxisTime": "Jan 29, 2023",
+      "value": [
+        98
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "98"
+      ]
+    },
+    {
+      "time": "1675555200",
+      "formattedTime": "Feb 5 – 11, 2023",
+      "formattedAxisTime": "Feb 5, 2023",
+      "value": [
+        100
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "100"
+      ]
+    },
+    {
+      "time": "1676160000",
+      "formattedTime": "Feb 12 – 18, 2023",
+      "formattedAxisTime": "Feb 12, 2023",
+      "value": [
+        91
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "91"
+      ]
+    },
+    {
+      "time": "1676764800",
+      "formattedTime": "Feb 19 – 25, 2023",
+      "formattedAxisTime": "Feb 19, 2023",
+      "value": [
+        98
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "98"
+      ]
+    },
+{
+      "time": "1703376000",
+      "formattedTime": "Dec 24 – 30, 2023",
+      "formattedAxisTime": "Dec 24, 2023",
+      "value": [
+        80
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "80"
+      ]
+    },
+    {
+      "time": "1703980800",
+      "formattedTime": "Dec 31, 2023 – Jan 6, 2024",
+      "formattedAxisTime": "Dec 31, 2023",
+      "value": [
+        81
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "81"
+      ]
+    },
+    {
+      "time": "1704585600",
+      "formattedTime": "Jan 7 – 13, 2024",
+      "formattedAxisTime": "Jan 7, 2024",
+      "value": [
+        91
+      ],
+      "hasData": [
+        true
+      ],
+      "formattedValue": [
+        "91"
+      ],
+      "isPartial": true
+    }
+  ],
+  "interestOverTime_averages": [],
+  "interestBySubregion": [],
+  "interestByCity": [],
+  "relatedTopics_top": [
+    {
+      "topic": {
+        "mid": "/m/07ykbs",
+        "title": "Web scraping",
+        "type": "Topic"
+      },
+      "value": 100,
+      "formattedValue": "100",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/07ykbs&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/0828v",
+        "title": "World Wide Web",
+        "type": "Topic"
+      },
+      "value": 97,
+      "formattedValue": "97",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/0828v&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/05z1_",
+        "title": "Python",
+        "type": "Programming language"
+      },
+      "value": 29,
+      "formattedValue": "29",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/05z1_&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/026sq",
+        "title": "Data",
+        "type": "Topic"
+      },
+      "value": 14,
+      "formattedValue": "14",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/026sq&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/085n4",
+        "title": "Website",
+        "type": "Topic"
+      },
+      "value": 9,
+      "formattedValue": "9",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/085n4&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/0c828v",
+        "title": "Selenium",
+        "type": "Software"
+      },
+      "value": 5,
+      "formattedValue": "5",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/0c828v&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/0z5n",
+        "title": "Application programming interface",
+        "type": "Type of software"
+      },
+      "value": 5,
+      "formattedValue": "5",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/0z5n&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/022qrc8",
+        "title": "Beautiful Soup",
+        "type": "HTML parser"
+      },
+      "value": 5,
+      "formattedValue": "5",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/022qrc8&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/07k1x",
+        "title": "Tool",
+        "type": "Topic"
+      },
+      "value": 5,
+      "formattedValue": "5",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/07k1x&date=today+12-m"
+    },
+    {
+      "topic": {
+        "mid": "/m/086nh",
+        "title": "Web page",
+        "type": "Topic"
+      },
+      "value": 5,
+      "formattedValue": "5",
+      "hasData": true,
+      "link": "/trends/explore?q=/m/086nh&date=today+12-m"
+    },
+{
+      "topic": {
+        "mid": "/m/0g57xn",
+        "title": "Sentiment analysis",
+        "type": "Field of study"
+      },
+      "value": 50,
+      "formattedValue": "+50%",
+      "link": "/trends/explore?q=/m/0g57xn&date=today+12-m"
+    }
+  ],
+  "relatedQueries_top": [
+    {
+      "query": "python scraping",
+      "value": 100,
+      "formattedValue": "100",
+      "hasData": true,
+      "link": "/trends/explore?q=python+scraping&date=today+12-m"
+    },
+    {
+      "query": "python",
+      "value": 96,
+      "formattedValue": "96",
+      "hasData": true,
+      "link": "/trends/explore?q=python&date=today+12-m"
+    },
+    {
+      "query": "web scraping python",
+      "value": 94,
+      "formattedValue": "94",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+python&date=today+12-m"
+    },
+    {
+      "query": "web data scraping",
+      "value": 39,
+      "formattedValue": "39",
+      "hasData": true,
+      "link": "/trends/explore?q=web+data+scraping&date=today+12-m"
+    },
+    {
+      "query": "data scraping",
+      "value": 38,
+      "formattedValue": "38",
+      "hasData": true,
+      "link": "/trends/explore?q=data+scraping&date=today+12-m"
+    },
+    {
+      "query": "web scraping in python",
+      "value": 18,
+      "formattedValue": "18",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+in+python&date=today+12-m"
+    },
+    {
+      "query": "what is web scraping",
+      "value": 17,
+      "formattedValue": "17",
+      "hasData": true,
+      "link": "/trends/explore?q=what+is+web+scraping&date=today+12-m"
+    },
+    {
+      "query": "selenium web scraping",
+      "value": 17,
+      "formattedValue": "17",
+      "hasData": true,
+      "link": "/trends/explore?q=selenium+web+scraping&date=today+12-m"
+    },
+    {
+      "query": "selenium",
+      "value": 16,
+      "formattedValue": "16",
+      "hasData": true,
+      "link": "/trends/explore?q=selenium&date=today+12-m"
+    },
+    {
+      "query": "web scraping google",
+      "value": 16,
+      "formattedValue": "16",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+google&date=today+12-m"
+    },
+    {
+      "query": "api",
+      "value": 16,
+      "formattedValue": "16",
+      "hasData": true,
+      "link": "/trends/explore?q=api&date=today+12-m"
+    },
+    {
+      "query": "website scraping",
+      "value": 16,
+      "formattedValue": "16",
+      "hasData": true,
+      "link": "/trends/explore?q=website+scraping&date=today+12-m"
+    },
+    {
+      "query": "web scraping api",
+      "value": 16,
+      "formattedValue": "16",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+api&date=today+12-m"
+    },
+    {
+      "query": "web scraping using python",
+      "value": 15,
+      "formattedValue": "15",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+using+python&date=today+12-m"
+    },
+    {
+      "query": "web scraping with python",
+      "value": 14,
+      "formattedValue": "14",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+with+python&date=today+12-m"
+    },
+    {
+      "query": "web scraping tools",
+      "value": 12,
+      "formattedValue": "12",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+tools&date=today+12-m"
+    },
+    {
+      "query": "beautifulsoup",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=beautifulsoup&date=today+12-m"
+    },
+    {
+      "query": "beautifulsoup web scraping",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=beautifulsoup+web+scraping&date=today+12-m"
+    },
+    {
+      "query": "web scraping free",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraping+free&date=today+12-m"
+    },
+    {
+      "query": "web scraper",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scraper&date=today+12-m"
+    },
+    {
+      "query": "scraper",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=scraper&date=today+12-m"
+    },
+    {
+      "query": "scrape",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=scrape&date=today+12-m"
+    },
+    {
+      "query": "web scrape",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=web+scrape&date=today+12-m"
+    },
+    {
+      "query": "python selenium web scraping",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=python+selenium+web+scraping&date=today+12-m"
+    },
+    {
+      "query": "python selenium",
+      "value": 11,
+      "formattedValue": "11",
+      "hasData": true,
+      "link": "/trends/explore?q=python+selenium&date=today+12-m"
+    }
+  ],
+  "relatedQueries_rising": [
+    {
+      "query": "chatgpt web scraping",
+      "value": 4250,
+      "formattedValue": "+4,250%",
+      "link": "/trends/explore?q=chatgpt+web+scraping&date=today+12-m"
+    },
+    {
+      "query": "analisis data adalah",
+      "value": 1150,
+      "formattedValue": "+1,150%",
+      "link": "/trends/explore?q=analisis+data+adalah&date=today+12-m"
+    },
+    {
+      "query": "analisis data",
+      "value": 750,
+      "formattedValue": "+750%",
+      "link": "/trends/explore?q=analisis+data&date=today+12-m"
+    },
+{
+      "query": "playwright",
+      "value": 50,
+      "formattedValue": "+50%",
+      "link": "/trends/explore?q=playwright&date=today+12-m"
+    },
+    {
+      "query": "web scraping tool free",
+      "value": 50,
+      "formattedValue": "+50%",
+      "link": "/trends/explore?q=web+scraping+tool+free&date=today+12-m"
+    }
+  ],
+  "interestBy": [
+    {
+      "geoCode": "SH",
+      "geoName": "St. Helena",
+      "value": [
+        100
+      ],
+      "formattedValue": [
+        "100"
+      ],
+      "maxValueIndex": 0,
+      "hasData": [
+        true
+      ]
+    },
+    {
+      "geoCode": "TN",
+      "geoName": "Tunisia",
+      "value": [
+        60
+      ],
+      "formattedValue": [
+        "60"
+      ],
+      "maxValueIndex": 0,
+      "hasData": [
+        true
+      ]
+    },
+    {
+      "geoCode": "SG",
+      "geoName": "Singapore",
+      "value": [
+        56
+      ],
+      "formattedValue": [
+        "56"
+      ],
+      "maxValueIndex": 0,
+      "hasData": [
+        true
+      ]
+    },
+    {
+      "geoCode": "PK",
+      "geoName": "Pakistan",
+      "value": [
+        46
+      ],
+      "formattedValue": [
+        "46"
+      ],
+      "maxValueIndex": 0,
+      "hasData": [
+        true
+      ]
+    },
+{
+      "geoCode": "KM",
+      "geoName": "Comoros",
+      "value": [
+        0
+      ],
+      "formattedValue": [
+        ""
+      ],
+      "maxValueIndex": 0,
+      "hasData": [
+        false
+      ]
+    },
+    {
+      "geoCode": "IO",
+      "geoName": "British Indian Ocean Territory",
+      "value": [
+        0
+      ],
+      "formattedValue": [
+        ""
+      ],
+      "maxValueIndex": 0,
+      "hasData": [
+        false
+      ]
+    }
+  ]
+}]
