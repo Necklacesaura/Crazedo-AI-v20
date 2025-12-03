@@ -263,25 +263,25 @@ export default function Home() {
                 </div>
               </motion.button>
 
-              {/* Global Trending Button */}
+              {/* Google Trends Scraper Tool Button */}
               {!hasSearched && (
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9 }}
-                  onClick={() => navigate("/global-trending")}
+                  onClick={() => navigate("/scraper-tool")}
                   className="w-full p-6 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all group cursor-pointer text-left"
-                  data-testid="button-global-trending"
+                  data-testid="button-scraper-tool"
                 >
                   <div className="flex items-start justify-between">
                     <div>
                       <h4 className="font-semibold mb-1 text-cyan-100 group-hover:text-cyan-50 flex items-center gap-2">
                         <Globe className="w-5 h-5" />
-                        🌍 Global Most Searched On Google
+                        🔍 Google Trends Scraper
                       </h4>
-                      <p className="text-cyan-200/60 text-xs">Real-time worldwide trends with interest scores and volumes</p>
+                      <p className="text-cyan-200/60 text-xs">Search any topic to analyze Google Trends data</p>
                     </div>
-                    <div className="text-2xl group-hover:scale-110 transition">🌐</div>
+                    <div className="text-2xl group-hover:scale-110 transition">📊</div>
                   </div>
                 </motion.button>
               )}
