@@ -1,0 +1,67 @@
+Extract valuable search trend data from Google Trends with this powerful scraping solution. Get instant access to trending topics, rising queries, and search interest patterns to power your market research and content strategy.
+
+Features 🌟
+Real-time Trend Analysis: Extract current trending topics and rising queries
+Comprehensive Data Collection: Get both "Top" and "Rising" search trends
+Flexible Search Options: Analyze any keyword or topic of interest
+Clean, Structured Output: Data delivered in easy-to-use JSON format
+Efficient Processing: Handle large-scale data extraction with ease
+Proxy Support: Optional proxy integration for reliable data collection
+Use Cases 💡
+Market Research and Analysis
+Content Strategy Development
+SEO Keyword Research
+Competitive Intelligence
+Trend Forecasting
+Social Media Planning
+News and Media Monitoring
+Output Format 📋
+The actor provides structured data including:
+
+Keyword analyzed
+Trend type (Top/Rising)
+Trending items and queries
+Related search terms
+Input Example
+A full explanation of an input example in JSON.
+
+{
+    "keyword": "btc",
+    "userProxy": false
+}
+
+Output sample
+The results will be wrapped into a dataset which you can always find in the Storage tab. Here's an excerpt from the data you'd get if you apply the input parameters above:
+
+And here is the same data but in JSON. You can choose in which format to download your data: JSON, JSONL, Excel spreadsheet, HTML table, CSV, or XML.
+
+[
+    {
+        "keyword": "btc",
+        "type": "Rising",
+        "item": "btc liquidation heatmap"
+    },
+    {
+        "keyword": "btc",
+        "type": "Top",
+        "item": "usd to btc"
+    },
+    ...
+]
+
+Related Actors 🤝
+🔍 Keyword Discovery Tool - Discover new keyword ideas and valuable search insights
+🌍 Google RealTime Trends Data Scraper - Monitor trending search keywords across 40+ countries
+🔎 Google Search Scraper - Extract search results with comprehensive data
+📊 Google Videos Scraper - Collect video search results with flexible options
+🖼️ Google Images Scraper - Scrape image search results with advanced filtering
+🗺️ Google Maps Scraper - Extract detailed place information from Google Maps
+📰 Google News Scraper - Collect up to 5000 news articles with flexible search
+🎯 Keyword Suggestions Scraper - Get keyword suggestions from multiple platforms
+🔍 Keyword Density Checker - Analyze webpage content for keyword optimization
+🎯 YouTube Hashtag Generator - Generate relevant hashtags for content
+🔍 AI-powered Search - Get AI-enhanced search summaries and insights
+🎯 Ranked Keywords Scraper - Discover keyword insights and search volumes
+📊 YouTube Video Statistics Scraper - Extract comprehensive video metrics
+🎥 YouTube Channel Statistics Scraper - Get detailed channel analytics
+🌍 YouTube Region Restriction Checker - Check video availability globally

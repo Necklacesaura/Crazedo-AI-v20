@@ -205,26 +205,33 @@ export default function ScraperTool() {
               </Card>
             )}
 
-            {/* Related Topics */}
-            {data.related_topics.length > 0 && (
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-lg text-emerald-300 flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5" />
-                    Related Topics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-2">
-                    {data.related_topics.slice(0, 10).map((topic, i) => (
-                      <div key={i} className="p-3 rounded bg-slate-700/50 flex justify-between items-center">
-                        <span className="text-slate-200">{topic}</span>
+            {/* Top Trending Topics & Queries */}
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-lg text-emerald-300 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Top Trends
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {/* Top Related Topics */}
+                  {data.related_topics.length > 0 && (
+                    <div>
+                      <div className="text-xs font-semibold text-emerald-400 mb-2 uppercase">Related Topics</div>
+                      <div className="grid gap-2">
+                        {data.related_topics.slice(0, 8).map((topic, i) => (
+                          <div key={i} className="p-2.5 rounded bg-slate-700/50 flex justify-between items-center">
+                            <span className="text-slate-200 text-sm">{topic}</span>
+                            <Badge variant="outline" className="text-emerald-400">Top</Badge>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Regional Interest */}
             {data.sources.google.interest_by_region.length > 0 && (
@@ -245,19 +252,47 @@ export default function ScraperTool() {
               </Card>
             )}
 
-            {/* Related Queries */}
+            {/* Top & Rising Queries */}
             {data.sources.google.related_queries.length > 0 && (
               <Card className="bg-slate-800/50 border-slate-700">
                 <CardHeader>
-                  <CardTitle className="text-lg text-purple-300">Related Queries</CardTitle>
+                  <CardTitle className="text-lg text-purple-300">Trending Queries</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-2">
-                    {data.sources.google.related_queries.slice(0, 15).map((query, i) => (
-                      <div key={i} className="p-3 rounded bg-slate-700/50 flex justify-between items-center">
-                        <span className="text-slate-200 text-sm">{query}</span>
+                  <div className="space-y-4">
+                    {/* Top Queries */}
+                    <div>
+                      <div className="text-xs font-semibold text-purple-400 mb-2 uppercase flex items-center gap-2">
+                        <span>🔝 Top Queries</span>
+                        <Badge className="bg-purple-600 text-xs">Popular</Badge>
                       </div>
-                    ))}
+                      <div className="grid gap-2">
+                        {data.sources.google.related_queries.slice(0, 8).map((query, i) => (
+                          <div key={i} className="p-2.5 rounded bg-slate-700/50 flex justify-between items-center">
+                            <span className="text-slate-200 text-sm">{query}</span>
+                            <Badge variant="outline" className="text-purple-400 text-xs">Top</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Rising Queries */}
+                    {data.sources.google.related_queries.length > 8 && (
+                      <div>
+                        <div className="text-xs font-semibold text-red-400 mb-2 uppercase flex items-center gap-2">
+                          <span>📈 Rising Queries</span>
+                          <Badge className="bg-red-600 text-xs">Trending</Badge>
+                        </div>
+                        <div className="grid gap-2">
+                          {data.sources.google.related_queries.slice(8, 15).map((query, i) => (
+                            <div key={i} className="p-2.5 rounded bg-slate-700/50 flex justify-between items-center">
+                              <span className="text-slate-200 text-sm">{query}</span>
+                              <Badge variant="outline" className="text-red-400 text-xs">Rising</Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
