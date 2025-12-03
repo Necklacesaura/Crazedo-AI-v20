@@ -186,7 +186,22 @@ Preferred communication style: Simple, everyday language.
 
 **Key Integration Points:**
 - All external API calls happen server-side in `server/services/trend-analyzer.ts`
+- Pure scraper functions in `server/services/google-trends-scraper.ts` (NEW)
 - Parallel Promise execution for optimal performance
 - Client never directly communicates with external APIs
 - Environment variables control which integrations are active
 - LIVE data with no mock/fallback for Global Trending feature
+
+### Google Trends Scraper Module
+
+**LOCATION:** `server/services/google-trends-scraper.ts`
+
+**Pure functions for scraping:**
+- `fetchDailyTrends(geo)` - Daily trending searches
+- `fetchInterestOverTime(keyword)` - 7-day interest timeline
+- `fetchRelatedQueries(keyword)` - Related search terms
+- `calculateTrendStatus()` - Determine trend direction
+- `getPeakInterestScore()` - Extract interest metrics
+- `extractQueryName()` - Clean query strings
+
+**Used by:** `trend-analyzer.ts` for all trend analysis operations

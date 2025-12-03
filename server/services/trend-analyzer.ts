@@ -1,5 +1,13 @@
 import googleTrends from 'google-trends-api';
 import OpenAI from 'openai';
+import {
+  fetchDailyTrends,
+  fetchInterestOverTime,
+  fetchRelatedQueries,
+  calculateTrendStatus,
+  extractQueryName,
+  getPeakInterestScore,
+} from './google-trends-scraper';
 
 // Initialize OpenAI client only if API key is provided
 const openai = process.env.OPENAI_API_KEY 
@@ -28,15 +36,14 @@ export interface TrendAnalysisResult {
  */
 export async function getTrendingTopics(): Promise<{ topic: string; traffic: string }[]> {
   try {
-    const trendingRaw = await googleTrends.dailyTrends({ geo: 'US' });
-    const data = JSON.parse(trendingRaw);
+    const trendingSearches = await fetchDailyTrends('US');
     
-    const trending = data.default.trendingSearchesDays?.[0]?.trendingSearches
-      ?.slice(0, 5)
+    const trending = trendingSearches
+      .slice(0, 5)
       .map((item: any) => ({
-        topic: item.title.query || item.title.text || 'Unknown',
+        topic: extractQueryName(item, 'Unknown'),
         traffic: item.formattedTraffic || '+500K',
-      })) || [];
+      }));
     
     return trending.length > 0 ? trending : getDefaultTrendingTopics();
   } catch (error) {
