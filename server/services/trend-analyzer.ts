@@ -482,9 +482,9 @@ export async function getGlobalTrendingNow(): Promise<Array<{
       return '100K–500K';
     };
 
-    // Process top 50 trends - batch for efficiency
+    // Process top 10 trends - batch for efficiency
     const globalTrends = await Promise.all(
-      trendingSearches.slice(0, 50).map(async (item: any, index: number) => {
+      trendingSearches.slice(0, 10).map(async (item: any, index: number) => {
         const query = item.title.query || item.title.text || `Trend ${index + 1}`;
         let interestScore = 75 + Math.floor(Math.random() * 25);
         let sparkline: number[] = [65, 70, 75, 78, 72, 80, 85];
