@@ -62,31 +62,3 @@ export const getTopTrendsWithVolume = async (): Promise<WeeklyTrend[]> => {
   const data = await response.json();
   return data.trends;
 };
-
-// Type definitions for global trending (LIVE data from Google Trends)
-export interface GlobalTrend {
-  rank: number;
-  query: string;
-  interest_score: number;
-  volume_estimate: string;
-  status: 'Exploding' | 'Rising' | 'Stable' | 'Declining';
-  category: string;
-  sparkline: number[];
-  timestamp: string;
-}
-
-/**
- * Fetches global "Trending Now" searches from Google Trends worldwide
- * Returns top 25+ trends with rank, query, volume, category
- */
-export const getGlobalTrendingNow = async (): Promise<GlobalTrend[]> => {
-  const response = await fetch('/api/global-trending');
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to fetch global trending');
-  }
-
-  const data = await response.json();
-  return data.trends;
-};

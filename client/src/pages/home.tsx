@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { SearchInput } from "@/components/search-input";
 import { TrendDashboard } from "@/components/trend-dashboard";
-import { analyzeTrend, TrendData, getGlobalTrendingNow, GlobalTrend } from "@/lib/api";
+import { analyzeTrend, TrendData } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { X, Flame, TrendingUp, Globe, Sparkles } from "lucide-react";
+import { X, Flame, TrendingUp } from "lucide-react";
 
 interface SavedTrend {
   topic: string;
@@ -19,14 +19,6 @@ interface TrendingTopic {
   traffic: string;
 }
 
-interface WeeklyTrend {
-  trend: string;
-  estimated_weekly_searches: number;
-  interest_score: number;
-  status: string;
-  related_topics: string[];
-}
-
 export default function Home() {
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -34,19 +26,6 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
   const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
   const [trendingTopics, setTrendingTopics] = useState<TrendingTopic[]>([]);
-  const [globalTrends, setGlobalTrends] = useState<GlobalTrend[]>([]);
-  const [tickerTrends, setTickerTrends] = useState<WeeklyTrend[]>([]);
-  const [isHoveringTicker, setIsHoveringTicker] = useState(false);
-  
-  const fetchTickerData = async () => {
-    try {
-      const response = await fetch('/api/top-trends-weekly');
-      const data = await response.json();
-      setTickerTrends(data.trends?.slice(0, 5) || []);
-    } catch (err) {
-      console.error('Failed to fetch ticker data:', err);
-    }
-  };
   
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
@@ -58,23 +37,12 @@ export default function Home() {
       .then(data => setTrendingTopics(data.trending || []))
       .catch(err => console.error('Failed to fetch trending:', err));
 
-    // Fetch global trending now
-    getGlobalTrendingNow()
-      .then(trends => setGlobalTrends(trends))
-      .catch(err => console.error('Failed to fetch global trending:', err));
-
-    // Fetch ticker data
-    fetchTickerData();
-    const tickerInterval = setInterval(fetchTickerData, 60000);
-
     // Check if there's an auto-search trend from weekly trends page
     const autoSearchTrend = sessionStorage.getItem('autoSearchTrend');
     if (autoSearchTrend) {
       sessionStorage.removeItem('autoSearchTrend');
       handleSearch(autoSearchTrend);
     }
-
-    return () => clearInterval(tickerInterval);
   }, []);
 
   const handleSearch = async (term: string) => {
@@ -108,40 +76,6 @@ export default function Home() {
       {/* Background Grid */}
       <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
-      </div>
-
-      {/* Live Ticker Bar */}
-      <div className="relative z-20 mb-6 w-full">
-        <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
-          <div className={`ticker-marquee font-display ${isHoveringTicker ? 'paused' : ''}`} data-testid="ticker-bar">
-            {tickerTrends.length > 0 ? (
-              <>
-                {tickerTrends.map((trend, i) => (
-                  <button
-                    key={`first-${i}`}
-                    onClick={() => handleSearch(trend.trend)}
-                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
-                    data-testid={`ticker-item-${i}`}
-                  >
-                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
-                  </button>
-                ))}
-                {/* Duplicate for continuous scroll */}
-                {tickerTrends.map((trend, i) => (
-                  <button
-                    key={`second-${i}`}
-                    onClick={() => handleSearch(trend.trend)}
-                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
-                  >
-                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
-                  </button>
-                ))}
-              </>
-            ) : (
-              <span className="ticker-item px-6 py-3 text-cyan-400">Loading live trends...</span>
-            )}
-          </div>
-        </div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col min-h-[90vh]">
@@ -194,10 +128,10 @@ export default function Home() {
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         {savedTrends.map((trend, i) => (
-                          <div
+                          <button
                             key={i}
                             onClick={() => handleQuickSearch(trend.topic)}
-                            className="relative p-3 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/50 hover:bg-muted/40 transition group cursor-pointer"
+                            className="relative p-3 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/50 hover:bg-muted/40 transition group"
                             data-testid={`saved-trend-${i}`}
                           >
                             <div className="text-sm font-medium text-foreground text-left">{trend.topic}</div>
@@ -209,13 +143,33 @@ export default function Home() {
                             >
                               <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
                             </button>
-                          </div>
+                          </button>
                         ))}
                       </div>
                     </CardContent>
                   </Card>
                 </motion.div>
               )}
+
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                onClick={() => navigate("/weekly-trends")}
+                className="w-full p-6 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all group cursor-pointer text-left"
+                data-testid="button-weekly-trends"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold mb-1 text-emerald-100 group-hover:text-emerald-50 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      View Weekly Trends Report
+                    </h4>
+                    <p className="text-emerald-200/60 text-xs">Top 10 trending searches with estimated weekly volumes</p>
+                  </div>
+                  <div className="text-2xl group-hover:scale-110 transition">📊</div>
+                </div>
+              </motion.button>
 
               <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm text-center space-y-4">
                 <h3 className="font-display text-2xl mb-6 text-primary">Powered by Crazedo Trends</h3>
@@ -302,72 +256,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                onClick={() => navigate("/weekly-trends")}
-                className="w-full p-6 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all group cursor-pointer text-left"
-                data-testid="button-weekly-trends"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-semibold mb-1 text-emerald-100 group-hover:text-emerald-50 flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      View Weekly Trends Report
-                    </h4>
-                    <p className="text-emerald-200/60 text-xs">Top 100 trending searches with estimated weekly volumes</p>
-                  </div>
-                  <div className="text-2xl group-hover:scale-110 transition">📊</div>
-                </div>
-              </motion.button>
-
-              {/* Google Trends Scraper Tool Button */}
-              {!hasSearched && (
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9 }}
-                  onClick={() => navigate("/scraper-tool")}
-                  className="w-full p-6 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all group cursor-pointer text-left"
-                  data-testid="button-scraper-tool"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-semibold mb-1 text-cyan-100 group-hover:text-cyan-50 flex items-center gap-2">
-                        <Globe className="w-5 h-5" />
-                        🔍 Google Trends Scraper
-                      </h4>
-                      <p className="text-cyan-200/60 text-xs">Search any topic to analyze Google Trends data</p>
-                    </div>
-                    <div className="text-2xl group-hover:scale-110 transition">📊</div>
-                  </div>
-                </motion.button>
-              )}
-
-              {/* Trends Intelligence System Button */}
-              {!hasSearched && (
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0 }}
-                  onClick={() => navigate("/trends-intelligence")}
-                  className="w-full p-6 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:border-purple-400/60 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group cursor-pointer text-left"
-                  data-testid="button-trends-intelligence"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-semibold mb-1 text-purple-100 group-hover:text-purple-50 flex items-center gap-2">
-                        <Sparkles className="w-5 h-5" />
-                        🧠 Trends Intelligence System
-                      </h4>
-                      <p className="text-purple-200/60 text-xs">Advanced trend comparison, sentiment analysis & alerts</p>
-                    </div>
-                    <div className="text-2xl group-hover:scale-110 transition">⚡</div>
-                  </div>
-                </motion.button>
-              )}
 
               {/* This Week's Top Trending - Bottom Section */}
               {trendingTopics.length > 0 && !hasSearched && (

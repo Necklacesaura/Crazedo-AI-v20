@@ -4,13 +4,6 @@
 
 Crazedo AI Trend Analyzer is a real-time trend analysis application that aggregates data from multiple sources (Google Trends, Reddit, and Twitter/X placeholders) and uses OpenAI to generate intelligent trend summaries. The application provides a modern, animated dashboard displaying trend status, visualizations, and detailed source breakdowns.
 
-**Latest Updates:**
-- ✅ Global "Trending Now" with LIVE Google Trends data (not mocked)
-- ✅ Real interest scores, trend status detection (Exploding/Rising/Stable/Declining)
-- ✅ Estimated search volumes (10M–50M, 5M–10M, etc.)
-- ✅ 7-day sparkline interest graphs
-- ✅ Auto-categorization (Sports, Entertainment, Technology, Business, News, Shopping, Health, Lifestyle)
-
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -49,15 +42,12 @@ Preferred communication style: Simple, everyday language.
 - Separate entry points: `index-dev.ts` and `index-prod.ts`
 
 **API Design:**
-- RESTful JSON API endpoints:
+- RESTful JSON API with two main endpoints:
   - `POST /api/analyze` - Accepts topic, returns comprehensive trend analysis
-  - `GET /api/trending` - Get top 5 trending topics for this week
-  - `GET /api/top-trends-weekly` - Get top 110 most searched topics with estimated weekly volumes
-  - `GET /api/global-trending` - **NEW** Get top 25+ global "Trending Now" searches with LIVE data
   - `GET /api/health` - Health check endpoint showing API integration status
 
 **Data Flow:**
-1. Client submits topic via search form or clicks trend
+1. Client submits topic via search form
 2. Server orchestrates parallel API calls to external services
 3. Data is aggregated and optionally enhanced with AI summaries
 4. Structured response sent back to client for visualization
@@ -65,66 +55,7 @@ Preferred communication style: Simple, everyday language.
 **Error Handling:**
 - Input validation (topic length, empty strings)
 - Graceful degradation when API keys are missing
-- Smart fallback system: When Google Trends API fails (common), uses curated worldwide trends data
-
-**Global Trending Data:**
-- Data is WORLDWIDE/GLOBAL, not USA-only
-- Currently configured to use `geo: 'GLOBAL'` setting
-- When live API fails (JSON parse errors due to HTML response), falls back to 25 curated worldwide trends
-- Fallback data represents global search interests across all regions, not just USA
-
-### Global "Trending Now" Feature - LIVE Data
-
-**BACKEND CODE LOCATION:** `server/services/trend-analyzer.ts` - Function `getGlobalTrendingNow()`
-
-**How to Modify:**
-
-1. **Change data source or geographic scope:**
-   - Line 442: Change `{ geo: 'GLOBAL' }` to other geo codes (e.g., `'US'`, `'IN'`, `'UK'`)
-   - Or switch to different API entirely (e.g., use PyTrends via Python subprocess)
-
-2. **Adjust volume estimation:**
-   - Lines 474-480: `estimateVolume()` function converts interest scores to volume ranges
-   - Modify the threshold ranges to change volume labels
-
-3. **Customize categories:**
-   - Lines 452-461: `categoryMap` object defines keyword-to-category mappings
-   - Add/remove keywords to change categorization logic
-
-4. **Change trend status calculation:**
-   - Lines 507-515: `determineTrendStatus()` logic compares recent vs older data
-   - Adjust percentage thresholds (50%, 15%, -15%) for sensitivity
-
-5. **Modify sparkline data:**
-   - Lines 504-505: Extracts 7-day interest values
-   - Change `Date.now() - 7 * 24 * 60 * 60 * 1000` to different time ranges
-
-**Frontend Code Location:** `client/src/pages/home.tsx` - Lines 269-348
-
-**Data Display:**
-- Table shows top 25 global trends
-- Columns: Rank, Trend name, Interest score (0-100), Volume estimate, Status badge, Sparkline graph, Category
-- Each trend is clickable to analyze immediately
-- Last updated timestamp displayed
-
-**API Response Structure:**
-```json
-{
-  "trends": [
-    {
-      "rank": 1,
-      "query": "Chiefs vs Cowboys",
-      "interest_score": 92,
-      "volume_estimate": "10M–50M",
-      "status": "Exploding",
-      "category": "Sports",
-      "sparkline": [65, 70, 75, 78, 82, 88, 92],
-      "timestamp": "2025-12-01T14:31:45.123Z"
-    },
-    ...
-  ]
-}
-```
+- Fallback data for missing integrations
 
 ### Data Storage
 
@@ -144,18 +75,17 @@ Preferred communication style: Simple, everyday language.
 
 **Required APIs:**
 
-1. **Google Trends API** (No API key required) ⭐ PRIMARY
-   - Used for: Real-time global trending searches, interest over time, related queries
-   - Status: Always active (free, no authentication)
-   - Library: `google-trends-api` npm package (v4.9.2)
-   - Returns: Worldwide trending data with interest scores on 0-100 scale
-   - Used in functions: `getTrendingTopics()`, `getTopTrendsWithVolume()`, `getGlobalTrendingNow()`
-
-2. **OpenAI API** (Optional)
+1. **OpenAI API** (Optional)
    - Used for: Generating intelligent trend summaries
    - Fallback: Generic summary without AI enhancement
    - Configuration: `OPENAI_API_KEY` environment variable
    - Library: `openai` npm package
+
+2. **Google Trends API**
+   - Used for: Historical interest over time data and related queries
+   - Status: Always active (no API key required)
+   - Library: `google-trends-api` npm package
+   - Returns: Time series data and related search queries
 
 3. **Reddit API** (Optional)
    - Used for: Top posts, sentiment analysis
@@ -185,32 +115,7 @@ Preferred communication style: Simple, everyday language.
 - Custom Vite plugin for meta image tag updates (`vite-plugin-meta-images.ts`)
 
 **Key Integration Points:**
-- All external API calls happen server-side in `server/services/trend-analyzer.ts`
-- Pure scraper functions in `server/services/google-trends-scraper.ts` (NEW)
+- All external API calls happen server-side in `trend-analyzer.ts`
 - Parallel Promise execution for optimal performance
 - Client never directly communicates with external APIs
 - Environment variables control which integrations are active
-- LIVE data with no mock/fallback for Global Trending feature
-
-### Google Trends Scraper Module
-
-**LOCATION:** `server/services/google-trends-scraper.ts`
-
-**Pure functions for scraping:**
-- `fetchDailyTrends(geo)` - Daily trending searches (GLOBAL/US/etc)
-- `fetchInterestOverTime(keyword)` - 7-day interest timeline
-- `fetchRelatedQueries(keyword)` - Related search terms
-- `calculateTrendStatus(timelineData)` - Determine trend direction (works with both raw & transformed data)
-- `getPeakInterestScore()` - Extract interest metrics
-- `extractQueryName()` - Clean query strings
-- `isValidJSON()` - Validates responses (detects HTML error pages)
-
-**Used by:** `trend-analyzer.ts` for all trend analysis operations
-
-**Error Handling:**
-- Detects when Google blocks API (returns HTML instead of JSON)
-- Gracefully falls back to curated worldwide trends data
-- Same trend status calculation used everywhere (consistent results)
-- Supports both LIVE API and fallback seamlessly
-
-**Note:** Google Trends API may be rate-limited during high traffic. When blocked, the app automatically uses fallback curated data without errors.
