@@ -6,7 +6,7 @@ import { analyzeTrend, TrendData, getGlobalTrendingNow, GlobalTrend } from "@/li
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { X, Flame, TrendingUp, Globe } from "lucide-react";
+import { X, Flame, TrendingUp, Globe, Sparkles } from "lucide-react";
 
 interface SavedTrend {
   topic: string;
@@ -282,6 +282,29 @@ export default function Home() {
                       <p className="text-cyan-200/60 text-xs">Search any topic to analyze Google Trends data</p>
                     </div>
                     <div className="text-2xl group-hover:scale-110 transition">📊</div>
+                  </div>
+                </motion.button>
+              )}
+
+              {/* Trends Intelligence System Button */}
+              {!hasSearched && (
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0 }}
+                  onClick={() => navigate("/trends-intelligence")}
+                  className="w-full p-6 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:border-purple-400/60 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group cursor-pointer text-left"
+                  data-testid="button-trends-intelligence"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-semibold mb-1 text-purple-100 group-hover:text-purple-50 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        🧠 Trends Intelligence System
+                      </h4>
+                      <p className="text-purple-200/60 text-xs">Advanced trend comparison, sentiment analysis & alerts</p>
+                    </div>
+                    <div className="text-2xl group-hover:scale-110 transition">⚡</div>
                   </div>
                 </motion.button>
               )}
