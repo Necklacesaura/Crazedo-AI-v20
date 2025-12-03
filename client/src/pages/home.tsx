@@ -111,7 +111,7 @@ export default function Home() {
       </div>
 
       {/* Live Ticker Bar */}
-      <div className="relative z-20 mb-8 w-full group">
+      <div className="relative z-20 mb-6 w-full">
         <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
           <div className={`ticker-marquee font-display ${isHoveringTicker ? 'paused' : ''}`} data-testid="ticker-bar">
             {tickerTrends.length > 0 ? (
@@ -120,13 +120,10 @@ export default function Home() {
                   <button
                     key={`first-${i}`}
                     onClick={() => handleSearch(trend.trend)}
-                    className="ticker-item"
+                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
                     data-testid={`ticker-item-${i}`}
-                    title={`Search: ${trend.trend}`}
                   >
-                    <span className="text-lg">🔥</span>
-                    <span className="ticker-trend-name">{trend.trend}</span>
-                    <span className="ticker-percent">+{trend.interest_score}%</span>
+                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
                   </button>
                 ))}
                 {/* Duplicate for continuous scroll */}
@@ -134,20 +131,14 @@ export default function Home() {
                   <button
                     key={`second-${i}`}
                     onClick={() => handleSearch(trend.trend)}
-                    className="ticker-item"
-                    title={`Search: ${trend.trend}`}
+                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
                   >
-                    <span className="text-lg">🔥</span>
-                    <span className="ticker-trend-name">{trend.trend}</span>
-                    <span className="ticker-percent">+{trend.interest_score}%</span>
+                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
                   </button>
                 ))}
               </>
             ) : (
-              <span className="ticker-item">
-                <span className="text-lg">⏳</span>
-                <span className="ticker-trend-name">Loading live trends...</span>
-              </span>
+              <span className="ticker-item px-6 py-3 text-cyan-400">Loading live trends...</span>
             )}
           </div>
         </div>
