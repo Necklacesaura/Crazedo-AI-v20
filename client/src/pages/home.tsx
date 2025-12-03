@@ -194,10 +194,10 @@ export default function Home() {
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         {savedTrends.map((trend, i) => (
-                          <button
+                          <div
                             key={i}
                             onClick={() => handleQuickSearch(trend.topic)}
-                            className="relative p-3 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/50 hover:bg-muted/40 transition group"
+                            className="relative p-3 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/50 hover:bg-muted/40 transition group cursor-pointer"
                             data-testid={`saved-trend-${i}`}
                           >
                             <div className="text-sm font-medium text-foreground text-left">{trend.topic}</div>
@@ -209,7 +209,7 @@ export default function Home() {
                             >
                               <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
                             </button>
-                          </button>
+                          </div>
                         ))}
                       </div>
                     </CardContent>

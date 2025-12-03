@@ -85,7 +85,9 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
 }>> {
   try {
     const trendingRaw = await googleTrends.dailyTrends({ geo: 'US' });
-    const data = JSON.parse(trendingRaw);
+    
+    // Handle both string and object responses
+    const data = typeof trendingRaw === 'string' ? JSON.parse(trendingRaw) : trendingRaw;
     
     const trendingSearches = data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
     
@@ -101,8 +103,9 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
             startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           });
           
-          const interestData = JSON.parse(interestOverTimeRaw);
-          const timelineData = interestData.default.timelineData || [];
+          // Handle both string and object responses
+          const interestData = typeof interestOverTimeRaw === 'string' ? JSON.parse(interestOverTimeRaw) : interestOverTimeRaw;
+          const timelineData = interestData.default?.timelineData || [];
           
           // Get the latest/peak interest score
           // Interest scores from Google Trends are 0-100
@@ -125,8 +128,8 @@ export async function getTopTrendsWithVolume(): Promise<Array<{
           let relatedQueries: string[] = [];
           try {
             const relatedQueriesRaw = await googleTrends.relatedQueries({ keyword: trendName });
-            const relatedData = JSON.parse(relatedQueriesRaw);
-            relatedQueries = relatedData.default.rankedList?.[0]?.rankedKeyword
+            const relatedData = typeof relatedQueriesRaw === 'string' ? JSON.parse(relatedQueriesRaw) : relatedQueriesRaw;
+            relatedQueries = relatedData.default?.rankedList?.[0]?.rankedKeyword
               ?.slice(0, 3)
               .map((item: any) => item.query) || [];
           } catch {
@@ -318,7 +321,8 @@ async function fetchGoogleTrends(topic: string) {
       startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
     });
 
-    const data = JSON.parse(interestOverTimeRaw);
+    // Handle both string and object responses
+    const data = typeof interestOverTimeRaw === 'string' ? JSON.parse(interestOverTimeRaw) : interestOverTimeRaw;
     
     // Transform data into our format
     const interest_over_time = data.default.timelineData.map((item: any) => ({

@@ -1,14 +1,13 @@
 /**
- * Google Trends Scraper Module (using google-trends package)
- * Handles all direct interactions with google-trends library
+ * Google Trends Scraper Module (using google-trends-api package)
+ * Handles all direct interactions with google-trends-api library
  * Provides clean, reusable functions for scraping trend data
  * 
  * LOCATION: server/services/google-trends-scraper.ts
  * Imported by: server/services/trend-analyzer.ts
  */
 
-// @ts-ignore - google-trends library doesn't have type declarations
-import * as googleTrends from 'google-trends';
+import googleTrends from 'google-trends-api';
 
 /**
  * Validates if response is valid JSON (not HTML error page)
@@ -33,18 +32,10 @@ function isValidJSON(response: any): boolean {
  */
 export async function fetchDailyTrends(geo: string = 'GLOBAL'): Promise<any[]> {
   try {
-    // Use explore method for daily trends since google-trends lib has different API
-    const response = await googleTrends.explore({ 
-      keyword: '',
-      geo: geo
-    });
+    const response = await googleTrends.dailyTrends({ geo });
+    const data = JSON.parse(response);
     
-    if (!isValidJSON(response)) {
-      throw new Error('Invalid response (likely HTML error page)');
-    }
-    
-    // Extract trends from response
-    const trends = response.default?.trendingSearchesDays?.[0]?.trendingSearches || response.default?.daily || [];
+    const trends = data.default?.trendingSearchesDays?.[0]?.trendingSearches || [];
     if (trends.length === 0) {
       console.warn(`⚠️ No trending data found for ${geo}, returning empty array`);
       return [];
@@ -73,12 +64,9 @@ export async function fetchInterestOverTime(
     if (startTime) options.startTime = startTime;
     
     const response = await googleTrends.interestOverTime(options);
+    const data = JSON.parse(response);
     
-    if (!isValidJSON(response)) {
-      throw new Error('Invalid response');
-    }
-    
-    return response.default?.timelineData || [];
+    return data.default?.timelineData || [];
   } catch (error) {
     console.warn(`❌ Failed to fetch interest over time for "${keyword}"`, error);
     throw error;
@@ -128,12 +116,9 @@ export async function fetchRelatedQueries(keyword: string): Promise<string[]> {
 export async function fetchInterestByRegion(keyword: string): Promise<any[]> {
   try {
     const response = await googleTrends.interestByRegion({ keyword });
+    const data = JSON.parse(response);
     
-    if (!isValidJSON(response)) {
-      return [];
-    }
-    
-    return response.default?.geoMapData || [];
+    return data.default?.geoMapData || [];
   } catch (error) {
     console.warn(`❌ Failed to fetch interest by region for "${keyword}"`, error);
     return [];

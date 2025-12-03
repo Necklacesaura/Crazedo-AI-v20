@@ -268,16 +268,15 @@ export default function TrendsIntelligence() {
                 ) : (
                   <div className="space-y-2 max-h-[600px] overflow-y-auto">
                     {filteredTrends.slice(0, 25).map((trend, i) => (
-                      <button
+                      <div
                         key={i}
                         onClick={() => handleTrendClick(trend)}
-                        className={`w-full text-left p-3 rounded border transition ${
+                        className={`w-full text-left p-3 rounded border transition cursor-pointer ${
                           selectedTrends.find(t => t.query === trend.query)
                             ? "bg-purple-500/20 border-purple-500/50"
                             : "bg-slate-700/50 border-slate-600 hover:border-cyan-500/50"
                         }`}
                         data-testid={`trend-${trend.query}`}
-                        disabled={analyzing}
                       >
                         <div className="flex justify-between items-start gap-2 mb-1">
                           <div className="flex-1">
@@ -311,7 +310,7 @@ export default function TrendsIntelligence() {
                           </Badge>
                           <span className="text-xs text-slate-400">{trend.category}</span>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 )}
