@@ -37,6 +37,7 @@ export default function Home() {
   const [globalTrends, setGlobalTrends] = useState<GlobalTrend[]>([]);
   const [tickerTrends, setTickerTrends] = useState<WeeklyTrend[]>([]);
   const [isHoveringTicker, setIsHoveringTicker] = useState(false);
+  const [isBannerOpen, setIsBannerOpen] = useState(true);
   
   const fetchTickerData = async () => {
     try {
@@ -111,19 +112,6 @@ export default function Home() {
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
       </div>
 
-      {/* Google Trends Banner - Top */}
-      <div className="relative z-20 w-full mb-6">
-        <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0' }}>
-          <iframe 
-            width="100%" 
-            height="320" 
-            src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
-            frameBorder="0"
-            style={{ borderRadius: '0px', border: 'none', display: 'block' }}
-          >
-          </iframe>
-        </div>
-      </div>
 
       {/* Live Ticker Bar */}
       <div className="relative z-20 mb-6 w-full">
@@ -177,6 +165,49 @@ export default function Home() {
           <div className="w-full max-w-2xl">
             <SearchInput onSearch={handleSearch} isLoading={isLoading} />
           </div>
+
+          {/* Google Trends Collapsible Banner */}
+          {!hasSearched && isBannerOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="w-full mt-6"
+            >
+              <div className="relative rounded-lg overflow-hidden border border-white/10 bg-white/5">
+                <button
+                  onClick={() => setIsBannerOpen(false)}
+                  className="absolute top-2 right-2 z-30 p-2 rounded-lg bg-black/50 hover:bg-black/70 transition"
+                  data-testid="close-google-trends-banner"
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+                <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0' }}>
+                  <iframe 
+                    width="100%" 
+                    height="320" 
+                    src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
+                    frameBorder="0"
+                    style={{ borderRadius: '0px', border: 'none', display: 'block' }}
+                  >
+                  </iframe>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Reopen Banner Button */}
+          {!hasSearched && !isBannerOpen && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={() => setIsBannerOpen(true)}
+              className="mt-4 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white/70 transition"
+              data-testid="open-google-trends-banner"
+            >
+              📊 Show Google Trends
+            </motion.button>
+          )}
         </motion.div>
 
         {/* Results Area */}
