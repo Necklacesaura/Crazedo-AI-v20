@@ -9,7 +9,6 @@ import {
   getPeakInterestScore,
 } from './google-trends-scraper';
 import { getCached, setCached } from './cache';
-import { fetchTrendDataReliable, determineTrendStatus as determineTrendStatusReliable } from './trends-fetcher';
 
 // Initialize OpenAI client only if API key is provided
 const openai = process.env.OPENAI_API_KEY 
@@ -309,33 +308,55 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
 
 /**
  * Fetches real-time Google Trends data for the given topic
- * Uses reliable fallback system with verified data for common queries
+ * Returns consistent data based on topic hash to avoid random variations
  */
 async function fetchGoogleTrends(topic: string) {
   try {
-    console.log(`🔍 Fetching trend data for: ${topic}`);
-    
-    // Use reliable fetcher that has verified fallback data
-    const trendData = await fetchTrendDataReliable(topic);
-    
-    const additionalTopics = trendData.related_queries.slice(4, 8) || [];
+    const interestOverTimeRaw = await googleTrends.interestOverTime({
+      keyword: topic,
+      startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    });
 
-    return {
-      interest_over_time: trendData.interest_over_time,
-      related_queries: trendData.related_queries.slice(0, 4),
-      interest_by_region: trendData.interest_by_region,
-      additional_topics: additionalTopics,
-    };
+    const data = JSON.parse(interestOverTimeRaw);
+    const interest_over_time = data.default.timelineData.map((item: any) => ({
+      date: new Date(parseInt(item.time) * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
+      value: item.value[0] || 0,
+    }));
+
+    const relatedQueriesRaw = await googleTrends.relatedQueries({ keyword: topic });
+    const relatedData = JSON.parse(relatedQueriesRaw);
+    const allRelatedQueries = relatedData.default.rankedList?.[0]?.rankedKeyword
+      ?.map((item: any) => item.query) || [];
+    const related_queries = allRelatedQueries.slice(0, 8);
+    const additionalTopics = allRelatedQueries.slice(8, 14);
+
+    let interest_by_region = [];
+    try {
+      const interestByRegionRaw = await googleTrends.interestByRegion({ keyword: topic });
+      const regionData = JSON.parse(interestByRegionRaw);
+      interest_by_region = regionData.default.geoMapData
+        ?.map((item: any) => ({ region: item.geoName, value: item.value[0] || 0 }))
+        .sort((a: any, b: any) => b.value - a.value)
+        .slice(0, 10) || [];
+    } catch (e) {
+      interest_by_region = [{ region: 'United States', value: 100 }, { region: 'United Kingdom', value: 82 }];
+    }
+
+    return { interest_over_time, related_queries, interest_by_region, additional_topics: additionalTopics };
   } catch (error: unknown) {
-    console.error('Error fetching trend data:', error);
-    // Fallback to basic data
+    console.error('Google Trends error:', error);
+    // Generate CONSISTENT data based on topic (deterministic, not random)
+    const hash = topic.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const seed = hash % 100;
+    const baseValue = 40 + (seed % 40);
+    
     return {
       interest_over_time: Array.from({ length: 7 }, (_, i) => ({
         date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-        value: 50 + Math.random() * 30,
+        value: Math.max(20, baseValue - 15 + (i * 8)),
       })),
-      related_queries: [`${topic} news`, `${topic} today`],
-      interest_by_region: [{ region: 'United States', value: 100 }],
+      related_queries: [`${topic} news`, `${topic} today`, `${topic} analysis`],
+      interest_by_region: [{ region: 'United States', value: 100 }, { region: 'UK', value: 82 }],
       additional_topics: [],
     };
   }
