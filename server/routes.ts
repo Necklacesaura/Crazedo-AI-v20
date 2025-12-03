@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { analyzeTrend, getTrendingTopics, getTopTrendsWithVolume, getGlobalTrendingNow } from "./services/trend-analyzer";
+import { fetchRelatedQueries } from "./services/google-trends-scraper";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // POST /api/analyze - Main trend analysis endpoint
@@ -89,6 +90,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: 'Failed to fetch global trending',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
+    }
+  });
+
+  // GET /api/suggestions - Get keyword suggestions for autocomplete
+  // Query params: q=search term
+  // Returns: Array of suggested keywords
+  app.get('/api/suggestions', async (req, res) => {
+    try {
+      const { q } = req.query;
+      
+      if (!q || typeof q !== 'string' || q.trim().length === 0) {
+        return res.json({ suggestions: [] });
+      }
+      
+      if (q.length < 2) {
+        return res.json({ suggestions: [] });
+      }
+      
+      const suggestions = await fetchRelatedQueries(q.trim());
+      res.json({ suggestions });
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      res.json({ suggestions: [] });
     }
   });
 
