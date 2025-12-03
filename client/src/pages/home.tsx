@@ -19,6 +19,14 @@ interface TrendingTopic {
   traffic: string;
 }
 
+interface WeeklyTrend {
+  trend: string;
+  estimated_weekly_searches: number;
+  interest_score: number;
+  status: string;
+  related_topics: string[];
+}
+
 export default function Home() {
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +35,18 @@ export default function Home() {
   const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
   const [trendingTopics, setTrendingTopics] = useState<TrendingTopic[]>([]);
   const [globalTrends, setGlobalTrends] = useState<GlobalTrend[]>([]);
+  const [tickerTrends, setTickerTrends] = useState<WeeklyTrend[]>([]);
+  const [isHoveringTicker, setIsHoveringTicker] = useState(false);
+  
+  const fetchTickerData = async () => {
+    try {
+      const response = await fetch('/api/top-trends-weekly');
+      const data = await response.json();
+      setTickerTrends(data.trends?.slice(0, 5) || []);
+    } catch (err) {
+      console.error('Failed to fetch ticker data:', err);
+    }
+  };
   
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
@@ -43,12 +63,18 @@ export default function Home() {
       .then(trends => setGlobalTrends(trends))
       .catch(err => console.error('Failed to fetch global trending:', err));
 
+    // Fetch ticker data
+    fetchTickerData();
+    const tickerInterval = setInterval(fetchTickerData, 60000);
+
     // Check if there's an auto-search trend from weekly trends page
     const autoSearchTrend = sessionStorage.getItem('autoSearchTrend');
     if (autoSearchTrend) {
       sessionStorage.removeItem('autoSearchTrend');
       handleSearch(autoSearchTrend);
     }
+
+    return () => clearInterval(tickerInterval);
   }, []);
 
   const handleSearch = async (term: string) => {
@@ -82,6 +108,40 @@ export default function Home() {
       {/* Background Grid */}
       <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
+      </div>
+
+      {/* Live Ticker Bar */}
+      <div className="relative z-20 mb-6 w-full">
+        <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
+          <div className={`ticker-marquee font-display ${isHoveringTicker ? 'paused' : ''}`} data-testid="ticker-bar">
+            {tickerTrends.length > 0 ? (
+              <>
+                {tickerTrends.map((trend, i) => (
+                  <button
+                    key={`first-${i}`}
+                    onClick={() => handleSearch(trend.trend)}
+                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
+                    data-testid={`ticker-item-${i}`}
+                  >
+                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
+                  </button>
+                ))}
+                {/* Duplicate for continuous scroll */}
+                {tickerTrends.map((trend, i) => (
+                  <button
+                    key={`second-${i}`}
+                    onClick={() => handleSearch(trend.trend)}
+                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
+                  >
+                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
+                  </button>
+                ))}
+              </>
+            ) : (
+              <span className="ticker-item px-6 py-3 text-cyan-400">Loading live trends...</span>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col min-h-[90vh]">
