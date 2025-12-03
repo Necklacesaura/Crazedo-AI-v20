@@ -108,74 +108,6 @@ export default function ScraperTool() {
           />
         </div>
 
-        {/* Examples */}
-        {!data && (
-          <div className="mb-8 p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-            <div className="flex items-center gap-2 mb-3 text-cyan-300 text-sm font-semibold">
-              <Zap className="w-4 h-4" />
-              Quick examples:
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {EXAMPLE_SEARCHES.map(example => (
-                <button
-                  key={example}
-                  onClick={() => handleSearch(example)}
-                  disabled={isLoading}
-                  className="px-3 py-1.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 text-sm transition disabled:opacity-50"
-                  data-testid={`button-example-${example.toLowerCase()}`}
-                >
-                  {example}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Search History */}
-        {searchHistory.length > 0 && !data && (
-          <div className="mb-8 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-            <div className="flex items-center gap-2 mb-3 text-emerald-300 text-sm font-semibold">
-              <TrendingUp className="w-4 h-4" />
-              Recent:
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {searchHistory.map(term => (
-                <button
-                  key={term}
-                  onClick={() => handleSearch(term)}
-                  disabled={isLoading}
-                  className="px-3 py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 text-sm transition disabled:opacity-50"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Keyword Suggestions */}
-        {!data && (
-          <div className="mb-8 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
-            <div className="flex items-center gap-2 mb-3 text-purple-300 text-sm font-semibold">
-              <Sparkles className="w-4 h-4" />
-              Try These Keywords:
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {["AI trends", "Crypto news", "Tech stocks", "Startup news", "Web3", "NFT market", "Elon Musk", "Apple news", "Netflix trends", "Gaming trends"].map(keyword => (
-                <button
-                  key={keyword}
-                  onClick={() => handleSearch(keyword)}
-                  disabled={isLoading}
-                  className="px-3 py-1.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-sm transition disabled:opacity-50"
-                  data-testid={`button-keyword-${keyword.toLowerCase().replace(/\s/g, '-')}`}
-                >
-                  {keyword}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Results */}
         {data && (
           <div className="space-y-6">
@@ -379,6 +311,27 @@ export default function ScraperTool() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Keyword Suggestions - After Search */}
+            <div className="mt-8 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+              <div className="flex items-center gap-2 mb-3 text-purple-300 text-sm font-semibold">
+                <Sparkles className="w-4 h-4" />
+                Related Keywords:
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {["AI trends", "Crypto news", "Tech stocks", "Startup news", "Web3", "NFT market", "Elon Musk", "Apple news", "Netflix trends", "Gaming trends"].map(keyword => (
+                  <button
+                    key={keyword}
+                    onClick={() => handleSearch(keyword)}
+                    disabled={isLoading}
+                    className="px-3 py-1.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-sm transition disabled:opacity-50"
+                    data-testid={`button-keyword-${keyword.toLowerCase().replace(/\s/g, '-')}`}
+                  >
+                    {keyword}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
