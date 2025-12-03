@@ -313,27 +313,31 @@ export default function ScraperTool() {
             )}
 
             {/* Keyword Suggestions - After Search */}
-            {data.related_topics.length > 0 && (
-              <div className="mt-8 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
-                <div className="flex items-center gap-2 mb-3 text-purple-300 text-sm font-semibold">
-                  <Sparkles className="w-4 h-4" />
-                  Related Keywords:
+            {data.related_topics.length > 0 && (() => {
+              const trendingSet = new Set(data.sources.google.related_queries);
+              const uniqueKeywords = data.related_topics.filter(kw => !trendingSet.has(kw)).slice(0, 6);
+              return uniqueKeywords.length > 0 ? (
+                <div className="mt-8 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-3 text-purple-300 text-sm font-semibold">
+                    <Sparkles className="w-4 h-4" />
+                    Related Keywords:
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {uniqueKeywords.map((keyword, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSearch(keyword)}
+                        disabled={isLoading}
+                        className="px-3 py-1.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-sm transition disabled:opacity-50"
+                        data-testid={`button-keyword-${keyword.toLowerCase().replace(/\s/g, '-')}`}
+                      >
+                        {keyword}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {data.related_topics.map((keyword, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleSearch(keyword)}
-                      disabled={isLoading}
-                      className="px-3 py-1.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-sm transition disabled:opacity-50"
-                      data-testid={`button-keyword-${keyword.toLowerCase().replace(/\s/g, '-')}`}
-                    >
-                      {keyword}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+              ) : null;
+            })()}
           </div>
         )}
 
