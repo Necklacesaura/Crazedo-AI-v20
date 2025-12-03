@@ -376,16 +376,11 @@ async function fetchGoogleTrends(topic: string) {
     };
   } catch (error: unknown) {
     console.error('Google Trends error:', error);
-    // Generate consistent fallback data based on topic (not random)
-    const topicHash = topic.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const seed = topicHash % 100;
-    
-    // Create consistent 7-day trend pattern based on topic hash
-    const baseValue = 50 + (seed % 30);
+    // Fallback data if Google Trends API fails or rate limits
     return {
       interest_over_time: Array.from({ length: 7 }, (_, i) => ({
         date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-        value: Math.max(10, baseValue - 10 + (i * (seed % 5))), // Consistent upward/downward trend based on topic
+        value: Math.floor(Math.random() * 50) + 30,
       })),
       related_queries: [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`],
       interest_by_region: [
