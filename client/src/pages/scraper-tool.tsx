@@ -313,7 +313,7 @@ export default function ScraperTool() {
             )}
 
             {/* Keyword Suggestions - After Search */}
-            {data.related_topics.length > 0 && (() => {
+            {(() => {
               const trendingSet = new Set(data.sources.google.related_queries);
               const uniqueKeywords = data.related_topics.filter(kw => !trendingSet.has(kw)).slice(0, 6);
               return uniqueKeywords.length > 0 ? (
