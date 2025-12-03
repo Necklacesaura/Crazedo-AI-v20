@@ -13,32 +13,23 @@ export function SearchInput({ onSearch, isLoading }: SearchInputProps) {
   const [term, setTerm] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (term.length < 2) {
-        setSuggestions([]);
-        setShowSuggestions(false);
-        return;
-      }
+    if (term.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
 
-      setSuggestionsLoading(true);
-      try {
-        const res = await fetch(`/api/suggestions?q=${encodeURIComponent(term)}`);
-        const data = await res.json();
-        setSuggestions(data.suggestions || []);
-        setShowSuggestions(true);
-      } catch (error) {
-        console.error('Failed to fetch suggestions:', error);
-        setSuggestions([]);
-      } finally {
-        setSuggestionsLoading(false);
-      }
-    };
-
-    const timer = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(timer);
+    // Generate instant suggestions based on typing
+    const patterns = [
+      `${term} news`,
+      `${term} today`,
+      `${term} 2025`,
+      `best ${term}`,
+    ];
+    setSuggestions(patterns);
+    setShowSuggestions(true);
   }, [term]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,9 +42,6 @@ export function SearchInput({ onSearch, isLoading }: SearchInputProps) {
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    setTerm(suggestion);
-    setSuggestions([]);
-    setShowSuggestions(false);
     onSearch(suggestion);
   };
 
@@ -74,8 +62,6 @@ export function SearchInput({ onSearch, isLoading }: SearchInputProps) {
             placeholder="Enter a topic to analyze (e.g., 'AGI', 'Bitcoin', 'Climate')..."
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            onFocus={() => term.length >= 2 && setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             className="pl-12 pr-32 h-16 text-lg bg-card/50 border-muted focus:border-primary/50 focus:ring-primary/20 rounded-xl backdrop-blur-sm shadow-lg transition-all"
             data-testid="input-search"
             autoComplete="off"
