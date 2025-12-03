@@ -7,6 +7,7 @@
  * Imported by: server/services/trend-analyzer.ts
  */
 
+// @ts-ignore - google-trends library doesn't have type declarations
 import * as googleTrends from 'google-trends';
 
 /**
