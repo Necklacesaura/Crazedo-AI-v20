@@ -111,6 +111,20 @@ export default function Home() {
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
       </div>
 
+      {/* Google Trends Banner - Top */}
+      <div className="relative z-20 w-full mb-6">
+        <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0' }}>
+          <iframe 
+            width="100%" 
+            height="320" 
+            src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
+            frameBorder="0"
+            style={{ borderRadius: '0px', border: 'none', display: 'block' }}
+          >
+          </iframe>
+        </div>
+      </div>
+
       {/* Live Ticker Bar */}
       <div className="relative z-20 mb-6 w-full">
         <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
@@ -164,27 +178,6 @@ export default function Home() {
             <SearchInput onSearch={handleSearch} isLoading={isLoading} />
           </div>
         </motion.div>
-
-        {/* Google Trends Embed */}
-        {!hasSearched && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="relative z-10 w-full mb-12"
-          >
-            <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '20px' }}>
-              <iframe 
-                width="100%" 
-                height="650" 
-                src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
-                frameBorder="0"
-                style={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
-              >
-              </iframe>
-            </div>
-          </motion.div>
-        )}
 
         {/* Results Area */}
         <div className="flex-1 w-full">
