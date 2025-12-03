@@ -8,6 +8,7 @@ import {
   extractQueryName,
   getPeakInterestScore,
 } from './google-trends-scraper';
+import { getCached, setCached } from './cache';
 
 // Initialize OpenAI client only if API key is provided
 const openai = process.env.OPENAI_API_KEY 
@@ -422,12 +423,21 @@ export async function getGlobalTrendingNow(): Promise<Array<{
   timestamp: string;
 }>> {
   try {
+    // Check if we have cached data (15 min TTL)
+    const cachedTrends = getCached<any[]>('global-trends');
+    if (cachedTrends) {
+      return cachedTrends;
+    }
+
     // Fetch trending searches from Google Trends (WORLDWIDE/GLOBAL data)
     const trendingRaw = await googleTrends.dailyTrends({ geo: 'GLOBAL' });
 
     // Validate response is JSON (not HTML error page from rate limiting)
     if (trendingRaw.trim().startsWith('<')) {
       console.warn('⚠️ Google Trends API blocked/rate limited (returned HTML)');
+      // Check cache before returning fallback
+      const fallback = getCached<any[]>('global-trends-fallback');
+      if (fallback) return fallback;
       return getDefaultGlobalTrends();
     }
 
@@ -437,6 +447,8 @@ export async function getGlobalTrendingNow(): Promise<Array<{
     // If empty, return curated worldwide data
     if (trendingSearches.length === 0) {
       console.warn('⚠️ No trending data from API, using curated fallback');
+      const fallback = getCached<any[]>('global-trends-fallback');
+      if (fallback) return fallback;
       return getDefaultGlobalTrends();
     }
 
@@ -511,10 +523,14 @@ export async function getGlobalTrendingNow(): Promise<Array<{
 
     if (globalTrends.length > 0) {
       console.log(`✅ Fetched ${globalTrends.length} LIVE global trends`);
+      setCached('global-trends', globalTrends, 15 * 60 * 1000); // Cache for 15 minutes
+      setCached('global-trends-fallback', globalTrends, 60 * 60 * 1000); // Fallback cache for 1 hour
       return globalTrends;
     }
     
-    return getDefaultGlobalTrends();
+    const fallback = getDefaultGlobalTrends();
+    setCached('global-trends-fallback', fallback);
+    return fallback;
   } catch (error) {
     console.warn('❌ Error fetching global trending data, using fallback:', error);
     return getDefaultGlobalTrends();
