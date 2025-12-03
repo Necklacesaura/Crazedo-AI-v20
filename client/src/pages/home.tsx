@@ -37,20 +37,14 @@ export default function Home() {
   const [globalTrends, setGlobalTrends] = useState<GlobalTrend[]>([]);
   const [tickerTrends, setTickerTrends] = useState<WeeklyTrend[]>([]);
   const [isHoveringTicker, setIsHoveringTicker] = useState(false);
-  const [isBannerOpen, setIsBannerOpen] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   
   const fetchTickerData = async () => {
     try {
       const response = await fetch('/api/top-trends-weekly');
-      if (!response.ok) throw new Error('Failed to fetch ticker data');
       const data = await response.json();
       setTickerTrends(data.trends?.slice(0, 5) || []);
-      setError(null);
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : 'Failed to fetch ticker data';
-      console.error('Ticker error:', err);
-      toast.error('Error', { description: errMsg });
+      console.error('Failed to fetch ticker data:', err);
     }
   };
   
@@ -60,36 +54,18 @@ export default function Home() {
     
     // Fetch trending topics
     fetch('/api/trending')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch trending topics');
-        return res.json();
-      })
-      .then(data => {
-        setTrendingTopics(data.trending || []);
-        setError(null);
-      })
-      .catch(err => {
-        const errMsg = err instanceof Error ? err.message : 'Failed to fetch trending topics';
-        console.error('Trending error:', err);
-        toast.error('Error', { description: errMsg });
-      });
+      .then(res => res.json())
+      .then(data => setTrendingTopics(data.trending || []))
+      .catch(err => console.error('Failed to fetch trending:', err));
 
     // Fetch global trending now
     getGlobalTrendingNow()
-      .then(trends => {
-        setGlobalTrends(trends);
-        setError(null);
-      })
-      .catch(err => {
-        const errMsg = err instanceof Error ? err.message : 'Failed to fetch global trending';
-        console.error('Global trending error:', err);
-        toast.error('Error', { description: errMsg });
-      });
+      .then(trends => setGlobalTrends(trends))
+      .catch(err => console.error('Failed to fetch global trending:', err));
 
     // Fetch ticker data
     fetchTickerData();
-    // Reduce refresh frequency to 5 minutes (from 1 minute) to prevent Google blocking
-    const tickerInterval = setInterval(fetchTickerData, 5 * 60 * 1000);
+    const tickerInterval = setInterval(fetchTickerData, 60000);
 
     // Check if there's an auto-search trend from weekly trends page
     const autoSearchTrend = sessionStorage.getItem('autoSearchTrend');
@@ -104,17 +80,13 @@ export default function Home() {
   const handleSearch = async (term: string) => {
     setIsLoading(true);
     setHasSearched(true);
-    setError(null);
     try {
       const result = await analyzeTrend(term);
       setData(result);
-      setError(null);
     } catch (error) {
-      const errMsg = error instanceof Error ? error.message : "Failed to analyze trend. Please try again.";
       console.error("Failed to analyze trend", error);
-      setError(errMsg);
-      toast.error("Error analyzing trend", {
-        description: errMsg
+      toast.error("Failed to analyze trend", {
+        description: error instanceof Error ? error.message : "Please try again later"
       });
     } finally {
       setIsLoading(false);
@@ -138,6 +110,39 @@ export default function Home() {
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
       </div>
 
+      {/* Live Ticker Bar */}
+      <div className="relative z-20 mb-6 w-full">
+        <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
+          <div className={`ticker-marquee font-display ${isHoveringTicker ? 'paused' : ''}`} data-testid="ticker-bar">
+            {tickerTrends.length > 0 ? (
+              <>
+                {tickerTrends.map((trend, i) => (
+                  <button
+                    key={`first-${i}`}
+                    onClick={() => handleSearch(trend.trend)}
+                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
+                    data-testid={`ticker-item-${i}`}
+                  >
+                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
+                  </button>
+                ))}
+                {/* Duplicate for continuous scroll */}
+                {tickerTrends.map((trend, i) => (
+                  <button
+                    key={`second-${i}`}
+                    onClick={() => handleSearch(trend.trend)}
+                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
+                  >
+                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
+                  </button>
+                ))}
+              </>
+            ) : (
+              <span className="ticker-item px-6 py-3 text-cyan-400">Loading live trends...</span>
+            )}
+          </div>
+        </div>
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col min-h-[90vh]">
         {/* Header - Animates to top when searched */}
@@ -157,36 +162,10 @@ export default function Home() {
           <div className="w-full max-w-2xl">
             <SearchInput onSearch={handleSearch} isLoading={isLoading} />
           </div>
-
         </motion.div>
 
         {/* Results Area */}
         <div className="flex-1 w-full">
-          {/* Error Display */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30"
-              data-testid="error-message"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-red-100 mb-1">Error</h4>
-                  <p className="text-red-200/80 text-sm">{error}</p>
-                </div>
-                <button
-                  onClick={() => setError(null)}
-                  className="text-red-200/50 hover:text-red-200 ml-2"
-                  data-testid="close-error"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
           {data && !isLoading && (
             <TrendDashboard data={data} />
           )}
@@ -324,6 +303,103 @@ export default function Home() {
                 </div>
               </div>
 
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                onClick={() => navigate("/weekly-trends")}
+                className="w-full p-6 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all group cursor-pointer text-left"
+                data-testid="button-weekly-trends"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold mb-1 text-emerald-100 group-hover:text-emerald-50 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      View Weekly Trends Report
+                    </h4>
+                    <p className="text-emerald-200/60 text-xs">Top 100 trending searches with estimated weekly volumes</p>
+                  </div>
+                  <div className="text-2xl group-hover:scale-110 transition">📊</div>
+                </div>
+              </motion.button>
+
+              {/* Google Trends Scraper Tool Button */}
+              {!hasSearched && (
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.9 }}
+                  onClick={() => navigate("/scraper-tool")}
+                  className="w-full p-6 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all group cursor-pointer text-left"
+                  data-testid="button-scraper-tool"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-semibold mb-1 text-cyan-100 group-hover:text-cyan-50 flex items-center gap-2">
+                        <Globe className="w-5 h-5" />
+                        🔍 Google Trends Scraper
+                      </h4>
+                      <p className="text-cyan-200/60 text-xs">Search any topic to analyze Google Trends data</p>
+                    </div>
+                    <div className="text-2xl group-hover:scale-110 transition">📊</div>
+                  </div>
+                </motion.button>
+              )}
+
+              {/* Trends Intelligence System Button */}
+              {!hasSearched && (
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0 }}
+                  onClick={() => navigate("/trends-intelligence")}
+                  className="w-full p-6 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:border-purple-400/60 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group cursor-pointer text-left"
+                  data-testid="button-trends-intelligence"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-semibold mb-1 text-purple-100 group-hover:text-purple-50 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        🧠 Trends Intelligence System
+                      </h4>
+                      <p className="text-purple-200/60 text-xs">Advanced trend comparison, sentiment analysis & alerts</p>
+                    </div>
+                    <div className="text-2xl group-hover:scale-110 transition">⚡</div>
+                  </div>
+                </motion.button>
+              )}
+
+              {/* This Week's Top Trending - Bottom Section */}
+              {trendingTopics.length > 0 && !hasSearched && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  <Card className="bg-gradient-to-r from-red-500/10 to-orange-500/10 backdrop-blur-sm border-red-500/30">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-red-100"><Flame className="w-5 h-5" /> This Week's Top Trending</CardTitle>
+                      <CardDescription>Most searched topics right now</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                        {trendingTopics.map((trend, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handleQuickSearch(trend.topic)}
+                            className="p-3 rounded-lg bg-red-500/10 border border-red-500/40 hover:border-red-400/60 hover:bg-red-500/20 transition text-left group"
+                            data-testid={`trending-topic-${i}`}
+                          >
+                            <div className="text-xs font-bold text-red-300 mb-1">#{i + 1}</div>
+                            <div className="text-sm font-semibold text-red-100 group-hover:text-red-50 truncate">{trend.topic}</div>
+                            <div className="text-xs text-red-200/60">{trend.traffic}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
             </motion.div>
           )}
         </div>

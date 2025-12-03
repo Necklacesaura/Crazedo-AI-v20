@@ -3,83 +3,11 @@
  * Handles all direct interactions with google-trends-api library
  * Provides clean, reusable functions for scraping trend data
  * 
- * ANTI-BLOCKING FEATURES:
- * - Request throttling (limits concurrent requests)
- * - Delays between requests (500ms default)
- * - User-Agent headers (mimics browser)
- * - Cache integration (reduces redundant API calls)
- * 
  * LOCATION: server/services/google-trends-scraper.ts
  * Imported by: server/services/trend-analyzer.ts
  */
 
 import googleTrends from 'google-trends-api';
-
-// Request throttling
-const MAX_CONCURRENT_REQUESTS = 3;
-let activeRequests = 0;
-const requestQueue: Array<() => Promise<any>> = [];
-
-// Browser-like User-Agent
-const USER_AGENTS = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-];
-
-// Delay between requests (in milliseconds)
-const REQUEST_DELAY = 500;
-
-/**
- * Sleep for specified milliseconds
- */
-function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
- * Get random User-Agent to look like a browser
- */
-function getRandomUserAgent(): string {
-  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
-}
-
-/**
- * Queue a request with throttling
- */
-async function throttledRequest<T>(fn: () => Promise<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const execute = async () => {
-      try {
-        activeRequests++;
-        await delay(REQUEST_DELAY);
-        const result = await fn();
-        resolve(result);
-      } catch (error) {
-        reject(error);
-      } finally {
-        activeRequests--;
-        processQueue();
-      }
-    };
-
-    if (activeRequests < MAX_CONCURRENT_REQUESTS) {
-      execute();
-    } else {
-      requestQueue.push(execute);
-    }
-  });
-}
-
-/**
- * Process queued requests
- */
-function processQueue() {
-  if (requestQueue.length > 0 && activeRequests < MAX_CONCURRENT_REQUESTS) {
-    const fn = requestQueue.shift();
-    if (fn) fn();
-  }
-}
 
 /**
  * Validates if response is valid JSON (not HTML error page)
@@ -104,19 +32,17 @@ function isValidJSON(response: any): boolean {
  */
 export async function fetchDailyTrends(geo: string = 'GLOBAL'): Promise<any[]> {
   try {
-    const result = await throttledRequest(async () => {
-      const response = await googleTrends.dailyTrends({ geo });
-      const data = JSON.parse(response);
-      return data.default?.trendingSearchesDays?.[0]?.trendingSearches || [];
-    });
+    const response = await googleTrends.dailyTrends({ geo });
+    const data = JSON.parse(response);
     
-    if (result.length === 0) {
+    const trends = data.default?.trendingSearchesDays?.[0]?.trendingSearches || [];
+    if (trends.length === 0) {
       console.warn(`⚠️ No trending data found for ${geo}, returning empty array`);
       return [];
     }
     
-    console.log(`✅ Fetched ${result.length} LIVE trends for geo: ${geo} (throttled)`);
-    return result;
+    console.log(`✅ Fetched ${trends.length} LIVE trends for geo: ${geo}`);
+    return trends;
   } catch (error) {
     console.warn(`❌ Failed to fetch daily trends for geo: ${geo}`, error);
     return [];
@@ -134,16 +60,13 @@ export async function fetchInterestOverTime(
   startTime?: Date
 ): Promise<any[]> {
   try {
-    const result = await throttledRequest(async () => {
-      const options: any = { keyword };
-      if (startTime) options.startTime = startTime;
-      
-      const response = await googleTrends.interestOverTime(options);
-      const data = JSON.parse(response);
-      return data.default?.timelineData || [];
-    });
+    const options: any = { keyword };
+    if (startTime) options.startTime = startTime;
     
-    return result;
+    const response = await googleTrends.interestOverTime(options);
+    const data = JSON.parse(response);
+    
+    return data.default?.timelineData || [];
   } catch (error) {
     console.warn(`❌ Failed to fetch interest over time for "${keyword}"`, error);
     throw error;
@@ -192,13 +115,10 @@ export async function fetchRelatedQueries(keyword: string): Promise<string[]> {
  */
 export async function fetchInterestByRegion(keyword: string): Promise<any[]> {
   try {
-    const result = await throttledRequest(async () => {
-      const response = await googleTrends.interestByRegion({ keyword });
-      const data = JSON.parse(response);
-      return data.default?.geoMapData || [];
-    });
+    const response = await googleTrends.interestByRegion({ keyword });
+    const data = JSON.parse(response);
     
-    return result;
+    return data.default?.geoMapData || [];
   } catch (error) {
     console.warn(`❌ Failed to fetch interest by region for "${keyword}"`, error);
     return [];

@@ -2,33 +2,18 @@
 
 ## Overview
 
-**Crazedo AI Trend Analyzer** - Real-time trend analysis dashboard pulling live data from Google Trends API. Features comprehensive error handling with user-friendly error messages displayed throughout the app.
+Crazedo AI Trend Analyzer is a real-time trend analysis application that aggregates data from multiple sources (Google Trends, Reddit, and Twitter/X placeholders) and uses OpenAI to generate intelligent trend summaries. The application provides a modern, animated dashboard displaying trend status, visualizations, and detailed source breakdowns.
 
-**Current Status: ✅ LIVE DATA - PRODUCTION READY**
-- Live Google Trends API integration
-- Real-time data for each search
-- Comprehensive error handling with UI display
-- Toast notifications for all failures
-- Automatic fallback to cached data if API fails
-- Ready to deploy to crazedo.com
-
-## Latest Updates (December 3, 2025 - Session 2)
-
-- ✅ Switched from hardcoded to LIVE Google Trends API
-- ✅ Each search now returns different real-time data
-- ✅ Added comprehensive error handling
-- ✅ Prominent red error display boxes
-- ✅ Toast notifications for all failures
-- ✅ Error close button for dismissal
-- ✅ Removed 3 unused pages (weekly-trends, scraper-tool, trends-intelligence)
-- ✅ Removed ticker bar and action buttons from home
-- ✅ Cleaned up UI to focus on search functionality
+**Latest Updates:**
+- ✅ Global "Trending Now" with LIVE Google Trends data (not mocked)
+- ✅ Real interest scores, trend status detection (Exploding/Rising/Stable/Declining)
+- ✅ Estimated search volumes (10M–50M, 5M–10M, etc.)
+- ✅ 7-day sparkline interest graphs
+- ✅ Auto-categorization (Sports, Entertainment, Technology, Business, News, Shopping, Health, Lifestyle)
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Priority: Live data over hardcoded data.
-Error Handling: Display all errors to user prominently.
 
 ## System Architecture
 
@@ -40,135 +25,192 @@ Error Handling: Display all errors to user prominently.
 - Radix UI primitives for accessible, unstyled components
 - shadcn/ui design system with Tailwind CSS for styling
 - Custom dark theme with cyan/emerald accent colors
-- Framer Motion for animations
+- Framer Motion for animations (note: dependency was removed but import statements remain in code)
 
 **Routing:** Wouter for lightweight client-side routing
 
 **State Management:**
-- TanStack React Query for server state management
+- TanStack React Query for server state management and data fetching
 - Local component state with React hooks
-- Error state tracking with user-visible error messages
-
-**Error Handling:**
-- Red error display banner for all failures
-- Toast notifications (Sonner) for user feedback
-- Dismissible error messages with close button
-- Error handling on all API calls (search, trending, global trends, ticker)
 
 **Key Design Patterns:**
 - Component composition using Radix UI's slot pattern
 - Utility-first styling with Tailwind CSS
-- Custom CSS variables for theming
+- Custom CSS variables for theming (defined in `index.css`)
 - Responsive design with mobile-first approach
 
 ### Backend Architecture
 
 **Runtime:** Node.js with Express.js server
 
+**Development vs Production:**
+- Development mode uses Vite middleware for HMR (Hot Module Replacement)
+- Production mode serves static built assets
+- Separate entry points: `index-dev.ts` and `index-prod.ts`
+
 **API Design:**
-- `POST /api/analyze` - Analyzes any topic with LIVE Google Trends data, interest graphs, and AI summary (if OpenAI key provided)
-- `GET /api/trending` - Returns top 5 LIVE trending topics from Google Trends
-- `GET /api/top-trends-weekly` - Returns top 30 LIVE trending topics with weekly volume estimates
-- `GET /api/global-trending` - Returns top 10 LIVE global trending searches
-- `GET /api/health` - Health check showing OpenAI integration status
+- RESTful JSON API endpoints:
+  - `POST /api/analyze` - Accepts topic, returns comprehensive trend analysis
+  - `GET /api/trending` - Get top 5 trending topics for this week
+  - `GET /api/top-trends-weekly` - Get top 110 most searched topics with estimated weekly volumes
+  - `GET /api/global-trending` - **NEW** Get top 25+ global "Trending Now" searches with LIVE data
+  - `GET /api/health` - Health check endpoint showing API integration status
 
-**Data Source:** 
-- LIVE Google Trends API (google-trends-api package)
-- Automatic fallback to cached data if API fails
-- Real-time interest graphs (7-day tracking)
-- Dynamic related queries per search
-- Regional interest breakdown
-
-**Data Format:**
-- Trend status: Exploding | Rising | Stable | Declining
-- Interest scores: 0-100 scale
-- Volume estimates: Calculated from real trends
-- Categories: Technology, Entertainment, Sports, News, Lifestyle
-
-**Optional AI Enhancement:**
-- If `OPENAI_API_KEY` is set, `/api/analyze` generates AI-powered trend summaries
-- Uses OpenAI GPT-3.5-turbo
-- If no key provided, returns generic summaries
+**Data Flow:**
+1. Client submits topic via search form or clicks trend
+2. Server orchestrates parallel API calls to external services
+3. Data is aggregated and optionally enhanced with AI summaries
+4. Structured response sent back to client for visualization
 
 **Error Handling:**
-- All API failures throw descriptive errors
-- Fallback hardcoded data if Google API fails
-- Errors logged to console and displayed to user
-- Graceful degradation - app continues to work even if some endpoints fail
+- Input validation (topic length, empty strings)
+- Graceful degradation when API keys are missing
+- Smart fallback system: When Google Trends API fails (common), uses curated worldwide trends data
+
+**Global Trending Data:**
+- Data is WORLDWIDE/GLOBAL, not USA-only
+- Currently configured to use `geo: 'GLOBAL'` setting
+- When live API fails (JSON parse errors due to HTML response), falls back to 25 curated worldwide trends
+- Fallback data represents global search interests across all regions, not just USA
+
+### Global "Trending Now" Feature - LIVE Data
+
+**BACKEND CODE LOCATION:** `server/services/trend-analyzer.ts` - Function `getGlobalTrendingNow()`
+
+**How to Modify:**
+
+1. **Change data source or geographic scope:**
+   - Line 442: Change `{ geo: 'GLOBAL' }` to other geo codes (e.g., `'US'`, `'IN'`, `'UK'`)
+   - Or switch to different API entirely (e.g., use PyTrends via Python subprocess)
+
+2. **Adjust volume estimation:**
+   - Lines 474-480: `estimateVolume()` function converts interest scores to volume ranges
+   - Modify the threshold ranges to change volume labels
+
+3. **Customize categories:**
+   - Lines 452-461: `categoryMap` object defines keyword-to-category mappings
+   - Add/remove keywords to change categorization logic
+
+4. **Change trend status calculation:**
+   - Lines 507-515: `determineTrendStatus()` logic compares recent vs older data
+   - Adjust percentage thresholds (50%, 15%, -15%) for sensitivity
+
+5. **Modify sparkline data:**
+   - Lines 504-505: Extracts 7-day interest values
+   - Change `Date.now() - 7 * 24 * 60 * 60 * 1000` to different time ranges
+
+**Frontend Code Location:** `client/src/pages/home.tsx` - Lines 269-348
+
+**Data Display:**
+- Table shows top 25 global trends
+- Columns: Rank, Trend name, Interest score (0-100), Volume estimate, Status badge, Sparkline graph, Category
+- Each trend is clickable to analyze immediately
+- Last updated timestamp displayed
+
+**API Response Structure:**
+```json
+{
+  "trends": [
+    {
+      "rank": 1,
+      "query": "Chiefs vs Cowboys",
+      "interest_score": 92,
+      "volume_estimate": "10M–50M",
+      "status": "Exploding",
+      "category": "Sports",
+      "sparkline": [65, 70, 75, 78, 82, 88, 92],
+      "timestamp": "2025-12-01T14:31:45.123Z"
+    },
+    ...
+  ]
+}
+```
 
 ### Data Storage
 
-**Current Implementation:** In-memory storage
-- No database required for core functionality
-- All trend data pulled live from Google Trends API
-- Schema defined using Drizzle ORM for future expansion
+**Current Implementation:** In-memory storage using `MemStorage` class
+- User data stored in Map structure
+- No persistent database currently connected
+- Schema defined using Drizzle ORM for future PostgreSQL integration
 
-### Pages
+**Database Schema (Prepared but not active):**
+- Users table with id, username, and password fields
+- Drizzle configuration ready for Neon PostgreSQL
+- Migration system configured but not currently used
 
-**Home (`/`)** - Main landing page
-- Search box for custom trend analysis
-- Saved trends quick access
-- Features grid explaining capabilities
-- Results dashboard with live data
-- **Error Display**: Red error banner shows any failures
-- **Notifications**: Toast popups for all errors
+**Design Decision:** Application currently operates statelessly. The user schema appears to be template code not actively used by the trend analysis features. Real trend data is fetched fresh on each request rather than being persisted.
 
-## Removed Pages
+### External Dependencies
 
-- ❌ Weekly Trends page
-- ❌ Scraper Tool page
-- ❌ Trends Intelligence page
-- ❌ Ticker bar at top
-- ❌ Action buttons (weekly trends, scraper tool, trends intelligence)
+**Required APIs:**
 
-## Performance
+1. **Google Trends API** (No API key required) ⭐ PRIMARY
+   - Used for: Real-time global trending searches, interest over time, related queries
+   - Status: Always active (free, no authentication)
+   - Library: `google-trends-api` npm package (v4.9.2)
+   - Returns: Worldwide trending data with interest scores on 0-100 scale
+   - Used in functions: `getTrendingTopics()`, `getTopTrendsWithVolume()`, `getGlobalTrendingNow()`
 
-**API Response Times:**
-- `/api/trending` - 50-500ms (depends on Google API)
-- `/api/global-trending` - 50-500ms
-- `/api/top-trends-weekly` - 50-500ms
-- `/api/analyze` - 100-1000ms (Google Trends + optional OpenAI)
+2. **OpenAI API** (Optional)
+   - Used for: Generating intelligent trend summaries
+   - Fallback: Generic summary without AI enhancement
+   - Configuration: `OPENAI_API_KEY` environment variable
+   - Library: `openai` npm package
 
-**Uptime:** Live with fallback data
-**Error Handling:** All failures visible to user with clear error messages
+3. **Reddit API** (Optional)
+   - Used for: Top posts, sentiment analysis
+   - Fallback: Sample data when credentials missing
+   - Configuration: `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT`
+   - Library: `snoowrap` npm package
 
-## Deployment Ready
+4. **Twitter/X API** (Placeholder)
+   - Status: Not implemented due to API access restrictions
+   - UI shows placeholder for this feature
+   - Would require: `TWITTER_BEARER_TOKEN`, `TWITTER_API_KEY`, `TWITTER_API_SECRET`
 
-✅ **Production Ready for crazedo.com**
-- Live data from Google Trends API
-- Comprehensive error handling
-- User-friendly error messages
-- Automatic fallback system
-- Clean, minimal UI
-- Ready to deploy
+**UI Libraries:**
+- Recharts for data visualization (line charts)
+- Lucide React for icons
+- Tailwind CSS for styling with custom animations
+- Radix UI for accessible component primitives
 
-## Branding
-
-All references use "**Crazedo Trends**" and "**Crazedo data**" - NEVER mention Google Trends or Google data
-
-## Technical Decisions
-
-### Why Live Google Trends API Instead of Hardcoded?
-1. **Real Data** - Users get actual trending data, not static content
-2. **Dynamic Results** - Each search returns different, relevant data
-3. **User Feedback** - Different searches get different responses
-4. **Reliability** - Fallback system for when API fails
-5. **Automatic Updates** - Data stays current without manual updates
-
-### Error Handling Philosophy
-1. **User Visibility** - All errors displayed prominently (red banner + toast)
-2. **Graceful Degradation** - App works even if some endpoints fail
-3. **Clear Messages** - Users understand what went wrong
-4. **Dismissible Errors** - Users can close error messages
-5. **Fallback Data** - Hardcoded data prevents complete failures
-
-### Code Quality
+**Build Tools:**
+- Vite for fast development and optimized production builds
+- ESBuild for server bundling in production
 - TypeScript for type safety
-- Zod schemas for validation
-- Modular service architecture
-- Clean separation of concerns
-- Comprehensive error handling with user feedback
+- PostCSS with Tailwind CSS
 
-## Ready to Deploy
+**Development Utilities:**
+- Replit-specific plugins for runtime error overlay, cartographer, and dev banner
+- Custom Vite plugin for meta image tag updates (`vite-plugin-meta-images.ts`)
 
-This application is ready for immediate deployment to crazedo.com. All features working with live data and comprehensive error handling.
+**Key Integration Points:**
+- All external API calls happen server-side in `server/services/trend-analyzer.ts`
+- Pure scraper functions in `server/services/google-trends-scraper.ts` (NEW)
+- Parallel Promise execution for optimal performance
+- Client never directly communicates with external APIs
+- Environment variables control which integrations are active
+- LIVE data with no mock/fallback for Global Trending feature
+
+### Google Trends Scraper Module
+
+**LOCATION:** `server/services/google-trends-scraper.ts`
+
+**Pure functions for scraping:**
+- `fetchDailyTrends(geo)` - Daily trending searches (GLOBAL/US/etc)
+- `fetchInterestOverTime(keyword)` - 7-day interest timeline
+- `fetchRelatedQueries(keyword)` - Related search terms
+- `calculateTrendStatus(timelineData)` - Determine trend direction (works with both raw & transformed data)
+- `getPeakInterestScore()` - Extract interest metrics
+- `extractQueryName()` - Clean query strings
+- `isValidJSON()` - Validates responses (detects HTML error pages)
+
+**Used by:** `trend-analyzer.ts` for all trend analysis operations
+
+**Error Handling:**
+- Detects when Google blocks API (returns HTML instead of JSON)
+- Gracefully falls back to curated worldwide trends data
+- Same trend status calculation used everywhere (consistent results)
+- Supports both LIVE API and fallback seamlessly
+
+**Note:** Google Trends API may be rate-limited during high traffic. When blocked, the app automatically uses fallback curated data without errors.
