@@ -185,7 +185,7 @@ export default function Home() {
                 <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0' }}>
                   <iframe 
                     width="100%" 
-                    height="320" 
+                    height="650" 
                     src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
                     frameBorder="0"
                     style={{ borderRadius: '0px', border: 'none', display: 'block' }}
