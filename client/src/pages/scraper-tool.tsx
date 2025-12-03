@@ -3,10 +3,11 @@ import { useLocation } from "wouter";
 import { SearchInput } from "@/components/search-input";
 import { analyzeTrend, TrendData } from "@/lib/api";
 import { toast } from "sonner";
-import { ArrowLeft, Zap, TrendingUp, Download, BarChart3 } from "lucide-react";
+import { ArrowLeft, Zap, TrendingUp, Download, BarChart3, TrendingDown, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { motion } from "framer-motion";
 
 const EXAMPLE_SEARCHES = ["AI", "Bitcoin", "Climate Change", "Taylor Swift", "Stock Market"];
 
@@ -87,8 +88,17 @@ export default function ScraperTool() {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-cyan-400">🔍 Google Trends Scraper</h1>
-          <p className="text-slate-400">Extract and analyze real Google Trends data</p>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-4xl font-bold text-cyan-400">🔍 Google Trends Scraper</h1>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="w-3 h-3 rounded-full bg-green-500"
+              data-testid="indicator-live"
+            />
+            <span className="text-xs text-green-400 font-semibold">LIVE</span>
+          </div>
+          <p className="text-slate-400">Extract and analyze real Google Trends data with instant search interest analytics</p>
         </div>
 
         <div className="mb-8">
@@ -147,9 +157,9 @@ export default function ScraperTool() {
         {data && (
           <div className="space-y-6">
             {/* Header with Export */}
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-3xl font-bold text-white mb-1">{data.topic}</h2>
+                <h2 className="text-3xl font-bold text-white mb-2">{data.topic}</h2>
                 <Badge className="bg-cyan-600">{data.status}</Badge>
               </div>
               <div className="flex gap-2">
@@ -171,6 +181,55 @@ export default function ScraperTool() {
                 </button>
               </div>
             </div>
+
+            {/* Quick Stats */}
+            {data.sources.google.interest_over_time.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <Card className="bg-gradient-to-br from-cyan-600/20 to-cyan-900/20 border-cyan-500/50">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-xs text-cyan-300 mb-1 uppercase font-semibold">Peak Interest</div>
+                      <div className="text-3xl font-bold text-cyan-400">{Math.max(...data.sources.google.interest_over_time.map(d => d.value))}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 border-emerald-500/50">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-xs text-emerald-300 mb-1 uppercase font-semibold">Current</div>
+                      <div className="text-3xl font-bold text-emerald-400">{data.sources.google.interest_over_time[data.sources.google.interest_over_time.length - 1]?.value || 0}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className={`bg-gradient-to-br ${
+                  data.status === 'Exploding' || data.status === 'Rising' 
+                    ? 'from-orange-600/20 to-orange-900/20 border-orange-500/50' 
+                    : data.status === 'Declining'
+                    ? 'from-red-600/20 to-red-900/20 border-red-500/50'
+                    : 'from-slate-600/20 to-slate-900/20 border-slate-500/50'
+                }`}>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-xs text-slate-300 mb-1 uppercase font-semibold">Trend</div>
+                      <div className="flex items-center justify-center gap-1">
+                        {(data.status === 'Exploding' || data.status === 'Rising') && <TrendingUp className="w-5 h-5 text-orange-400" />}
+                        {data.status === 'Declining' && <TrendingDown className="w-5 h-5 text-red-400" />}
+                        {data.status === 'Stable' && <Activity className="w-5 h-5 text-slate-400" />}
+                        <span className="font-bold text-slate-200">{data.status}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-purple-600/20 to-purple-900/20 border-purple-500/50">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-xs text-purple-300 mb-1 uppercase font-semibold">Data Points</div>
+                      <div className="text-3xl font-bold text-purple-400">{data.sources.google.interest_over_time.length}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
             {/* Interest Over Time Chart */}
             {data.sources.google.interest_over_time.length > 0 && (

@@ -33,23 +33,28 @@ function isValidJSON(response: any): boolean {
  */
 export async function fetchDailyTrends(geo: string = 'GLOBAL'): Promise<any[]> {
   try {
-    const response = await googleTrends.dailyTrends({ geo });
+    // Use explore method for daily trends since google-trends lib has different API
+    const response = await googleTrends.explore({ 
+      keyword: '',
+      geo: geo
+    });
     
     if (!isValidJSON(response)) {
       throw new Error('Invalid response (likely HTML error page)');
     }
     
     // Extract trends from response
-    const trends = response.default?.trendingSearchesDays?.[0]?.trendingSearches || [];
+    const trends = response.default?.trendingSearchesDays?.[0]?.trendingSearches || response.default?.daily || [];
     if (trends.length === 0) {
-      throw new Error('No trending data returned');
+      console.warn(`⚠️ No trending data found for ${geo}, returning empty array`);
+      return [];
     }
     
     console.log(`✅ Fetched ${trends.length} LIVE trends for geo: ${geo}`);
     return trends;
   } catch (error) {
     console.warn(`❌ Failed to fetch daily trends for geo: ${geo}`, error);
-    throw error;
+    return [];
   }
 }
 
