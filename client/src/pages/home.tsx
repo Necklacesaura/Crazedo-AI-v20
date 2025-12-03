@@ -112,21 +112,6 @@ export default function Home() {
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
       </div>
 
-
-      {/* Google Trends Ticker - Top */}
-      <div className="relative z-20 w-full mb-4">
-        <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0', height: '80px', overflow: 'hidden', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <iframe 
-            width="100%" 
-            height="1000" 
-            src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
-            frameBorder="0"
-            style={{ borderRadius: '0px', border: 'none', display: 'block', marginTop: '-450px' }}
-          >
-          </iframe>
-        </div>
-      </div>
-
       {/* Live Ticker Bar */}
       <div className="relative z-20 mb-6 w-full">
         <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
