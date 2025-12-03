@@ -112,39 +112,6 @@ export default function Home() {
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
       </div>
 
-      {/* Live Ticker Bar */}
-      <div className="relative z-20 mb-6 w-full">
-        <div className="ticker-container" onMouseEnter={() => setIsHoveringTicker(true)} onMouseLeave={() => setIsHoveringTicker(false)}>
-          <div className={`ticker-marquee font-display ${isHoveringTicker ? 'paused' : ''}`} data-testid="ticker-bar">
-            {tickerTrends.length > 0 ? (
-              <>
-                {tickerTrends.map((trend, i) => (
-                  <button
-                    key={`first-${i}`}
-                    onClick={() => handleSearch(trend.trend)}
-                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
-                    data-testid={`ticker-item-${i}`}
-                  >
-                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
-                  </button>
-                ))}
-                {/* Duplicate for continuous scroll */}
-                {tickerTrends.map((trend, i) => (
-                  <button
-                    key={`second-${i}`}
-                    onClick={() => handleSearch(trend.trend)}
-                    className="ticker-item px-6 py-3 whitespace-nowrap hover:text-yellow-300 transition text-cyan-400 glow-text"
-                  >
-                    🔥 {trend.trend} <span className="text-pink-400">+{trend.interest_score}%</span> →
-                  </button>
-                ))}
-              </>
-            ) : (
-              <span className="ticker-item px-6 py-3 text-cyan-400">Loading live trends...</span>
-            )}
-          </div>
-        </div>
-      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col min-h-[90vh]">
         {/* Header - Animates to top when searched */}
@@ -165,48 +132,6 @@ export default function Home() {
             <SearchInput onSearch={handleSearch} isLoading={isLoading} />
           </div>
 
-          {/* Google Trends Ticker Banner */}
-          {!hasSearched && isBannerOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="w-full mt-6"
-            >
-              <div className="relative rounded-lg overflow-hidden border border-white/10 bg-white/5">
-                <button
-                  onClick={() => setIsBannerOpen(false)}
-                  className="absolute top-2 right-2 z-30 p-2 rounded-lg bg-black/50 hover:bg-black/70 transition"
-                  data-testid="close-google-trends-banner"
-                >
-                  <X className="w-4 h-4 text-white" />
-                </button>
-                <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0' }}>
-                  <iframe 
-                    width="100%" 
-                    height="450" 
-                    src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
-                    frameBorder="0"
-                    style={{ borderRadius: '0px', border: 'none', display: 'block' }}
-                  >
-                  </iframe>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Reopen Banner Button */}
-          {!hasSearched && !isBannerOpen && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              onClick={() => setIsBannerOpen(true)}
-              className="mt-4 px-3 py-1 rounded text-xs bg-white/10 hover:bg-white/20 border border-white/20 text-white/70 transition"
-              data-testid="open-google-trends-banner"
-            >
-              📊 Google Trends
-            </motion.button>
-          )}
         </motion.div>
 
         {/* Results Area */}
