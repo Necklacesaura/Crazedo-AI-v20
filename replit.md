@@ -197,11 +197,20 @@ Preferred communication style: Simple, everyday language.
 **LOCATION:** `server/services/google-trends-scraper.ts`
 
 **Pure functions for scraping:**
-- `fetchDailyTrends(geo)` - Daily trending searches
+- `fetchDailyTrends(geo)` - Daily trending searches (GLOBAL/US/etc)
 - `fetchInterestOverTime(keyword)` - 7-day interest timeline
 - `fetchRelatedQueries(keyword)` - Related search terms
-- `calculateTrendStatus()` - Determine trend direction
+- `calculateTrendStatus(timelineData)` - Determine trend direction (works with both raw & transformed data)
 - `getPeakInterestScore()` - Extract interest metrics
 - `extractQueryName()` - Clean query strings
+- `isValidJSON()` - Validates responses (detects HTML error pages)
 
 **Used by:** `trend-analyzer.ts` for all trend analysis operations
+
+**Error Handling:**
+- Detects when Google blocks API (returns HTML instead of JSON)
+- Gracefully falls back to curated worldwide trends data
+- Same trend status calculation used everywhere (consistent results)
+- Supports both LIVE API and fallback seamlessly
+
+**Note:** Google Trends API may be rate-limited during high traffic. When blocked, the app automatically uses fallback curated data without errors.

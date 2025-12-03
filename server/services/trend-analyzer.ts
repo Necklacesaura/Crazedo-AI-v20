@@ -423,15 +423,20 @@ export async function getGlobalTrendingNow(): Promise<Array<{
 }>> {
   try {
     // Fetch trending searches from Google Trends (WORLDWIDE/GLOBAL data)
-    let trendingRaw: string;
-    trendingRaw = await googleTrends.dailyTrends({ geo: 'GLOBAL' });
+    const trendingRaw = await googleTrends.dailyTrends({ geo: 'GLOBAL' });
+
+    // Validate response is JSON (not HTML error page from rate limiting)
+    if (trendingRaw.trim().startsWith('<')) {
+      console.warn('⚠️ Google Trends API blocked/rate limited (returned HTML)');
+      return getDefaultGlobalTrends();
+    }
 
     const data = JSON.parse(trendingRaw);
     let trendingSearches = data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
     
     // If empty, return curated worldwide data
     if (trendingSearches.length === 0) {
-      console.warn('No trending data, using curated fallback');
+      console.warn('⚠️ No trending data from API, using curated fallback');
       return getDefaultGlobalTrends();
     }
 

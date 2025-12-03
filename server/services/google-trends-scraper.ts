@@ -10,6 +10,23 @@
 import googleTrends from 'google-trends-api';
 
 /**
+ * Validates if response is valid JSON (not HTML error page)
+ */
+function isValidJSON(response: string): boolean {
+  try {
+    // Check if it looks like HTML (common when API is blocked)
+    if (response.trim().startsWith('<')) {
+      console.warn('⚠️ API returned HTML (blocked/rate limited)');
+      return false;
+    }
+    JSON.parse(response);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Fetches trending searches from Google Trends for a specific geography
  * @param geo - Geography code (e.g., 'US', 'GLOBAL', 'IN', 'UK')
  * @returns Raw trending data with queries, traffic, and metadata
@@ -17,6 +34,11 @@ import googleTrends from 'google-trends-api';
 export async function fetchDailyTrends(geo: string = 'GLOBAL'): Promise<any[]> {
   try {
     const trendingRaw = await googleTrends.dailyTrends({ geo });
+    
+    if (!isValidJSON(trendingRaw)) {
+      throw new Error('Invalid response (likely HTML error page)');
+    }
+    
     const data = JSON.parse(trendingRaw);
     return data.default.trendingSearchesDays?.[0]?.trendingSearches || [];
   } catch (error) {
