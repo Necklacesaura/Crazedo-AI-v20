@@ -191,18 +191,18 @@ export default function Home() {
               <div className="relative rounded-lg overflow-hidden border border-white/10 bg-white/5">
                 <button
                   onClick={() => setIsBannerOpen(false)}
-                  className="absolute top-2 right-2 z-30 p-1 rounded bg-black/50 hover:bg-black/70 transition"
+                  className="absolute top-2 right-2 z-30 p-2 rounded-lg bg-black/50 hover:bg-black/70 transition"
                   data-testid="close-google-trends-banner"
                 >
-                  <X className="w-3 h-3 text-white" />
+                  <X className="w-4 h-4 text-white" />
                 </button>
-                <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0', height: '100px', overflow: 'hidden' }}>
+                <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0' }}>
                   <iframe 
                     width="100%" 
-                    height="1000" 
+                    height="650" 
                     src="https://trends.google.com/trends/hottrends/visualize?nrow=3&ncol=3" 
                     frameBorder="0"
-                    style={{ borderRadius: '0px', border: 'none', display: 'block', marginTop: '-400px' }}
+                    style={{ borderRadius: '0px', border: 'none', display: 'block' }}
                   >
                   </iframe>
                 </div>
