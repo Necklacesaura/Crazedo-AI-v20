@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SearchInput } from "@/components/search-input";
 import { TrendDashboard } from "@/components/trend-dashboard";
 import { analyzeTrend, TrendData } from "@/lib/api";
@@ -18,6 +18,7 @@ export default function Home() {
   const [data, setData] = useState<TrendData | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
@@ -50,6 +51,14 @@ export default function Home() {
     localStorage.setItem('savedTrends', JSON.stringify(updated));
   };
 
+  const handleBackToSearch = () => {
+    setData(null);
+    setHasSearched(false);
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black text-foreground p-4 md:p-8 overflow-x-hidden">
       {/* Background Grid */}
@@ -73,14 +82,14 @@ export default function Home() {
           </motion.div>
           
           <div className="w-full max-w-2xl">
-            <SearchInput onSearch={handleSearch} isLoading={isLoading} />
+            <SearchInput ref={searchInputRef} onSearch={handleSearch} isLoading={isLoading} />
           </div>
         </motion.div>
 
         {/* Results Area */}
         <div className="flex-1 w-full">
           {data && !isLoading && (
-            <TrendDashboard data={data} />
+            <TrendDashboard data={data} onBack={handleBackToSearch} />
           )}
           
           {/* Empty State / Instructions */}

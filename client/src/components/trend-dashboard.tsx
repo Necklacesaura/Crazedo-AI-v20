@@ -2,12 +2,13 @@ import { TrendData } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2, TrendingUp, TrendingDown, Download, Heart, Bell } from "lucide-react";
+import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2, TrendingUp, TrendingDown, Download, Heart, Bell, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 interface TrendDashboardProps {
   data: TrendData;
+  onBack?: () => void;
 }
 
 const container = {
@@ -204,7 +205,7 @@ function generateContentIdeas(topic: string, status: string, queries: string[]) 
   return baseIdeas;
 }
 
-export function TrendDashboard({ data }: TrendDashboardProps) {
+export function TrendDashboard({ data, onBack }: TrendDashboardProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
   
@@ -297,6 +298,20 @@ ${seasonalPattern}
       className="w-full max-w-6xl mx-auto space-y-6 pb-20"
       data-testid="trend-dashboard"
     >
+      {/* Back to Search Button */}
+      {onBack && (
+        <motion.div variants={item} className="flex justify-start">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/30 hover:bg-muted/50 border border-white/10 text-muted-foreground hover:text-foreground transition-all text-sm font-medium"
+            data-testid="button-back-to-search"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Search
+          </button>
+        </motion.div>
+      )}
+
       {/* Header Section */}
       <motion.div variants={item} className="grid md:grid-cols-3 gap-6">
         <Card className="md:col-span-2 bg-card/40 backdrop-blur-sm border-primary/20">
