@@ -1,0 +1,71 @@
+from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
+import os
+import sqlite3
+import functools
+
+app = Flask(__name__)
+
+# Database configuration
+DB_PATH = os.environ.get('DATABASE_URL', 'crazedo_ai_db.sqlite')
+CACHE_DURATION = timedelta(hours=1)
+trend_cache = {}
+
+# Connect to the database
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/save_trend', methods=['POST'])
+def save_trend():
+    data = request.json
+    keyword = data.get('keyword')
+    trend_label = data.get('trend_label')
+    search_volume = data.get('search_volume')
+    date = data.get('date')
+    ai_summary = data.get('ai_summary')
+    
+    conn = get_db_connection()
+    conn.execute('INSERT INTO trending_searches (keyword, trend_label, search_volume, date, ai_summary) VALUES (?, ?, ?, ?, ?)',
+                 (keyword, trend_label, search_volume, date, ai_summary))
+    conn.commit()
+    conn.close()
+    
+    # Cache the trend data
+    trend_cache[keyword] = {'timestamp': datetime.now(), 'data': data}
+    return jsonify({'status': 'Trend saved successfully!'}), 201
+
+@app.route('/trends/<string:keyword>', methods=['GET'])
+def get_trends(keyword):
+    # Check cache first
+    cached_trend = trend_cache.get(keyword)
+    if cached_trend and datetime.now() - cached_trend['timestamp'] < CACHE_DURATION:
+        return jsonify(cached_trend['data']), 200
+
+    # Query the database
+    conn = get_db_connection()
+    trends = conn.execute('SELECT * FROM trending_searches WHERE keyword = ? AND date >= ?',
+                          (keyword, (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))).fetchall()
+    conn.close()
+
+    # Update cache
+    if trends:
+        trend_cache[keyword] = {'timestamp': datetime.now(), 'data': [dict(ix) for ix in trends]}
+        return jsonify([dict(ix) for ix in trends]), 200
+    else:
+        return jsonify({'error': 'No trends found'}), 404
+
+@app.route('/user_trends/<string:user_id>', methods=['GET'])
+def get_user_trends(user_id):
+    conn = get_db_connection()
+    user_trends = conn.execute('SELECT * FROM user_saved_trends WHERE user_id = ?', (user_id,)).fetchall()
+    conn.close()
+    return jsonify([dict(ut) for ut in user_trends]), 200
+
+# Ensure security
+# Note: Ensure to set environment variables in Replit for production security
+# Example: DATABASE_URL in Replit's Secrets
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
