@@ -5,7 +5,7 @@ import { analyzeTrend, TrendData } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { X } from "lucide-react";
+import { X, ArrowLeft } from "lucide-react";
 
 interface SavedTrend {
   topic: string;
@@ -65,6 +65,20 @@ export default function Home() {
       <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
       </div>
+
+      {/* Fixed Green Back Button - Only visible after search */}
+      {data && !isLoading && (
+        <motion.button
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          onClick={handleBackToSearch}
+          className="fixed top-4 left-4 z-50 p-3 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/30 hover:text-emerald-300 hover:border-emerald-400 transition-all duration-200 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]"
+          data-testid="button-back-fixed"
+        >
+          <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+        </motion.button>
+      )}
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col min-h-[90vh]">
         {/* Header - Animates to top when searched */}
