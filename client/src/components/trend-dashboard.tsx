@@ -320,10 +320,6 @@ ${seasonalPattern}
                   <Bell className="w-5 h-5" />
                 </button>
               </div>
-              <div className="text-right hidden md:block">
-                <span className="text-xs text-muted-foreground font-mono block mb-1">ANALYSIS ID</span>
-                <span className="text-sm font-mono text-primary">#CRZ-{Math.floor(Math.random() * 10000)}</span>
-              </div>
             </div>
           </CardHeader>
           <CardContent>
