@@ -68,16 +68,14 @@ export default function Home() {
 
       {/* Fixed Green Back Button - Only visible after search */}
       {data && !isLoading && (
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
+        <button
           onClick={handleBackToSearch}
-          className="fixed top-4 left-4 z-50 p-3 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/30 hover:text-emerald-300 hover:border-emerald-400 transition-all duration-200 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]"
+          className="fixed top-4 left-4 z-[100] p-4 rounded-full bg-emerald-500 text-white hover:bg-emerald-400 transition-all duration-200 shadow-[0_0_20px_rgba(16,185,129,0.6)] hover:shadow-[0_0_30px_rgba(16,185,129,0.8)] hover:scale-110"
           data-testid="button-back-fixed"
+          aria-label="Back to Search"
         >
-          <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
-        </motion.button>
+          <ArrowLeft className="w-6 h-6" />
+        </button>
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col min-h-[90vh]">
