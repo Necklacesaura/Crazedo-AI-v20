@@ -1,10 +1,39 @@
 import fs from "node:fs";
 import { type Server } from "node:http";
 import path from "node:path";
+import { spawn, ChildProcess } from "node:child_process";
 
 import express, { type Express, type Request } from "express";
 
 import runApp from "./app";
+
+let pytrendsProcess: ChildProcess | null = null;
+
+function startPyTrendsAPI() {
+  console.log('[PyTrends] Starting Flask API on port 5001...');
+  pytrendsProcess = spawn('python', ['python_api/trends_api.py'], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env }
+  });
+
+  pytrendsProcess.stdout?.on('data', (data) => {
+    console.log(`[PyTrends] ${data.toString().trim()}`);
+  });
+
+  pytrendsProcess.stderr?.on('data', (data) => {
+    console.error(`[PyTrends] ${data.toString().trim()}`);
+  });
+
+  pytrendsProcess.on('close', (code) => {
+    console.log(`[PyTrends] Flask API exited with code ${code}`);
+    if (code !== 0) {
+      setTimeout(() => startPyTrendsAPI(), 3000);
+    }
+  });
+}
+
+process.on('exit', () => { if (pytrendsProcess) pytrendsProcess.kill(); });
+process.on('SIGINT', () => { if (pytrendsProcess) pytrendsProcess.kill(); process.exit(); });
 
 export async function serveStatic(app: Express, server: Server) {
   const distPath = path.resolve(import.meta.dirname, "public");
@@ -24,5 +53,6 @@ export async function serveStatic(app: Express, server: Server) {
 }
 
 (async () => {
+  startPyTrendsAPI();
   await runApp(serveStatic);
 })();

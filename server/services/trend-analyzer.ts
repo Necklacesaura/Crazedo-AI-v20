@@ -1,12 +1,11 @@
-import googleTrends from 'google-trends-api';
 import OpenAI from 'openai';
 
-// Initialize OpenAI client only if API key is provided
 const openai = process.env.OPENAI_API_KEY 
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
-// Interface defining the structure of trend analysis results
+const PYTRENDS_API_URL = process.env.PYTRENDS_API_URL || 'http://localhost:5001';
+
 export interface TrendAnalysisResult {
   topic: string;
   status: 'Exploding' | 'Rising' | 'Stable' | 'Declining';
@@ -17,25 +16,14 @@ export interface TrendAnalysisResult {
       related_queries: string[];
       interest_by_region: { region: string; value: number }[];
     };
-    // REMOVED: Reddit and Twitter/X functionality
-    // Future platforms can be added here as needed
   };
   related_topics: string[];
 }
 
-/**
- * Main function to analyze trend for a given topic
- * Fetches Google Trends data and generates AI summary
- */
 export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> {
   try {
-    // Fetch Google Trends data
     const googleData = await fetchGoogleTrends(topic);
-
-    // Determine trend status based on interest over time
     const trendStatus = determineTrendStatus(googleData.interest_over_time);
-    
-    // Generate AI summary (or generic summary if no OpenAI key)
     const aiSummary = await generateAISummary(topic, googleData, trendStatus);
 
     return {
@@ -44,7 +32,6 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
       summary: aiSummary,
       sources: {
         google: googleData,
-        // REMOVED: reddit and twitter fields
       },
       related_topics: googleData.related_queries.slice(0, 4),
     };
@@ -55,64 +42,33 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
   }
 }
 
-/**
- * Fetches real-time Google Trends data for the given topic
- * Returns interest over time (last 7 days), related queries, and regional interest
- */
 async function fetchGoogleTrends(topic: string) {
   try {
-    // Fetch interest over time from Google Trends API
-    const interestOverTimeRaw = await googleTrends.interestOverTime({
-      keyword: topic,
-      startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
-    });
+    const [interestRes, relatedRes, regionsRes] = await Promise.all([
+      fetch(`${PYTRENDS_API_URL}/api/pytrends/interest?q=${encodeURIComponent(topic)}`),
+      fetch(`${PYTRENDS_API_URL}/api/pytrends/related?q=${encodeURIComponent(topic)}`),
+      fetch(`${PYTRENDS_API_URL}/api/pytrends/regions?q=${encodeURIComponent(topic)}`)
+    ]);
 
-    const data = JSON.parse(interestOverTimeRaw);
-    
-    // Transform data into our format
-    const interest_over_time = data.default.timelineData.map((item: any) => ({
-      date: new Date(parseInt(item.time) * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-      value: item.value[0] || 0,
-    }));
+    const [interestData, relatedData, regionsData] = await Promise.all([
+      interestRes.json(),
+      relatedRes.json(),
+      regionsRes.json()
+    ]);
 
-    // Fetch related queries from Google Trends
-    const relatedQueriesRaw = await googleTrends.relatedQueries({ keyword: topic });
-    const relatedData = JSON.parse(relatedQueriesRaw);
-    
-    // Extract top 4 related queries or use fallback
-    const related_queries = relatedData.default.rankedList?.[0]?.rankedKeyword
-      ?.slice(0, 4)
-      .map((item: any) => item.query) || [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`];
+    const interest_over_time = interestData.interest_over_time?.length > 0
+      ? interestData.interest_over_time
+      : generateFallbackInterestData(topic);
 
-    // Fetch interest by region from Google Trends
-    let interest_by_region = [];
-    try {
-      const interestByRegionRaw = await googleTrends.interestByRegion({ keyword: topic });
-      const regionData = JSON.parse(interestByRegionRaw);
-      
-      interest_by_region = regionData.default.geoMapData
-        ?.map((item: any) => ({
-          region: item.geoName,
-          value: item.value[0] || 0,
-        }))
-        .sort((a: any, b: any) => b.value - a.value)
-        .slice(0, 10) || [];
-    } catch (regionError) {
-      console.warn('Could not fetch regional data:', regionError);
-      // Fallback regional data with 10+ countries
-      interest_by_region = [
-        { region: 'United States', value: 100 },
-        { region: 'United Kingdom', value: 82 },
-        { region: 'Canada', value: 76 },
-        { region: 'India', value: 71 },
-        { region: 'Australia', value: 68 },
-        { region: 'Germany', value: 64 },
-        { region: 'France', value: 61 },
-        { region: 'Japan', value: 58 },
-        { region: 'Brazil', value: 54 },
-        { region: 'Mexico', value: 51 },
-      ];
-    }
+    const related_queries = relatedData.related_queries?.length > 0
+      ? relatedData.related_queries
+      : [`${topic} news`, `what is ${topic}`, `${topic} 2025`, `best ${topic}`];
+
+    const interest_by_region = regionsData.interest_by_region?.length > 0
+      ? regionsData.interest_by_region
+      : generateFallbackRegionData();
+
+    console.log(`[PyTrends] Fetched LIVE data for "${topic}": ${interest_over_time.length} data points`);
 
     return {
       interest_over_time,
@@ -120,47 +76,44 @@ async function fetchGoogleTrends(topic: string) {
       interest_by_region,
     };
   } catch (error: unknown) {
-    console.error('Google Trends error:', error);
-    // Fallback data if Google Trends API fails or rate limits
+    console.error('PyTrends API error, using fallback:', error);
     return {
-      interest_over_time: Array.from({ length: 7 }, (_, i) => ({
-        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-        value: Math.floor(Math.random() * 50) + 30,
-      })),
-      related_queries: [`${topic} news`, `is ${topic} real`, `how to use ${topic}`, `best ${topic} 2025`],
-      interest_by_region: [
-        { region: 'United States', value: 100 },
-        { region: 'United Kingdom', value: 82 },
-        { region: 'Canada', value: 76 },
-        { region: 'India', value: 71 },
-        { region: 'Australia', value: 68 },
-        { region: 'Germany', value: 64 },
-        { region: 'France', value: 61 },
-        { region: 'Japan', value: 58 },
-        { region: 'Brazil', value: 54 },
-        { region: 'Mexico', value: 51 },
-      ],
+      interest_over_time: generateFallbackInterestData(topic),
+      related_queries: [`${topic} news`, `what is ${topic}`, `${topic} 2025`, `best ${topic}`],
+      interest_by_region: generateFallbackRegionData(),
     };
   }
 }
 
-// REMOVED: fetchRedditData() function
-// REMOVED: getFallbackRedditData() function
-// If you want to re-add Reddit functionality in the future:
-// - Install 'snoowrap' package
-// - Add REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET env vars
-// - Implement fetchRedditData() function similar to fetchGoogleTrends()
-// - Add reddit field back to TrendAnalysisResult interface
+function generateFallbackInterestData(topic: string) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date().getDay();
+  return Array.from({ length: 7 }, (_, i) => ({
+    date: days[(today - 6 + i + 7) % 7],
+    value: Math.floor(Math.random() * 50) + 30,
+  }));
+}
 
-/**
- * Determines trend status based on interest over time data
- * Compares recent 3 days average vs earlier 3 days average
- */
+function generateFallbackRegionData() {
+  return [
+    { region: 'United States', value: 100 },
+    { region: 'United Kingdom', value: 82 },
+    { region: 'Canada', value: 76 },
+    { region: 'India', value: 71 },
+    { region: 'Australia', value: 68 },
+    { region: 'Germany', value: 64 },
+    { region: 'France', value: 61 },
+    { region: 'Japan', value: 58 },
+    { region: 'Brazil', value: 54 },
+    { region: 'Mexico', value: 51 },
+  ];
+}
+
 function determineTrendStatus(interestData: { date: string; value: number }[]): 'Exploding' | 'Rising' | 'Stable' | 'Declining' {
   if (interestData.length < 2) return 'Stable';
 
-  const recent = interestData.slice(-3); // Last 3 days
-  const earlier = interestData.slice(0, 3); // First 3 days
+  const recent = interestData.slice(-3);
+  const earlier = interestData.slice(0, 3);
 
   const recentAvg = recent.reduce((sum, d) => sum + d.value, 0) / recent.length;
   const earlierAvg = earlier.reduce((sum, d) => sum + d.value, 0) / earlier.length;
@@ -173,22 +126,16 @@ function determineTrendStatus(interestData: { date: string; value: number }[]): 
   return 'Stable';
 }
 
-/**
- * Generates AI summary using OpenAI GPT-4
- * Falls back to generic summary if OpenAI API key is not configured
- */
 async function generateAISummary(
   topic: string,
   googleData: any,
   status: string
 ): Promise<string> {
   try {
-    // If no OpenAI key, return generic summary
     if (!openai) {
       return `Analysis of "${topic}" shows a ${status.toLowerCase()} trend pattern based on Google Trends data. Search interest has ${status === 'Exploding' || status === 'Rising' ? 'increased' : status === 'Declining' ? 'decreased' : 'remained stable'} over the past week, indicating ${status === 'Exploding' ? 'explosive' : status === 'Rising' ? 'growing' : status === 'Declining' ? 'declining' : 'steady'} public interest in this topic.`;
     }
 
-    // Generate AI-powered summary using OpenAI
     const prompt = `You are a trend analysis expert. Analyze the following Google Trends data for the topic "${topic}" and provide a concise 2-3 sentence summary explaining the trend pattern.
 
 Trend Status: ${status}
@@ -207,7 +154,6 @@ Provide a brief, insightful summary that explains why this trend pattern is occu
     return response.choices[0].message.content?.trim() || 'Unable to generate summary.';
   } catch (error: unknown) {
     console.error('OpenAI API error:', error);
-    // Fallback to generic summary if OpenAI fails
     return `Analysis of "${topic}" indicates a ${status.toLowerCase()} trend based on Google Trends search volume. The topic has shown ${status === 'Exploding' || status === 'Rising' ? 'increased' : status === 'Declining' ? 'decreased' : 'stable'} search interest over the past week.`;
   }
 }

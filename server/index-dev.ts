@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { type Server } from "node:http";
 import path from "node:path";
+import { spawn, ChildProcess } from "node:child_process";
 
 import type { Express } from "express";
 import { nanoid } from "nanoid";
@@ -11,6 +12,47 @@ import runApp from "./app";
 import viteConfig from "../vite.config";
 
 const viteLogger = createLogger();
+
+let pytrendsProcess: ChildProcess | null = null;
+
+function startPyTrendsAPI() {
+  console.log('[PyTrends] Starting Flask API on port 5001...');
+  pytrendsProcess = spawn('python', ['python_api/trends_api.py'], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env }
+  });
+
+  pytrendsProcess.stdout?.on('data', (data) => {
+    console.log(`[PyTrends] ${data.toString().trim()}`);
+  });
+
+  pytrendsProcess.stderr?.on('data', (data) => {
+    console.error(`[PyTrends] ${data.toString().trim()}`);
+  });
+
+  pytrendsProcess.on('close', (code) => {
+    console.log(`[PyTrends] Flask API exited with code ${code}`);
+    if (code !== 0) {
+      setTimeout(() => {
+        console.log('[PyTrends] Restarting Flask API...');
+        startPyTrendsAPI();
+      }, 3000);
+    }
+  });
+}
+
+process.on('exit', () => {
+  if (pytrendsProcess) {
+    pytrendsProcess.kill();
+  }
+});
+
+process.on('SIGINT', () => {
+  if (pytrendsProcess) {
+    pytrendsProcess.kill();
+  }
+  process.exit();
+});
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -61,5 +103,6 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 (async () => {
+  startPyTrendsAPI();
   await runApp(setupVite);
 })();
