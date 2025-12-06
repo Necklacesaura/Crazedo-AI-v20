@@ -16,6 +16,21 @@ export function log(message: string, source = "express") {
 
 export const app = express();
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (process.env.NODE_ENV === 'production') {
+    const proto = req.headers['x-forwarded-proto'];
+    if (proto && proto !== 'https') {
+      return res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+    
+    const host = req.headers.host || '';
+    if (host.startsWith('www.')) {
+      return res.redirect(301, `https://${host.replace('www.', '')}${req.url}`);
+    }
+  }
+  next();
+});
+
 declare module 'http' {
   interface IncomingMessage {
     rawBody: unknown

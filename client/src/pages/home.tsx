@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "wouter";
 import { SearchInput } from "@/components/search-input";
 import { TrendDashboard } from "@/components/trend-dashboard";
 import { analyzeTrend, TrendData } from "@/lib/api";
@@ -239,6 +240,17 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <footer className="relative z-10 mt-auto pt-12 pb-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="hover:text-foreground transition" data-testid="link-privacy">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-foreground transition" data-testid="link-terms">Terms of Service</Link>
+            <Link href="/contact" className="hover:text-foreground transition" data-testid="link-contact">Contact</Link>
+          </div>
+          <p data-testid="text-copyright">&copy; 2025 Crazedo AI</p>
+        </div>
+      </footer>
     </div>
   );
 }
