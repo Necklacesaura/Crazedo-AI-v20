@@ -2,7 +2,7 @@ import { TrendData } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2, TrendingUp, TrendingDown, Download, Heart, Bell, ArrowLeft, Link2, Check } from "lucide-react";
+import { ArrowUpRight, Flame, Minus, ArrowDownRight, Share2, TrendingUp, TrendingDown, Download, Heart, Bell, ArrowLeft, Link2, Check, ImageDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -205,8 +205,9 @@ function generateContentIdeas(topic: string, status: string, queries: string[]) 
   return baseIdeas;
 }
 
-function ShareButtons({ topic, summary }: { topic: string; summary: string }) {
+function ShareButtons({ topic, summary, status }: { topic: string; summary: string; status: string }) {
   const [copied, setCopied] = useState(false);
+  const [generating, setGenerating] = useState(false);
   
   const shareUrl = 'https://crazedoai.com';
   const shareTitle = `Trending: ${topic}`;
@@ -234,6 +235,133 @@ function ShareButtons({ topic, summary }: { topic: string; summary: string }) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
+    }
+  };
+
+  const getCategoryIcon = (status: string) => {
+    if (status === 'Exploding' || status === 'Rising') return '🔥';
+    if (topic.toLowerCase().includes('ai') || topic.toLowerCase().includes('tech')) return '🤖';
+    if (topic.toLowerCase().includes('fashion') || topic.toLowerCase().includes('style')) return '👗';
+    return '🌍';
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Exploding': return '#ef4444';
+      case 'Rising': return '#10b981';
+      case 'Stable': return '#3b82f6';
+      case 'Declining': return '#6b7280';
+      default: return '#06b6d4';
+    }
+  };
+
+  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] => {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+    
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && currentLine) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines;
+  };
+
+  const handleShareAsImage = async () => {
+    setGenerating(true);
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 628;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const gradient = ctx.createLinearGradient(0, 0, 1200, 628);
+      gradient.addColorStop(0, '#0f172a');
+      gradient.addColorStop(0.5, '#020617');
+      gradient.addColorStop(1, '#0c0a09');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1200, 628);
+
+      ctx.strokeStyle = 'rgba(6, 182, 212, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 1200; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, 628);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 628; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(1200, i);
+        ctx.stroke();
+      }
+
+      const statusColor = getStatusColor(status);
+      ctx.fillStyle = statusColor;
+      ctx.globalAlpha = 0.15;
+      ctx.beginPath();
+      ctx.arc(1100, 100, 200, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      const icon = getCategoryIcon(status);
+      ctx.font = '48px Arial';
+      ctx.fillText(icon, 60, 100);
+
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.3)';
+      ctx.fillRect(120, 65, 200, 40);
+      ctx.fillStyle = '#06b6d4';
+      ctx.font = 'bold 16px Arial';
+      ctx.fillText(status.toUpperCase(), 135, 92);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 56px Arial';
+      const topicLines = wrapText(ctx, topic, 1000);
+      let yPos = 180;
+      for (const line of topicLines.slice(0, 2)) {
+        ctx.fillText(line, 60, yPos);
+        yPos += 70;
+      }
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '28px Arial';
+      const summaryShort = summary.length > 200 ? summary.slice(0, 200) + '...' : summary;
+      const summaryLines = wrapText(ctx, summaryShort, 1050);
+      yPos += 20;
+      for (const line of summaryLines.slice(0, 3)) {
+        ctx.fillText(line, 60, yPos);
+        yPos += 40;
+      }
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 548, 1200, 80);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '22px Arial';
+      ctx.fillText('Live on Crazedo AI → https://crazedoai.com', 60, 595);
+
+      ctx.fillStyle = '#06b6d4';
+      ctx.font = 'bold 28px Arial';
+      ctx.fillText('CRAZEDO AI', 1000, 595);
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `${topic.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-trend.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to generate image:', err);
+    } finally {
+      setGenerating(false);
     }
   };
   
@@ -276,6 +404,15 @@ function ShareButtons({ topic, summary }: { topic: string; summary: string }) {
         data-testid="button-copy-link"
       >
         {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Link2 className="w-4 h-4" />}
+      </button>
+      <button
+        onClick={handleShareAsImage}
+        disabled={generating}
+        className="p-1.5 rounded-md hover:bg-muted/40 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
+        title="Share this trend as an image"
+        data-testid="button-share-image"
+      >
+        <ImageDown className={`w-4 h-4 ${generating ? 'animate-pulse' : ''}`} />
       </button>
     </div>
   );
@@ -405,7 +542,7 @@ ${seasonalPattern}
               {data.summary}
             </p>
             <div className="flex justify-end">
-              <ShareButtons topic={data.topic} summary={data.summary} />
+              <ShareButtons topic={data.topic} summary={data.summary} status={data.status} />
             </div>
           </CardContent>
         </Card>
