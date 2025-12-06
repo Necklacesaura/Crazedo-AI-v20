@@ -22,7 +22,7 @@ export default function Contact() {
                 <h2 className="text-lg font-semibold text-foreground">Get in Touch</h2>
               </div>
               <p className="mb-2">For general inquiries and support:</p>
-              <a href="mailto:contact@crazedoai.com" className="text-primary hover:underline" data-testid="link-email">contact@crazedoai.com</a>
+              <a href="mailto:crazedo@ppcadagency.io" className="text-primary hover:underline" data-testid="link-email">crazedo@ppcadagency.io</a>
             </div>
           </section>
           

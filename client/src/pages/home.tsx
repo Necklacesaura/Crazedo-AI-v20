@@ -242,13 +242,23 @@ export default function Home() {
       </div>
 
       <footer className="relative z-10 mt-auto pt-12 pb-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-6">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-3 text-sm text-muted-foreground text-center">
+          <div className="flex items-center gap-2">
             <Link href="/privacy" className="hover:text-foreground transition" data-testid="link-privacy">Privacy Policy</Link>
+            <span>|</span>
             <Link href="/terms" className="hover:text-foreground transition" data-testid="link-terms">Terms of Service</Link>
+            <span>|</span>
             <Link href="/contact" className="hover:text-foreground transition" data-testid="link-contact">Contact</Link>
           </div>
-          <p data-testid="text-copyright">&copy; 2025 Crazedo AI</p>
+          <div className="flex items-center gap-1 text-xs">
+            <span>More from us:</span>
+            <a href="https://crazedo.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Crazedo.com</a>
+            <span>•</span>
+            <a href="https://ppcadagency.io" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">PPC Ad Agency</a>
+            <span>•</span>
+            <a href="https://backlinkphoenix.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Backlink Phoenix</a>
+          </div>
+          <p data-testid="text-copyright">&copy; 2025 Crazedo AI v2.0</p>
         </div>
       </footer>
     </div>
