@@ -1,10 +1,9 @@
 import OpenAI from 'openai';
+import { fetchGoogleTrendsData } from './google-trends';
 
 const openai = process.env.OPENAI_API_KEY 
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
-
-const PYTRENDS_API_URL = process.env.PYTRENDS_API_URL || 'http://localhost:5001';
 
 export interface TrendAnalysisResult {
   topic: string;
@@ -44,31 +43,21 @@ export async function analyzeTrend(topic: string): Promise<TrendAnalysisResult> 
 
 async function fetchGoogleTrends(topic: string) {
   try {
-    const [interestRes, relatedRes, regionsRes] = await Promise.all([
-      fetch(`${PYTRENDS_API_URL}/api/pytrends/interest?q=${encodeURIComponent(topic)}`),
-      fetch(`${PYTRENDS_API_URL}/api/pytrends/related?q=${encodeURIComponent(topic)}`),
-      fetch(`${PYTRENDS_API_URL}/api/pytrends/regions?q=${encodeURIComponent(topic)}`)
-    ]);
+    const data = await fetchGoogleTrendsData(topic);
 
-    const [interestData, relatedData, regionsData] = await Promise.all([
-      interestRes.json(),
-      relatedRes.json(),
-      regionsRes.json()
-    ]);
-
-    const interest_over_time = interestData.interest_over_time?.length > 0
-      ? interestData.interest_over_time
+    const interest_over_time = data.interest_over_time.length > 0
+      ? data.interest_over_time
       : generateFallbackInterestData(topic);
 
-    const related_queries = relatedData.related_queries?.length > 0
-      ? relatedData.related_queries
+    const related_queries = data.related_queries.length > 0
+      ? data.related_queries
       : [`${topic} news`, `what is ${topic}`, `${topic} 2025`, `best ${topic}`];
 
-    const interest_by_region = regionsData.interest_by_region?.length > 0
-      ? regionsData.interest_by_region
+    const interest_by_region = data.interest_by_region.length > 0
+      ? data.interest_by_region
       : generateFallbackRegionData();
 
-    console.log(`[PyTrends] Fetched LIVE data for "${topic}": ${interest_over_time.length} data points`);
+    console.log(`[TrendAnalyzer] Data for "${topic}": ${interest_over_time.length} data points`);
 
     return {
       interest_over_time,
@@ -76,7 +65,7 @@ async function fetchGoogleTrends(topic: string) {
       interest_by_region,
     };
   } catch (error: unknown) {
-    console.error('PyTrends API error, using fallback:', error);
+    console.error('Google Trends error, using fallback:', error);
     return {
       interest_over_time: generateFallbackInterestData(topic),
       related_queries: [`${topic} news`, `what is ${topic}`, `${topic} 2025`, `best ${topic}`],
