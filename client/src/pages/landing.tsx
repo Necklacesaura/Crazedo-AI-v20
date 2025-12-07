@@ -53,7 +53,7 @@ export default function Landing() {
               </Button>
             </a>
             <span className="text-xs text-muted-foreground/70 border border-white/10 rounded-full px-4 py-1.5 bg-white/5 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
-              Crazedo Free — No charge. No credit card required.
+              Crazedo AI v2.0 — No charge. No credit card required.
             </span>
           </div>
 
