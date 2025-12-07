@@ -13,7 +13,7 @@ export default function Landing() {
         <header className="flex items-center justify-between py-6">
           <div className="flex items-center gap-2">
             <Sparkles className="w-8 h-8 text-emerald-400" />
-            <span className="text-xl font-display font-bold tracking-tight">CRAZEDO AI</span>
+            <span className="text-xl font-display font-bold tracking-tight text-emerald-400">CRAZEDO AI</span>
           </div>
           <a href="/api/login">
             <Button 
