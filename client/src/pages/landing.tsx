@@ -58,22 +58,22 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 w-full max-w-4xl">
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col items-center">
               <TrendingUp className="w-10 h-10 text-emerald-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Live Trend Data</h3>
               <p className="text-muted-foreground text-sm">
                 Access real-time Google Trends data for any keyword or topic.
               </p>
             </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col items-center">
               <Sparkles className="w-10 h-10 text-emerald-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">AI-Powered Analysis</h3>
               <p className="text-muted-foreground text-sm">
-                Get intelligent insights and trend predictions powered by Crazedo AI v2.0.
+                Get intelligent insights and trend predictions powered by Crazedo AI v2.0. Trends Intelligence System
               </p>
             </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]">
-              <Zap className="w-10 h-10 text-yellow-400 mb-4" />
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] flex flex-col items-center">
+              <Zap className="w-10 h-10 text-emerald-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Instant Results</h3>
               <p className="text-muted-foreground text-sm">
                 Get analysis results in seconds, not hours. Stay ahead of the curve.
