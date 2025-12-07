@@ -17,7 +17,7 @@ export default function Landing() {
           </div>
           <a href="/api/login">
             <Button 
-              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 border-0 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300"
+              className="bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300"
               data-testid="button-login"
             >
               Sign In
@@ -44,7 +44,7 @@ export default function Landing() {
             <a href="/api/login">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-lg px-10 py-7 gap-2 shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transition-all duration-300"
+                className="bg-white hover:bg-gray-100 text-slate-900 text-lg px-10 py-7 gap-2 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300"
                 data-testid="button-get-started"
               >
                 Get Started
@@ -82,16 +82,16 @@ export default function Landing() {
           </div>
         </main>
 
-        <footer className="absolute bottom-0 left-0 right-0 py-6 px-4 md:px-8 text-center text-muted-foreground text-sm">
+        <footer className="mt-16 pb-8 px-4 md:px-8 text-center text-muted-foreground text-sm">
           <div className="flex flex-col items-center gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
               <span className="text-white/30">|</span>
               <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
               <span className="text-white/30">|</span>
               <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
             </div>
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-2 text-xs flex-wrap justify-center">
               <span className="text-muted-foreground/70">More from us:</span>
               <a href="https://crazedo.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">Crazedo.com</a>
               <span className="text-white/30">•</span>
