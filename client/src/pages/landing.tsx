@@ -12,12 +12,12 @@ export default function Landing() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
         <header className="flex items-center justify-between py-6">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-8 h-8 text-blue-400" />
+            <Sparkles className="w-8 h-8 text-emerald-400" />
             <span className="text-xl font-display font-bold tracking-tight">CRAZEDO AI</span>
           </div>
           <a href="/api/login">
             <Button 
-              className="bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white border-0 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all duration-300"
               data-testid="button-login"
             >
               Sign In
@@ -26,12 +26,12 @@ export default function Landing() {
         </header>
 
         <main className="flex flex-col items-center text-center mt-[2vh] md:mt-[4vh] space-y-5">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-mono">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-mono">
             <Zap className="w-4 h-4" />
             Real-Time Trend Intelligence
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] max-w-4xl">
+          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] max-w-4xl">
             Discover What's Trending Before Everyone Else
           </h1>
           
@@ -51,7 +51,7 @@ export default function Landing() {
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </a>
-            <div className="flex items-center gap-2 text-xs text-blue-300/80 border border-blue-500/20 rounded-full px-5 py-2 bg-blue-500/5 backdrop-blur-sm">
+            <div className="flex items-center gap-2 text-xs text-emerald-300/80 border border-emerald-500/20 rounded-full px-5 py-2 bg-emerald-500/5 backdrop-blur-sm">
               <Sparkles className="w-3 h-3" />
               <span>Crazedo AI v2.0 — No charge. No credit card required.</span>
             </div>
@@ -65,8 +65,8 @@ export default function Landing() {
                 Access real-time Google Trends data for any keyword or topic.
               </p>
             </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]">
-              <Sparkles className="w-10 h-10 text-blue-400 mb-4" />
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+              <Sparkles className="w-10 h-10 text-emerald-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">AI-Powered Analysis</h3>
               <p className="text-muted-foreground text-sm">
                 Get intelligent insights and trend predictions powered by Crazedo AI v2.0.
