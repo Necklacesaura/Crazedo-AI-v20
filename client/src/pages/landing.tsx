@@ -44,7 +44,7 @@ export default function Landing() {
             <a href="/api/login">
               <Button 
                 size="lg" 
-                className="bg-white hover:bg-gray-100 text-slate-900 text-lg px-10 py-7 gap-2 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300"
+                className="bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg px-10 py-7 gap-2 shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:shadow-[0_0_40px_rgba(16,185,129,0.6)] transition-all duration-300"
                 data-testid="button-get-started"
               >
                 Get Started
@@ -82,24 +82,24 @@ export default function Landing() {
           </div>
         </main>
 
-        <footer className="mt-16 pb-8 px-4 md:px-8 text-center text-muted-foreground text-sm">
+        <footer className="mt-16 pb-8 px-4 md:px-8 text-center text-sm">
           <div className="flex flex-col items-center gap-3">
-            <div className="flex items-center gap-2 flex-wrap justify-center">
+            <div className="flex items-center gap-2 flex-wrap justify-center text-gray-400">
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <span className="text-white/30">|</span>
+              <span className="text-gray-600">|</span>
               <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <span className="text-white/30">|</span>
+              <span className="text-gray-600">|</span>
               <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
             </div>
-            <div className="flex items-center gap-2 text-xs flex-wrap justify-center">
-              <span className="text-muted-foreground/70">More from us:</span>
-              <a href="https://crazedo.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">Crazedo.com</a>
-              <span className="text-white/30">•</span>
-              <a href="https://crazedo.com/ppc" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">PPC Ad Agency</a>
-              <span className="text-white/30">•</span>
-              <a href="https://backlinkphoenix.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">Backlink Phoenix</a>
+            <div className="flex items-center gap-1 text-xs flex-wrap justify-center text-gray-500">
+              <span>More from us:</span>
+              <a href="https://crazedo.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Crazedo.com</a>
+              <span>•</span>
+              <a href="https://crazedo.com/ppc" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">PPC Ad Agency</a>
+              <span>•</span>
+              <a href="https://backlinkphoenix.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Backlink Phoenix</a>
             </div>
-            <div className="text-xs text-muted-foreground/60">
+            <div className="text-xs text-gray-500">
               © 2025 Crazedo AI v2.0
             </div>
           </div>
