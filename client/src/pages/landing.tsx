@@ -31,7 +31,7 @@ export default function Landing() {
             Real-Time Trend Intelligence
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-white max-w-4xl">
+          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-gray-200 max-w-4xl">
             Discover What's Trending Before Everyone Else
           </h1>
           
