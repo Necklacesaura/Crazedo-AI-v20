@@ -31,11 +31,11 @@ export default function Landing() {
             Real-Time Trend Intelligence
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] max-w-4xl">
+          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-emerald-400 to-emerald-300 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)] max-w-4xl">
             Discover What's Trending Before Everyone Else
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
+          <p className="text-xl text-emerald-200/80 max-w-2xl leading-relaxed">
             Analyze Google search trends with AI-powered insights. Get real-time data, 
             trend predictions, and actionable intelligence for your business.
           </p>
