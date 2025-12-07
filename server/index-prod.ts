@@ -11,47 +11,25 @@ let pytrendsProcess: ChildProcess | null = null;
 
 function startPyTrendsAPI() {
   console.log('[PyTrends] Starting Flask API on port 5001...');
-  
-  const pythonPath = 'python3';
-  const projectRoot = process.cwd();
-  const scriptPath = path.join(projectRoot, 'python_api', 'trends_api.py');
-  
-  console.log(`[PyTrends] Using Python: ${pythonPath}, Script: ${scriptPath}, CWD: ${projectRoot}`);
-  
-  if (!fs.existsSync(scriptPath)) {
-    console.error(`[PyTrends] Script not found at: ${scriptPath}`);
-    return;
-  }
-  
-  try {
-    pytrendsProcess = spawn(pythonPath, [scriptPath], {
-      stdio: ['ignore', 'pipe', 'pipe'],
-      env: { ...process.env },
-      cwd: projectRoot
-    });
+  pytrendsProcess = spawn('python', ['python_api/trends_api.py'], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env }
+  });
 
-    pytrendsProcess.stdout?.on('data', (data) => {
-      console.log(`[PyTrends] ${data.toString().trim()}`);
-    });
+  pytrendsProcess.stdout?.on('data', (data) => {
+    console.log(`[PyTrends] ${data.toString().trim()}`);
+  });
 
-    pytrendsProcess.stderr?.on('data', (data) => {
-      console.error(`[PyTrends] ${data.toString().trim()}`);
-    });
+  pytrendsProcess.stderr?.on('data', (data) => {
+    console.error(`[PyTrends] ${data.toString().trim()}`);
+  });
 
-    pytrendsProcess.on('error', (error) => {
-      console.error(`[PyTrends] Failed to start: ${error.message}`);
-    });
-
-    pytrendsProcess.on('close', (code) => {
-      console.log(`[PyTrends] Flask API exited with code ${code}`);
-      if (code !== 0 && code !== null) {
-        console.log('[PyTrends] Will restart in 3 seconds...');
-        setTimeout(() => startPyTrendsAPI(), 3000);
-      }
-    });
-  } catch (error) {
-    console.error(`[PyTrends] Error spawning process: ${error}`);
-  }
+  pytrendsProcess.on('close', (code) => {
+    console.log(`[PyTrends] Flask API exited with code ${code}`);
+    if (code !== 0) {
+      setTimeout(() => startPyTrendsAPI(), 3000);
+    }
+  });
 }
 
 process.on('exit', () => { if (pytrendsProcess) pytrendsProcess.kill(); });
