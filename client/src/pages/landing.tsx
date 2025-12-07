@@ -70,7 +70,7 @@ export default function Landing() {
               <Sparkles className="w-10 h-10 text-blue-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">AI-Powered Analysis</h3>
               <p className="text-muted-foreground text-sm">
-                Get intelligent insights and trend predictions powered by AI.
+                Get intelligent insights and trend predictions powered by Crazedo AI v2.0.
               </p>
             </div>
             <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]">
