@@ -20,61 +20,24 @@ const getOidcConfig = memoize(
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000;
-  
-  if (!process.env.DATABASE_URL) {
-    console.warn("[Auth] DATABASE_URL not set, using memory store for sessions");
-    return session({
-      secret: process.env.SESSION_SECRET || "fallback-dev-secret",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: sessionTtl,
-      },
-    });
-  }
-  
-  try {
-    const pgStore = connectPg(session);
-    const sessionStore = new pgStore({
-      conString: process.env.DATABASE_URL,
-      createTableIfMissing: false,
-      ttl: sessionTtl,
-      tableName: "sessions",
-    });
-    
-    sessionStore.on("error", (error) => {
-      console.error("[Auth] Session store error:", error);
-    });
-    
-    console.log("[Auth] PostgreSQL session store configured");
-    
-    return session({
-      secret: process.env.SESSION_SECRET || "fallback-dev-secret",
-      store: sessionStore,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: sessionTtl,
-      },
-    });
-  } catch (error) {
-    console.error("[Auth] Failed to initialize PostgreSQL session store:", error);
-    console.warn("[Auth] Falling back to memory store");
-    return session({
-      secret: process.env.SESSION_SECRET || "fallback-dev-secret",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: sessionTtl,
-      },
-    });
-  }
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: false,
+    ttl: sessionTtl,
+    tableName: "sessions",
+  });
+  return session({
+    secret: process.env.SESSION_SECRET!,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      maxAge: sessionTtl,
+    },
+  });
 }
 
 function updateUserSession(

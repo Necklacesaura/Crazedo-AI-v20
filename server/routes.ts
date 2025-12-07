@@ -5,16 +5,7 @@ import { analyzeTrend } from "./services/trend-analyzer";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  console.log("[Routes] Initializing routes...");
-  
-  try {
-    console.log("[Routes] Setting up authentication...");
-    await setupAuth(app);
-    console.log("[Routes] Authentication setup complete");
-  } catch (error) {
-    console.error("[Routes] Error setting up authentication:", error);
-    console.warn("[Routes] Continuing without full authentication support");
-  }
+  await setupAuth(app);
 
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {

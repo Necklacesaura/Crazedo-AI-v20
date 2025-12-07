@@ -17,11 +17,6 @@ export function log(message: string, source = "express") {
 export const app = express();
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  // Skip redirects for health check endpoint
-  if (req.path === '/api/health') {
-    return next();
-  }
-  
   if (process.env.NODE_ENV === 'production') {
     const host = req.headers.host || '';
     const proto = req.headers['x-forwarded-proto'];
@@ -82,9 +77,7 @@ app.use((req, res, next) => {
 export default async function runApp(
   setup: (app: Express, server: Server) => Promise<void>,
 ) {
-  console.log("[App] Starting application setup...");
   const server = await registerRoutes(app);
-  console.log("[App] Routes registered successfully");
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
