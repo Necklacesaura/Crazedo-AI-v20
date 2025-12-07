@@ -26,7 +26,7 @@ export default function Landing() {
           </a>
         </header>
 
-        <main className="flex flex-col items-center text-center mt-[15vh] space-y-8">
+        <main className="flex flex-col items-center text-center mt-[6vh] md:mt-[8vh] space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-mono">
             <Zap className="w-4 h-4" />
             Real-Time Trend Intelligence
@@ -41,16 +41,21 @@ export default function Landing() {
             trend predictions, and actionable intelligence for your business.
           </p>
 
-          <a href="/api/login">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-lg px-8 py-6 gap-2"
-              data-testid="button-get-started"
-            >
-              Get Started
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </a>
+          <div className="flex flex-col items-center gap-3">
+            <a href="/api/login">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-lg px-8 py-6 gap-2"
+                data-testid="button-get-started"
+              >
+                Get Started
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            </a>
+            <span className="text-xs text-muted-foreground/70 border border-white/10 rounded-full px-4 py-1.5 bg-white/5 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
+              Free Version 2.0 — No charge. No credit card required.
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 w-full max-w-4xl">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left">
