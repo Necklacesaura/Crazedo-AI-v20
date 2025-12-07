@@ -18,14 +18,15 @@ export const app = express();
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === 'production') {
-    const proto = req.headers['x-forwarded-proto'];
-    if (proto && proto !== 'https') {
-      return res.redirect(301, `https://${req.headers.host}${req.url}`);
-    }
-    
     const host = req.headers.host || '';
-    if (host.startsWith('www.')) {
-      return res.redirect(301, `https://${host.replace('www.', '')}${req.url}`);
+    const proto = req.headers['x-forwarded-proto'];
+    const canonicalHost = 'www.crazedoai.com';
+    
+    // Redirect if not on canonical host or not HTTPS
+    const needsRedirect = host !== canonicalHost || proto !== 'https';
+    
+    if (needsRedirect) {
+      return res.redirect(301, `https://${canonicalHost}${req.url}`);
     }
   }
   next();
