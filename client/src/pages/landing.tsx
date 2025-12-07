@@ -95,7 +95,7 @@ export default function Landing() {
               <span>More from us:</span>
               <a href="https://crazedo.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Crazedo.com</a>
               <span>•</span>
-              <a href="https://crazedo.com/ppc" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">PPC Ad Agency</a>
+              <a href="https://ppcadagency.io/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">PPC Ad Agency</a>
               <span>•</span>
               <a href="https://backlinkphoenix.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Backlink Phoenix</a>
             </div>
