@@ -6,7 +6,9 @@ import { analyzeTrend, TrendData } from "@/lib/api";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { X, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { X, ArrowLeft, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SavedTrend {
   topic: string;
@@ -20,6 +22,7 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
   const [savedTrends, setSavedTrends] = useState<SavedTrend[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
   
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedTrends') || '[]');
@@ -65,6 +68,21 @@ export default function Home() {
       {/* Background Grid */}
       <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
            style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
+      </div>
+
+      {/* Logout Button */}
+      <div className="fixed top-4 right-4 z-[100]">
+        <a href="/api/logout">
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-white/20 hover:bg-white/10 gap-2"
+            data-testid="button-logout"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </Button>
+        </a>
       </div>
 
       {/* Fixed Green Back Button - Only visible after search */}
