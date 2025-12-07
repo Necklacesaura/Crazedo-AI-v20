@@ -26,7 +26,7 @@ export default function Landing() {
           </a>
         </header>
 
-        <main className="flex flex-col items-center text-center mt-[6vh] md:mt-[8vh] space-y-6">
+        <main className="flex flex-col items-center text-center mt-[2vh] md:mt-[4vh] space-y-5">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-mono">
             <Zap className="w-4 h-4" />
             Real-Time Trend Intelligence
@@ -53,7 +53,7 @@ export default function Landing() {
               </Button>
             </a>
             <span className="text-xs text-muted-foreground/70 border border-white/10 rounded-full px-4 py-1.5 bg-white/5 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
-              Free Version 2.0 — No charge. No credit card required.
+              Crazedo Free — No charge. No credit card required.
             </span>
           </div>
 
