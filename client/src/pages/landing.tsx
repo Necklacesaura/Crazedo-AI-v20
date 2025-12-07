@@ -41,38 +41,39 @@ export default function Landing() {
             trend predictions, and actionable intelligence for your business.
           </p>
 
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-4 mt-2">
             <a href="/api/login">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-lg px-8 py-6 gap-2"
+                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-lg px-10 py-7 gap-2 shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transition-all duration-300"
                 data-testid="button-get-started"
               >
                 Get Started
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </a>
-            <span className="text-xs text-muted-foreground/70 border border-white/10 rounded-full px-4 py-1.5 bg-white/5 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
-              Crazedo AI v2.0 — No charge. No credit card required.
-            </span>
+            <div className="flex items-center gap-2 text-xs text-blue-300/80 border border-blue-500/20 rounded-full px-5 py-2 bg-blue-500/5 backdrop-blur-sm">
+              <Sparkles className="w-3 h-3" />
+              <span>Crazedo AI v2.0 — No charge. No credit card required.</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 w-full max-w-4xl">
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 w-full max-w-4xl">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
               <TrendingUp className="w-10 h-10 text-emerald-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Live Trend Data</h3>
               <p className="text-muted-foreground text-sm">
                 Access real-time Google Trends data for any keyword or topic.
               </p>
             </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]">
               <Sparkles className="w-10 h-10 text-blue-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">AI-Powered Analysis</h3>
               <p className="text-muted-foreground text-sm">
                 Get intelligent insights and trend predictions powered by AI.
               </p>
             </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]">
               <Zap className="w-10 h-10 text-yellow-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Instant Results</h3>
               <p className="text-muted-foreground text-sm">
