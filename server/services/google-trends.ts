@@ -19,6 +19,28 @@ interface TrendData {
 const cache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 3600 * 1000;
 
+function safeParseJSON(response: string, context: string): any | null {
+  if (!response || typeof response !== 'string') {
+    console.warn(`[GoogleTrends] ${context}: Empty or invalid response`);
+    return null;
+  }
+
+  const trimmed = response.trim();
+  
+  if (trimmed.startsWith('<') || trimmed.startsWith('<!')) {
+    console.warn(`[GoogleTrends] ${context}: Received HTML instead of JSON (possible rate limit or captcha)`);
+    return null;
+  }
+
+  try {
+    return JSON.parse(trimmed);
+  } catch (error) {
+    const preview = trimmed.substring(0, 100);
+    console.error(`[GoogleTrends] ${context}: JSON parse error. Response preview: "${preview}..."`);
+    return null;
+  }
+}
+
 function getCached<T>(key: string): T | null {
   const cached = cache.get(key);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
@@ -44,8 +66,8 @@ async function fetchInterestOverTime(keyword: string): Promise<InterestData[]> {
       endTime: new Date(),
     });
 
-    const data = JSON.parse(results);
-    if (!data.default?.timelineData?.length) {
+    const data = safeParseJSON(results, `Interest over time for "${keyword}"`);
+    if (!data || !data.default?.timelineData?.length) {
       return [];
     }
 
@@ -92,7 +114,11 @@ async function fetchRelatedQueries(keyword: string): Promise<string[]> {
 
   try {
     const results = await googleTrends.relatedQueries({ keyword });
-    const data = JSON.parse(results);
+    const data = safeParseJSON(results, `Related queries for "${keyword}"`);
+    
+    if (!data) {
+      return [`${keyword} news`, `what is ${keyword}`, `${keyword} 2025`, `best ${keyword}`];
+    }
     
     const queries: string[] = [];
     const topQueries = data.default?.rankedList?.[0]?.rankedKeyword;
@@ -124,9 +150,9 @@ async function fetchInterestByRegion(keyword: string): Promise<RegionData[]> {
       keyword,
       resolution: 'COUNTRY',
     });
-    const data = JSON.parse(results);
+    const data = safeParseJSON(results, `Interest by region for "${keyword}"`);
     
-    if (!data.default?.geoMapData?.length) {
+    if (!data || !data.default?.geoMapData?.length) {
       return [];
     }
 
