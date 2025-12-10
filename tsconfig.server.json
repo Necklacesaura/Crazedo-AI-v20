@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "jsx": "react"
+  }
+}
