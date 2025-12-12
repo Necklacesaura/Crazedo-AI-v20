@@ -96,11 +96,31 @@ export default async function runApp(
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  
+  return new Promise<void>((resolve, reject) => {
+    try {
+      server.listen({
+        port,
+        host: "0.0.0.0",
+        reusePort: true,
+      }, () => {
+        log(`serving on port ${port}`);
+        log(`server successfully bound to 0.0.0.0:${port}`);
+        resolve();
+      });
+
+      server.on('error', (error: NodeJS.ErrnoException) => {
+        console.error(`[Server] Fatal error during startup:`, error);
+        if (error.code === 'EADDRINUSE') {
+          console.error(`[Server] Port ${port} is already in use`);
+        } else if (error.code === 'EACCES') {
+          console.error(`[Server] Permission denied to bind to port ${port}`);
+        }
+        reject(error);
+      });
+    } catch (error) {
+      console.error(`[Server] Exception during server.listen():`, error);
+      reject(error);
+    }
   });
 }
