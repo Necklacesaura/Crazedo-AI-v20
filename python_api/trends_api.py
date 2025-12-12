@@ -30,8 +30,15 @@ def set_cached_data(key, data):
 
 def create_pytrends():
     from pytrends.request import TrendReq
-    import urllib3
-    urllib3.util.retry.Retry.DEFAULT_ALLOWED_METHODS = frozenset(['HEAD', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'POST'])
+    
+    try:
+        import urllib3
+        try:
+            urllib3.util.retry.Retry.DEFAULT_ALLOWED_METHODS = frozenset(['HEAD', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'POST'])  # type: ignore
+        except AttributeError:
+            pass
+    except Exception:
+        pass
     
     try:
         return TrendReq(hl='en-US', tz=360)
