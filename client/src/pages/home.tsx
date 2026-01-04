@@ -115,6 +115,28 @@ export default function Home() {
           <div className="w-full max-w-2xl">
             <SearchInput ref={searchInputRef} onSearch={handleSearch} isLoading={isLoading} />
           </div>
+          <div className="text-sm text-muted-foreground mt-3">
+            Other free tools:{" "}
+            <a 
+              href="https://www.backlinkphoenix.com/free-seo-audit" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-emerald-400 hover:text-emerald-300 transition"
+              data-testid="link-seo-audit"
+            >
+              Free SEO Audit
+            </a>
+            {" | "}
+            <a 
+              href="https://crazedo.com/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-emerald-400 hover:text-emerald-300 transition"
+              data-testid="link-web-scraper"
+            >
+              Web Scraper
+            </a>
+          </div>
         </motion.div>
 
         {/* Results Area */}

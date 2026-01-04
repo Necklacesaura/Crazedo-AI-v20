@@ -939,6 +939,33 @@ ${seasonalPattern}
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Next Steps */}
+      <motion.div variants={item}>
+        <div className="mt-6 space-y-2">
+          <p className="text-sm text-muted-foreground">Next steps</p>
+          <div className="flex flex-col gap-1">
+            <a 
+              href="https://www.backlinkphoenix.com/free-seo-audit" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-sm text-emerald-400 hover:text-emerald-300 transition"
+              data-testid="link-next-seo-audit"
+            >
+              Run a free SEO audit (external tool)
+            </a>
+            <a 
+              href="https://crazedo.com/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-sm text-emerald-400 hover:text-emerald-300 transition"
+              data-testid="link-next-web-scraper"
+            >
+              Use the web scraper tool (external tool)
+            </a>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
