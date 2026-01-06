@@ -297,6 +297,8 @@ export default function Home() {
             <a href="https://ppcadagency.io" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">PPC Ad Agency</a>
             <span>•</span>
             <a href="https://backlinkphoenix.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Backlink Phoenix</a>
+            <span>•</span>
+            <a href="https://trend-pulse-6b89dd56.base44.app/Home" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Trend Pulse</a>
           </div>
           <p data-testid="text-copyright">&copy; 2025 Crazedo AI v2.0</p>
         </div>
