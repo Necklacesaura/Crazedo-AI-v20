@@ -98,6 +98,8 @@ export default function Landing() {
               <a href="https://ppcadagency.io/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">PPC Ad Agency</a>
               <span>•</span>
               <a href="https://backlinkphoenix.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Backlink Phoenix</a>
+              <span>•</span>
+              <a href="https://trend-pulse-6b89dd56.base44.app/Home" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Trend Pulse</a>
             </div>
             <div className="text-xs text-gray-500">
               © 2025 Crazedo AI v2.0
